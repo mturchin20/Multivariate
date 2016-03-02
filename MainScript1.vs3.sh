@@ -2329,6 +2329,70 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/V
 
 #CHECK_0: Make a consistent criteria, or as much as possible, with what SNPs are included as 'GWAS/Hit SNPs', e.g. do you include replication findings or not, just primary analyses/first-round results? etc...?
 
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##20150828
+##Interim work on GlobalLipids and/or GIANT datasets prior to creating the suite of scripts that will then just be applied to all datasets below
+##E.g. sort of a scratch space for things as I work through them so I don't have this type of 'freehand work' in the middle of what (hopefully) should be just straightforward application of the main scripts (both processing/formatting and analysis itself) below
+
+
+~~~
+[  mturchin20@spudling70  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$cat /data/external_public/GlobalLipids2010/HDL_ONE_Europeans.tbl | head -n 10
+MarkerName      Allele1 Allele2 Weight  GC.Zscore       GC.Pvalue       Overall Direction
+rs3764261       a       c       94225.00        41.691  7.10e-380       +       ++++++++++++++++++?++++++
+rs173539        t       c       94225.00        41.661  2.50e-379       +       ++++++++++++++++++?++++++
+rs247616        t       c       94225.00        41.576  8.54e-378       +       ++++++++++++++++++?++++++
+rs7205804       a       g       98409.00        38.806  2.00e-329       +       +++++++++++++++++++++++++
+rs1532624       a       c       98409.00        38.678  2.93e-327       +       +++++++++++++++++++++++++
+rs11508026      t       c       98409.00        38.448  2.08e-323       +       +++++++++++++++++++++++++
+rs1800775       a       c       96794.00        37.417  2.06e-306       +       ++++++++++++?++++++++++++
+rs711752        a       g       90602.00        36.859  2.07e-297       +       +++++++++++++++++++++++++
+rs1864163       a       g       94225.00        -35.831 3.69e-281       -       ------------------?------
+> Data1 <- read.table("/data/external_public/GlobalLipids2010/HDL_ONE_Europeans.tbl", header=TRUE)
+> head(Data1)
+  MarkerName Allele1 Allele2 Weight GC.Zscore     GC.Pvalue Overall
+  1  rs3764261       a       c  94225    41.691  0.000000e+00       +
+  2   rs173539       t       c  94225    41.661  0.000000e+00       +
+  3   rs247616       t       c  94225    41.576  0.000000e+00       +
+  4  rs7205804       a       g  98409    38.806  0.000000e+00       +
+  5  rs1532624       a       c  98409    38.678  0.000000e+00       +
+  6 rs11508026       t       c  98409    38.448 1.976263e-323       +
+                    Direction
+		    1 ++++++++++++++++++?++++++
+		    2 ++++++++++++++++++?++++++
+		    3 ++++++++++++++++++?++++++
+		    4 +++++++++++++++++++++++++
+		    5 +++++++++++++++++++++++++
+		    6 +++++++++++++++++++++++++
+> GetZScore <- function(x) { val1 <- qnorm(log(x/2), lower.tail=FALSE, log.p=TRUE); return(val1) }
+> tg <- cbind(Data1, apply(as.matrix(tg$GC.Pvalue), 2, GetZScore))
+> tg[1:50,9]
+ [1]      Inf      Inf      Inf      Inf      Inf 38.44939 37.41710 36.85937
+  [9] 35.83059 35.24572 35.23606 35.21521 33.24590 31.30166 29.40863 27.79082
+  [17] 27.14425 26.94528 26.36972 23.37030 21.18964 20.98135 20.84285 20.81887
+  [25] 20.60629 20.59302 20.55601 20.55171 20.47032 20.45584 20.41873 20.34816
+  [33] 20.25378 20.23548 20.20857 20.20791 20.18025 20.16569 20.14965 20.12878
+  [41] 20.12355 20.11633 20.10081 20.09854 20.09075 20.06125 20.05767 20.05301
+  [49] 20.04372 20.01759
+  > Data1[1:50,5]
+   [1]  41.691  41.661  41.576  38.806  38.678  38.448  37.417  36.859 -35.831
+   [10]  35.246 -35.236 -35.215  33.246 -31.302 -29.409 -27.791 -27.144  26.945
+   [19]  26.370  23.370 -21.190 -20.981 -20.843  20.819  20.606 -20.593  20.556
+   [28]  20.552  20.470  20.456 -20.419  20.348  20.254 -20.236  20.209  20.208
+   [37]  20.180 -20.166 -20.150 -20.129 -20.124 -20.116 -20.101 -20.099 -20.091
+   [46]  20.061  20.058  20.053 -20.044  20.018
+~~~   
+
+##Permutation stuff? ##Permutation stuff? ##Permutation stuff? ##Permutation stuff? ##Permutation stuff? ##Permutation stuff? ##Permutation stuff? ##Permutation stuff? ##Permutation stuff? 
+
+cp -p 
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ##20150701
 ##Reorganizing things currently into 'downloading datasets', 'top SNP hits' and 'main analyses' sections, at least for the time being/until something else comes up
 #PGC, IBD, TAG, BP(?dbGAP), MAGIC, GEFOS, SSGAC, EGG, GERA, BEAGESS, GWASofVTE, HaemgenRBC, GPC, 23andMe(?), WTCCC
@@ -2338,33 +2402,713 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/V
 ##20150812
 ##I think I'm going back to the original organization but I'll be copying this file over to a 'vs3' of everything to keep the organizational order of these decisions
 ##Goal is to create a standardized beginning/setup though for each dataset as was the same for the initiative behind moving towards 'vs2'
-##cp -p 
+##20150828
+##I think I decided (before this current note) to actually stick with the 'vs2' setup....but since I've been editting things in the 'vs3' file I'm just going to continue using the 'vs3' file...even though 'vs3' and 'vs2', organizationally speaking are still the same now (sorry? notsorry?)
 
-######
-##
-## File Downloads/File Processing
-##
-######
 
 #Format
 #Chr BP snpID MAF N pval
 
-##GlobalLipids2010
-##2015____
+#General QC scripts
+#for i in `ls -lrt | awk '{ print $9 }' | grep results`; do echo $i; zcat $i | head -n 5; done
+#for i in `ls -lrt | awk '{ print $9 }' | grep results`; do paste <(zcat $i | wc) <(zcat $i | perl -lane 'print $#F;' | sort | uniq -c) | xargs echo $i; done
+#for i in `ls -lrt | awk '{ print $9 }' | grep txt.gz`; do echo $i; paste -d @ <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[0] !~ m/^rs\d+/) { print join("\t", @F); }' | awk '{ print $1 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[1] !~ m/(1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|X|Y|M)/) { print join("\t", @F); }' | awk '{ print $2 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[2] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $3 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[7] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $8 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[10] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $11 }' | sort  | uniq -c) | sed 's/@/@ /g'| column -s $'@' -t ; done
+#for i in `ls -lrt | awk '{ print $9 }' | grep results`; do echo $i; zcat $i | perl -lane 'print join("\t", @F);' | R -q -e "library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1\$MAF, na.rm=TRUE); quantile(Data1\$Sample_size, na.rm=TRUE); quantile(Data1\$P_value, na.rm=TRUE); png(\""$i".QCCheck.vs1.png\", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1\$MAF, breaks=100); hist(Data1\$Sample_size, breaks=100); hist(Data1\$P_value, breaks=100); expP <- -log10(c(1:length(Data1\$P_value["\!"is.na(Data1\$P_value)])) / (length(Data1\$P_value["\!"is.na(Data1\$P_value)])+1)); plot(expP, -log10(sort(Data1\$P_value["\!"is.na(Data1\$P_value)])), xlab=\"Expected p-Values\", ylab=\"Observed p-Values\"); abline(0, 1, col=\"RED\"); dev.off();"; done
 
-##GlobalLipids2013
-##2015____
 
-##GIANT2010
-##2015____
+##GlobalLipids2010 dbsnp ###/HapMap Phase II CEU , GWAS = 95, N = provided per SNP
+##20150828
 
-##GIANT2014/5
-##2015____
+#HapMap Phase II CEU mentioned multiple times in http://www.nature.com.proxy.uchicago.edu/nature/journal/v466/n7307/extref/nature09270-s1.pdf, e.g.:
+~~~
+...
+ To facilitate meta-analysis, each group performed
+ genotype imputation using BIMBAM, IMPUTE, or MACH, with reference to the Phase II CEU
+ HapMap74. Study-specific details are presented in Supplementary Table 3. 
+...
+~~~
+#Going to assume this goes with release 22 (as is the majority of late 2000s and early 2010s studies are?)
 
-##GIANT2013
-##2015____
+mkdir /mnt/lustre/home/mturchin20/Data/HapMap/Releases
+mkdir /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release23
+mkdir /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release23/Frequencies
 
-##PGC 2013
+cd /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release23/Frequencies
+
+wget http://hapmap.ncbi.nlm.nih.gov/downloads/frequencies/2008-01/fwd_strand/non-redundant/
+
+mv /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release23/Frequencies/index.html /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release23/Frequencies/index.http:__hapmap.ncbi.nlm.nih.gov_downloads_frequencies_2008-01_fwd_strand_non-redundant.html
+
+for i in `cat /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release23/Frequencies/index.http:__hapmap.ncbi.nlm.nih.gov_downloads_frequencies_2008-01_fwd_strand_non-redundant.html | perl -lane 'my $fullLine = join("", @F); if ($fullLine =~ m/.*(allele.*.txt.gz).*/) { print $1 ; } '`; do wget http://hapmap.ncbi.nlm.nih.gov/downloads/frequencies/2008-01/fwd_strand/non-redundant/$i; done
+
+nbthis *
+
+####Taken from earlier in script
+##mkdir /data/external_public/GlobalLipids2010
+
+##cd /data/external_public/GlobalLipids2010
+
+##wget -r -l1 --no-parent -A "*2010*" http://www.sph.umich.edu/csg/abecasis/public/lipids2010/
+
+##wget -r -l1 --no-parent -A "*with_Effect*" http://www.sph.umich.edu/csg/abecasis/public/lipids2010/
+
+###Unzipped both *2010* and *with_Effect* files
+
+gzip *tbl
+
+~~~
+[  mturchin20@spudling70  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$ls -lrt /data/external_public/GlobalLipids2010/.
+total 1846740
+-rw-r--r-- 1 mturchin20 mturchin20 174142389 Aug  6  2010 HDL_ONE_Europeans.tbl.gz
+-rw-r--r-- 1 mturchin20 mturchin20 174151558 Aug  6  2010 LDL_ONE_Europeans.tbl.gz
+-rw-r--r-- 1 mturchin20 mturchin20 174154742 Aug  6  2010 TG_ONE_Europeans.tbl.gz
+-rw-r--r-- 1 mturchin20 mturchin20 175468147 Aug  6  2010 TC_ONE_Europeans.tbl.gz
+-rw-rw-r-- 1 mturchin20 mturchin20  39057098 Aug  6  2010 HDL2010.zip
+-rw-rw-r-- 1 mturchin20 mturchin20  39076634 Aug  6  2010 LDL2010.zip
+-rw-rw-r-- 1 mturchin20 mturchin20  39094453 Aug  6  2010 TC2010.zip
+-rw-rw-r-- 1 mturchin20 mturchin20  39033516 Aug  6  2010 TG2010.zip
+-rw-rw-r-- 1 mturchin20 mturchin20    132125 Aug  6  2010 Manhattan2010.png
+-rw-r--r-- 1 mturchin20 mturchin20 203754736 May  7  2013 HDL_with_Effect.tbl.gz
+-rw-r--r-- 1 mturchin20 mturchin20 203994603 May  7  2013 LDL_with_Effect.tbl.gz
+-rw-r--r-- 1 mturchin20 mturchin20 205290701 May  7  2013 TC_with_Effect.tbl.gz
+-rw-r--r-- 1 mturchin20 mturchin20 203832172 May  7  2013 TG_with_Effect.tbl.gz
+-rw-rw-r-- 1 mturchin20 mturchin20  56249598 May  7  2013 HDL_with_Effect.zip
+-rw-rw-r-- 1 mturchin20 mturchin20  54574432 May  7  2013 LDL_with_Effect.zip
+-rw-rw-r-- 1 mturchin20 mturchin20  54581074 May  7  2013 TC_with_Effect.zip
+-rw-rw-r-- 1 mturchin20 mturchin20  54374508 May  7  2013 TG_with_Effect.zip
+[  mturchin20@spudling26  /data/external_public/GlobalLipids2010]$for i in `ls -lrt | awk '{ print $9 }' | grep with_Effect.tbl`; do echo $i; zcat $i | head -n 5; done
+HDL_with_Effect.tbl.gz
+MarkerName      Allele1 Allele2 Weight  GC.Zscore       GC.Pvalue       Overall Direction       Effect  StdErr
+rs10    a       c       85853   -0.096  0.9232  -       ---+-+++-+?+--??--++??+++       -0.0019 0.0147
+rs1000000       a       g       99900   -0.937  0.349   -       ---+-+---++-+---+++-++++-       -0.0056 0.0058
+rs10000010      t       c       99900   0.185   0.8532  +       -+++-+-+--+++-++++--+----       0.0013  0.0049
+rs10000012      c       g       99843   -0.752  0.4523  -       +-+-+-+--+----+--+++++-++       -0.0065 0.0071
+LDL_with_Effect.tbl.gz
+MarkerName      Allele1 Allele2 Weight  GC.Zscore       GC.Pvalue       Overall Direction       Effect  StdErr
+rs10    a       c       81680   2.051   0.04027 +       ++-+++++-+?++-??-++-??++-       0.0294  0.0152
+rs1000000       a       g       95454   0.662   0.5077  +       -----++-+--+-+++-+++-+-++       0.0044  0.0063
+rs10000010      t       c       95454   1.583   0.1135  +       ++--++---+-+-++--+++---++       0.0073  0.0052
+rs10000012      c       g       95397   0.155   0.877   +       +-+-----++-++---+++---+-+       -2e-04  0.0076
+TC_with_Effect.tbl.gz
+MarkerName      Allele1 Allele2 Weight  GC.Zscore       GC.Pvalue       Overall Direction       Effect  StdErr
+rs10    a       c       86136   2.229   0.02582 +       +--+++++-+?+++??--+-??-+-       0.0304  0.0151
+rs1000000       a       g       100184  0.018   0.9855  +       ---+-+----++-+++++++-+-++       7e-04   0.0061
+rs10000010      t       c       100184  1.748   0.0805  +       ++-+++-+-+-++++---++---+-       0.0084  0.0051
+rs10000012      c       g       100125  0.319   0.7498  +       +-+----+-+--+---+++--++-+       9e-04   0.0074
+TG_with_Effect.tbl.gz
+MarkerName      Allele1 Allele2 Weight  GC.Zscore       GC.Pvalue       Overall Direction       Effect  StdErr
+rs10    a       c       82546   0.75    0.4533  +       ++------+-?+++??++--??-+-       0.0133  0.0141
+rs1000000       a       g       96598   1.244   0.2134  +       ++--+++++-++-+++----+---+       0.0075  0.0057
+rs10000010      t       c       96598   0.675   0.4999  +       -+-+-----+--+++-+-+++--+-       0.0022  0.0048
+rs10000012      c       g       96539   0.579   0.5624  +       -+-+-+----+-+++-++-+-+++-       0.0032  0.007
+[  mturchin20@spudling26  /data/external_public/GlobalLipids2010]$for i in `ls -lrt | awk '{ print $9 }' | grep with_Effect.tbl`; do paste <(zcat $i | wc) <(zcat $i | perl -lane 'print $#F;' | sort | uniq -c) | xargs echo $i; done
+HDL_with_Effect.tbl.gz 2692430 26924300 203754736 2692430 9
+LDL_with_Effect.tbl.gz 2692565 26925650 203994603 2692565 9
+TC_with_Effect.tbl.gz 2692414 26924140 205290701 2692414 9
+TG_with_Effect.tbl.gz 2692561 26925610 203832172 2692561 9
+~~~
+
+##for i in `ls -lrt | awk '{ print $9 }' | grep txt.gz`; do echo $i; paste -d @ <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[0] !~ m/^rs\d+/) { print join("\t", @F); }' | awk '{ print $1 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[1] !~ m/(1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|X|Y|M)/) { print join("\t", @F); }' | awk '{ print $2 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[2] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $3 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[7] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $8 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[10] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $11 }' | sort  | uniq -c) | sed 's/@/@ /g'| column -s $'@' -t ; done
+#for i in `ls -lrt | awk '{ print $9 }' | grep results`; do echo $i; zcat $i | perl -lane 'print join("\t", @F);' | R -q -e "library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1\$MAF, na.rm=TRUE); quantile(Data1\$Sample_size, na.rm=TRUE); quantile(Data1\$P_value, na.rm=TRUE); png(\""$i".QCCheck.vs1.png\", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1\$MAF, breaks=100); hist(Data1\$Sample_size, breaks=100); hist(Data1\$P_value, breaks=100); expP <- -log10(c(1:length(Data1\$P_value["\!"is.na(Data1\$P_value)])) / (length(Data1\$P_value["\!"is.na(Data1\$P_value)])+1)); plot(expP, -log10(sort(Data1\$P_value["\!"is.na(Data1\$P_value)])), xlab=\"Expected p-Values\", ylab=\"Observed p-Values\"); abline(0, 1, col=\"RED\"); dev.off();"; done
+
+#Going to get MAF and ChrBP before doing graph stuff
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /data/external_public/GlobalLipids2010/HDL_with_Effect.tbl.gz | gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap22.tbl.gz &
+
+~~~
+[  mturchin20@spudling26  /data/external_public/GlobalLipids2010]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap22.tbl.gz | head -n 10             MarkerName      Allele1 Allele2 Weight  GC.Zscore       GC.Pvalue       Overall Direction       Effect  StdErr  ChrBPAFInfo
+rs10    a       c       85853   -0.096  0.9232  -       ---+-+++-+?+--??--++??+++       -0.0019 0.0147  chr7_92221824_A_0.033_C_0.967
+rs1000000       a       g       99900   -0.937  0.349   -       ---+-+---++-+---+++-++++-       -0.0056 0.0058  chr12_125456933_C_0.627_T_0.373
+rs10000010      t       c       99900   0.185   0.8532  +       -+++-+-+--+++-++++--+----       0.0013  0.0049  chr4_21227772_T_0.575_C_0.425
+rs10000012      c       g       99843   -0.752  0.4523  -       +-+-+-+--+----+--+++++-++       -0.0065 0.0071  chr4_1347325_C_0.808_G_0.192
+rs10000013      a       c       99900   0.642   0.5209  +       +++-++--+--++--+---+-++--       3e-04   0.0058  chr4_36901464_C_0.167_A_0.833
+rs10000017      t       c       99900   2.043   0.04106 +       +-++++++---++++---++--+++       0.0105  0.0062  chr4_84997149_C_0.777_T_0.223
+rs1000002       t       c       99797   2.249   0.02453 +       -+-+---+-+-+++--++-+-+-++       0.0101  0.0049  chr3_185118462_G_0.475_A_0.525
+rs10000023      t       g       99900   -0.008  0.9935  -       -+-+--+--+++++--++------+       4e-04   0.005   chr4_95952929_G_0.408_T_0.592
+rs10000027      c       g       7807    -0.686  0.4925  -       ?????????????-???????????       -0.0141 0.0205  NA
+[  mturchin20@spudling26  /data/external_public/GlobalLipids2010]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap22.tbl.gz | wc
+2692430 29616730 280821208
+[  mturchin20@spudling26  /data/external_public/GlobalLipids2010]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap22.tbl.gz | awk '{ print $11 }' | grep NA | wc
+ 157247  157247  471741
+~~~
+
+#Going to try HapMap23 since there are a number of missing SNPs from release 22? Might try 21 too? http://hapmap.ncbi.nlm.nih.gov/old_news.html.en has details
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /data/external_public/GlobalLipids2010/HDL_with_Effect.tbl.gz | gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap21.tbl.gz 
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /data/external_public/GlobalLipids2010/HDL_with_Effect.tbl.gz | gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.tbl.gz 
+
+~~~
+[  mturchin20@spudling26  /data/external_public/GlobalLipids2010]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap21.tbl.gz |  awk '{ print $11 }' | grep NA | wc
+ 143425  143425  430275
+ [  mturchin20@spudling26  /data/external_public/GlobalLipids2010]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.tbl.gz |  awk '{ print $11 }' | grep NA | wc
+   64542   64542  193626
+~~~
+
+#Using HapMap23 then
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /data/external_public/GlobalLipids2010/HDL_with_Effect.tbl.gz | perl -lane 'if ($F[0] =~ m/^rs\d+/) { if ($F[$#F] eq "NA") { push (@F, ("NA", "NA", "NA")); } else { my $chr = -9; my $bp = -9; my $maf = -9; my @vals1 = split(/_/, $F[$#F]); if ($vals1[0] =~ m/chr(.*)/) { $chr = $1; } $bp = $vals1[1]; if ($vals1[3] > .5) { $vals1[3] = 1 - $vals1[3]; } $maf = $vals1[3]; push(@F, ($chr, $bp, $maf)); } } else { push(@F, ("Chr", "BP", "MAF")); } print join("\t", @F);' | gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz 
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /data/external_public/GlobalLipids2010/LDL_with_Effect.tbl.gz | perl -lane 'if ($F[0] =~ m/^rs\d+/) { if ($F[$#F] eq "NA") { push (@F, ("NA", "NA", "NA")); } else { my $chr = -9; my $bp = -9; my $maf = -9; my @vals1 = split(/_/, $F[$#F]); if ($vals1[0] =~ m/chr(.*)/) { $chr = $1; } $bp = $vals1[1]; if ($vals1[3] > .5) { $vals1[3] = 1 - $vals1[3]; } $maf = $vals1[3]; push(@F, ($chr, $bp, $maf)); } } else { push(@F, ("Chr", "BP", "MAF")); } print join("\t", @F);' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.tbl.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /data/external_public/GlobalLipids2010/TG_with_Effect.tbl.gz | perl -lane 'if ($F[0] =~ m/^rs\d+/) { if ($F[$#F] eq "NA") { push (@F, ("NA", "NA", "NA")); } else { my $chr = -9; my $bp = -9; my $maf = -9; my @vals1 = split(/_/, $F[$#F]); if ($vals1[0] =~ m/chr(.*)/) { $chr = $1; } $bp = $vals1[1]; if ($vals1[3] > .5) { $vals1[3] = 1 - $vals1[3]; } $maf = $vals1[3]; push(@F, ($chr, $bp, $maf)); } } else { push(@F, ("Chr", "BP", "MAF")); } print join("\t", @F);' | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.tbl.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /data/external_public/GlobalLipids2010/TC_with_Effect.tbl.gz | perl -lane 'if ($F[0] =~ m/^rs\d+/) { if ($F[$#F] eq "NA") { push (@F, ("NA", "NA", "NA")); } else { my $chr = -9; my $bp = -9; my $maf = -9; my @vals1 = split(/_/, $F[$#F]); if ($vals1[0] =~ m/chr(.*)/) { $chr = $1; } $bp = $vals1[1]; if ($vals1[3] > .5) { $vals1[3] = 1 - $vals1[3]; } $maf = $vals1[3]; push(@F, ($chr, $bp, $maf)); } } else { push(@F, ("Chr", "BP", "MAF")); } print join("\t", @F);' | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.tbl.gz &
+
+~~~
+[  mturchin20@spudling26  /data/external_public/GlobalLipids2010]$for i in `ls -lrt | awk '{ print $9 }' | grep with_Effect.wHapMap23.expanded`; do echo $i; paste -d @ <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[0] !~ m/^rs\d+/) { print join("\t", @F); }' | awk '{ print $1 }' | sort  | uniq -c) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[5] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $6 }' | sort  | uniq -c) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[3] =~ m/[^\d]/) { print join("\t", @F); }' | awk '{ print $4 }' | sort  | uniq -c) <(zcat $i | perl -lane ' if ($F[10] !~ m/chr(1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|X|Y|M)_\d+_\D_.*_\D_.*\d+/) { print $F[10]; }' | sort | uniq -c ) | sed 's/@/ @ /g'| column -s $'@' -t ; done
+HDL_with_Effect.wHapMap23.expanded.tbl.gz
+1 MarkerName          1 GC.Pvalue          1 Weight          1 chr12_132361639_0_0_0.375_45
+								1 chr12_132362221_0_0_0.629_73
+								1 chr4_191301184_0_0_0.308_37
+								1 ChrBPAFInfo
+								64542 NA
+LDL_with_Effect.wHapMap23.expanded.tbl.gz
+1 MarkerName          1 GC.Pvalue          1 Weight          1 chr12_132361639_0_0_0.375_45
+								1 chr12_132362221_0_0_0.629_73
+								1 chr4_191301184_0_0_0.308_37
+								1 ChrBPAFInfo
+								64546 NA
+TC_with_Effect.wHapMap23.expanded.tbl.gz
+1 MarkerName          1 GC.Pvalue        229 1e+05           1 chr12_132361639_0_0_0.375_45
+					1 Weight          1 chr12_132362221_0_0_0.629_73
+								1 chr4_191301184_0_0_0.308_37
+								1 ChrBPAFInfo
+								64544 NA
+TG_with_Effect.wHapMap23.expanded.tbl.gz
+1 MarkerName          1 GC.Pvalue          1 Weight          1 chr12_132361639_0_0_0.375_45
+								1 chr12_132362221_0_0_0.629_73
+								1 chr4_191301184_0_0_0.308_37
+								1 ChrBPAFInfo
+								64541 NA
+[  mturchin20@spudling26  /data/external_public/GlobalLipids2010]$for i in `ls -lrt | awk '{ print $9 }' | grep with_Effect.wHapMap23.expanded`; do echo $i; zcat $i | perl -lane 'print join("\t", @F);' | R -q -e "library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1\$MAF, na.rm=TRUE); quantile(Data1\$Weight, na.rm=TRUE); quantile(Data1\$GC.Pvalue, na.rm=TRUE); png(\""$i".QCCheck.vs1.png\", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1\$MAF, breaks=100); hist(Data1\$Weight, breaks=100); hist(Data1\$GC.Pvalue, breaks=100); expP <- -log10(c(1:length(Data1\$GC.Pvalue["\!"is.na(Data1\$GC.Pvalue)])) / (length(Data1\$GC.Pvalue["\!"is.na(Data1\$GC.Pvalue)])+1)); plot(expP, -log10(sort(Data1\$GC.Pvalue["\!"is.na(Data1\$GC.Pvalue)])), xlab=\"Expected p-Values\", ylab=\"Observed p-Values\"); abline(0, 1, col=\"RED\"); dev.off();"; done
+HDL_with_Effect.wHapMap23.expanded.tbl.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$MAF, na.rm=TRUE); quantile(Data1$Weight, na.rm=TRUE); quantile(Data1$GC.Pvalue, na.rm=TRUE); png("HDL_with_Effect.wHapMap23.expanded.tbl.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$MAF, breaks=100); hist(Data1$Weight, breaks=100); hist(Data1$GC.Pvalue, breaks=100); expP <- -log10(c(1:length(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])) / (length(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])+1)); plot(expP, -log10(sort(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2692429 rows and 14 (of 14) columns from 0.309 GB file in 00:01:33
+0%   25%   50%   75%  100%
+0.000 0.086 0.208 0.347 0.500
+0%   25%   50%   75%  100%
+279 95716 99150 99900 99900
+0%    25%    50%    75%   100%
+0.0000 0.2487 0.5000 0.7493 1.0000
+null device
+1
+>
+>
+LDL_with_Effect.wHapMap23.expanded.tbl.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$MAF, na.rm=TRUE); quantile(Data1$Weight, na.rm=TRUE); quantile(Data1$GC.Pvalue, na.rm=TRUE); png("LDL_with_Effect.wHapMap23.expanded.tbl.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$MAF, breaks=100); hist(Data1$Weight, breaks=100); hist(Data1$GC.Pvalue, breaks=100); expP <- -log10(c(1:length(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])) / (length(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])+1)); plot(expP, -log10(sort(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2692564 rows and 14 (of 14) columns from 0.309 GB file in 00:01:32
+0%   25%   50%   75%  100%
+0.000 0.086 0.208 0.347 0.500
+0%   25%   50%   75%  100%
+277 91293 94704 95454 95454
+0%        25%        50%        75%       100%
+9.700e-171  2.477e-01  5.000e-01  7.503e-01  1.000e+00
+null device
+1
+>
+>
+TC_with_Effect.wHapMap23.expanded.tbl.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$MAF, na.rm=TRUE); quantile(Data1$Weight, na.rm=TRUE); quantile(Data1$GC.Pvalue, na.rm=TRUE); png("TC_with_Effect.wHapMap23.expanded.tbl.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$MAF, breaks=100); hist(Data1$Weight, breaks=100); hist(Data1$GC.Pvalue, breaks=100); expP <- -log10(c(1:length(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])) / (length(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])+1)); plot(expP, -log10(sort(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2692413 rows and 14 (of 14) columns from 0.310 GB file in 00:01:33
+0%   25%   50%   75%  100%
+0.000 0.086 0.208 0.347 0.500
+0%    25%    50%    75%   100%
+309  96000  99434 100184 100184
+0%        25%        50%        75%       100%
+5.770e-131  2.466e-01  5.000e-01  7.508e-01  1.000e+00
+null device
+1
+>
+>
+TG_with_Effect.wHapMap23.expanded.tbl.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$MAF, na.rm=TRUE); quantile(Data1$Weight, na.rm=TRUE); quantile(Data1$GC.Pvalue, na.rm=TRUE); png("TG_with_Effect.wHapMap23.expanded.tbl.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$MAF, breaks=100); hist(Data1$Weight, breaks=100); hist(Data1$GC.Pvalue, breaks=100); expP <- -log10(c(1:length(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])) / (length(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])+1)); plot(expP, -log10(sort(Data1$GC.Pvalue[!is.na(Data1$GC.Pvalue)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2692560 rows and 14 (of 14) columns from 0.309 GB file in 00:01:34
+0%   25%   50%   75%  100%
+0.000 0.086 0.208 0.347 0.500
+0%   25%   50%   75%  100%
+182 92418 95848 96598 96598
+0%        25%        50%        75%       100%
+6.710e-240  2.472e-01  5.000e-01  7.509e-01  1.000e+00
+null device
+1
+>
+>
+[  mturchin20@spudling26  /data/external_public/GlobalLipids2010]$for i in `ls -lrt | awk '{ print $9 }' | grep with_Effect.wHapMap23.expanded`; do echo $i; paste -d @ <(zcat $i | awk '{ print $11 }' | grep NA | wc) <(zcat $i | awk '{ print $11 }' | grep , | wc) <(zcat $i | awk '{ print $11 }' | perl -lane 'my @vals1 = split(/,/, $F[0]); print scalar(@vals1);' | sort | uniq -c) | sed 's/@/ @ /g'| column -s $'@' -t ; done
+HDL_with_Effect.wHapMap23.expanded.tbl.gz
+64542   64542  193626          0       0       0    2692430 1
+LDL_with_Effect.wHapMap23.expanded.tbl.gz
+64546   64546  193638          0       0       0    2692565 1
+TC_with_Effect.wHapMap23.expanded.tbl.gz
+64544   64544  193632          0       0       0    2692414 1
+TG_with_Effect.wHapMap23.expanded.tbl.gz
+64541   64541  193623          0       0       0    2692561 1
+~~~
+
+zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | awk '{ print $1, "\t", $12, "\t", $13, "\t", $14, "\t", $6, "\t", $4 }' | gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.formatted.tbl.gz
+
+MarkerName      Allele1 Allele2 Weight  GC.Zscore       GC.Pvalue       Overall Direction       Effect  StdErr  ChrBPAFInfo     Chr     BP      MAF
+rs10    a       c       85853   -0.096  0.9232  -       ---+-+++-+?+--??--++??+++       -0.0019 0.0147  chr7_92221824_A_0.033_C_0.967   7       92221824        0.033
+rs1000000       a       g       99900   -0.937  0.349   -       ---+-+---++-+---+++-++++-       -0.0056 0.0058  chr12_125456933_G_0.627_A_0.373 12      125456933      0.373
+rs10000010      t       c       99900   0.185   0.8532  +       -+++-+-+--+++-++++--+----       0.0013  0.0049  chr4_21227772_T_0.575_C_0.425   4       21227772       0.425
+rs10000012      c       g       99843   -0.752  0.4523  -       +-+-+-+--+----+--+++++-++       -0.0065 0.0071  chr4_1347325_C_0.808_G_0.192    4       1347325 0.192
+rs10000013      a       c       99900   0.642   0.5209  +       +++-++--+--++--+---+-++--       3e-04   0.0058  chr4_36901464_C_0.167_A_0.833   4       36901464       0
+
+Tests for ChrBP information? Checking for 'NA', 'presence of ,' and 'if , how many entries'
+then 
+Marker Chr BP MAF P N
+for each file
+
+
+
+
+
+
+
+##GlobalLipids2013 dbsnp ### (ChrBP & 1000G MAF provided), GWAS = , N = provided per SNP
+##20150828
+
+####Taken from earlier in script
+
+##mkdir /data/external_public/GlobalLipids2013
+
+##cd /data/external_public/GlobalLipids2013
+
+##wget -r -l1 --no-parent -A "jointGwas*" http://www.sph.umich.edu/csg/abecasis/public/lipids2013/
+
+##wget -r -l1 --no-parent -A "Mc*" http://www.sph.umich.edu/csg/abecasis/public/lipids2013/
+
+###NOTE -- these files were actually already downloaded by Xiang Zhu in /data/external_public/GlobalLipid
+
+###So removed the /data/external_public/GlobalLipids2013 directory     
+
+cd /data/external_public/GlobalLipid
+
+mkdir /mnt/lustre/home/mturchin20/Data/GlobalLipids2013
+
+~~~
+[  mturchin20@spudling26  /data/external_public/GlobalLipid]$ls -lrt
+total 245376
+-rw-r--r-- 1 xiangzhu xiangzhu  3828870 Jun  4  2014 Mc_LDL.txt.gz
+-rw-r--r-- 1 xiangzhu xiangzhu  3851583 Jun  4  2014 Mc_HDL.txt.gz
+-rw-rw-r-- 1 xiangzhu xiangzhu  3834784 Jun  4  2014 Mc_TG.txt.gz
+-rw-rw-r-- 1 xiangzhu xiangzhu  3856060 Jun  4  2014 Mc_TC.txt.gz
+-rw-r--r-- 1 xiangzhu xiangzhu 58851380 Jun  4  2014 jointGwasMc_LDL.txt.gz
+-rw-r--r-- 1 xiangzhu xiangzhu 59025777 Jun  4  2014 jointGwasMc_HDL.txt.gz
+-rw-r--r-- 1 xiangzhu xiangzhu 58866740 Jun  4  2014 jointGwasMc_TG.txt.gz
+-rw-r--r-- 1 xiangzhu xiangzhu 59110550 Jun  4  2014 jointGwasMc_TC.txt.gz
+-rw-rw-r-- 1 xiangzhu xiangzhu      862 Jun  4  2014 README.txt
+[  mturchin20@spudling26  /data/external_public/GlobalLipid]$for i in `ls -lrt | awk '{ print $9 }' | grep jointGwas`; do echo $i; zcat $i | head -n 5; done
+jointGwasMc_LDL.txt.gz
+SNP_hg18        SNP_hg19        rsid    A1      A2      beta    se      N       P-value Freq.A1.1000G.EUR
+chr10:10000135  chr10:9960129   rs4747841       a       g       0.0037  0.0052  89138.00        0.7158  0.4908
+chr10:10000265  chr10:9960259   rs4749917       c       t       0.0033  0.0052  89138.00        0.7748  0.4908
+chr10:100002729 chr10:100012739 rs737656        a       g       0.0099  0.0054  89888.00        0.04    0.3206
+chr10:100002880 chr10:100012890 rs737657        a       g       0.0084  0.0054  89888.00        0.08428 0.3206
+jointGwasMc_HDL.txt.gz
+SNP_hg18        SNP_hg19        rsid    A1      A2      beta    se      N       P-value Freq.A1.1000G.EUR
+chr10:10000135  chr10:9960129   rs4747841       g       a       0.0026  0.0048  93561.00        0.7538  0.5092
+chr10:10000265  chr10:9960259   rs4749917       t       c       0.0028  0.0048  93561.00        0.7295  0.5092
+chr10:100002729 chr10:100012739 rs737656        g       a       0.0098  0.0049  94311.00        0.09234 0.6794
+chr10:100002880 chr10:100012890 rs737657        g       a       0.0102  0.0049  94311.00        0.0934  0.6794
+jointGwasMc_TG.txt.gz
+SNP_hg18        SNP_hg19        rsid    A1      A2      beta    se      N       P-value Freq.A1.1000G.EUR
+chr10:10000135  chr10:9960129   rs4747841       a       g       0.0020  0.0047  90263.00        0.7567  0.4908
+chr10:10000265  chr10:9960259   rs4749917       c       t       0.002   0.0047  90263.00        0.7612  0.4908
+chr10:100002729 chr10:100012739 rs737656        a       g       0.0094  0.0048  91013.00        0.06856 0.3206
+chr10:100002880 chr10:100012890 rs737657        a       g       0.0094  0.0048  91013.00        0.07994 0.3206
+jointGwasMc_TC.txt.gz
+SNP_hg18        SNP_hg19        rsid    A1      A2      beta    se      N       P-value Freq.A1.1000G.EUR
+chr10:10000135  chr10:9960129   rs4747841       a       g       0.0026  0.0051  93845.00        0.653   0.4908
+chr10:10000265  chr10:9960259   rs4749917       c       t       0.0024  0.0051  93845.00        0.6915  0.4908
+chr10:100002729 chr10:100012739 rs737656        a       g       0.0071  0.0052  94595.00        0.1653  0.3206
+chr10:100002880 chr10:100012890 rs737657        a       g       0.0062  0.0052  94595.00        0.255   0.3206
+[  mturchin20@spudling26  /data/external_public/GlobalLipid]$for i in `ls -lrt | awk '{ print $9 }' | grep jointGwas`; do paste <(zcat $i | wc) <(zcat $i | perl -lane 'print $#F;' | sort | uniq -c) | xargs echo $i; done
+jointGwasMc_LDL.txt.gz 2437752 24377520 194868366 2437752 9
+jointGwasMc_HDL.txt.gz 2447442 24474420 195649445 2447442 9
+jointGwasMc_TG.txt.gz 2439433 24394330 194998474 2439433 9
+jointGwasMc_TC.txt.gz 2446982 24469820 195629190 2446982 9
+[  mturchin20@spudling26  /data/external_public/GlobalLipid]$for i in `ls -lrt | awk '{ print $9 }' | grep jointGwas`; do echo $i; paste -d @ <(zcat $i | perl -lane ' if ($F[0] !~ m/chr(1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|X|Y|M):\d+/) { $F[0]; } ' | sort | uniq -c ) <(zcat $i | perl -lane ' if ($F[1] !~ m/chr(1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|X|Y|M):\d+/) { $F[1]; } ' | sort | uniq -c ) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[2] !~ m/^rs\d+/) { print join("\t", @F); }' | awk '{ print $3 }' | sort | uniq -c) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[7] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $8 }' | sort | uniq -c ) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[8] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $9 }' | sort | uniq -c ) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[9] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $10 }' | sort | uniq -c ) | sed 's/@/ @ /g'| column -s $'@' -t ; done
+jointGwasMc_LDL.txt.gz
+795 .             1 N          1 P-value          1 Freq.A1.1000G.EUR
+1 rsid   	                                  185802 NA
+jointGwasMc_HDL.txt.gz
+803 .             1 N          1 P-value          1 Freq.A1.1000G.EUR
+1 rsid          	                           186081 NA
+jointGwasMc_TG.txt.gz
+796 .             1 N          1 P-value          1 Freq.A1.1000G.EUR
+1 rsid                  	                   185919 NA
+jointGwasMc_TC.txt.gz
+805 .             1 N          1 P-value          1 Freq.A1.1000G.EUR
+1 rsid                          	           186648 NA
+[  mturchin20@spudling26  /data/external_public/GlobalLipid]$for i in `ls -lrt | awk '{ print $9 }' | grep jointGwas`; do echo $i; zcat $i | sed 's/P-value/P_value/g' |
+perl -lane 'print join("\t", @F);' | R -q -e "library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1\$Freq.A1.1000G.EUR, na.rm=TRUE); qu
+antile(Data1\$N, na.rm=TRUE); quantile(Data1\$P_value, na.rm=TRUE); png(\"/mnt/lustre/home/mturchin20/Data/GlobalLipids2013/"$i".QCCheck.vs1.png\", height=2000, width=2
+000, res=200); par(mfrow=c(2,2)); hist(Data1\$Freq.A1.1000G.EUR, breaks=100); hist(Data1\$N, breaks=100); hist(Data1\$P_value, breaks=100); expP <- -log10(c(1:length(Da
+ta1\$P_value["\!"is.na(Data1\$P_value)])) / (length(Data1\$P_value["\!"is.na(Data1\$P_value)])+1)); plot(expP, -log10(sort(Data1\$P_value["\!"is.na(Data1\$P_value)])),
+xlab=\"Expected p-Values\", ylab=\"Observed p-Values\"); abline(0, 1, col=\"RED\"); dev.off();"; done
+jointGwasMc_LDL.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$Freq.A1.1000G.EUR, na.rm=TRUE); quantile(Data1$N, na.rm=TRUE); quantile(Data1$P_value, na.rm=TRUE); png("/mnt/lustre/home/mturchin20/Data/GlobalLipids2013/jointGwasMc_LDL.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$Freq.A1.1000G.EUR, breaks=100); hist(Data1$N, breaks=100); hist(Data1$P_value, breaks=100); expP <- -log10(c(1:length(Data1$P_value[!is.na(Data1$P_value)])) / (length(Data1$P_value[!is.na(Data1$P_value)])+1)); plot(expP, -log10(sort(Data1$P_value[!is.na(Data1$P_value)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2437751 rows and 10 (of 10) columns from 0.181 GB file in 00:01:35
+Warning message:
+In fread("file:///dev/stdin", header = TRUE) :
+C function strtod() returned ERANGE for one or more fields. The first was string input '3.85e-326'. It was read using (double)strtold() as numeric value 0.0000000000000000E+00 (displayed here using %.16E); loss of accuracy likely occurred. This message is designed to tell you exactly what has been done by fread's C code, so you can search yourself online for many references about double precision accuracy and these specific C functions. You may wish to use colClasses to read the column as character instead and then coerce that column using the Rmpfr package for greater accuracy.
+0%    25%    50%    75%   100%
+0.0000 0.2388 0.5541 0.8470 1.0000
+0%    25%    50%    75%   100%
+50000  87745  89872  89888 173082
+0%    25%    50%    75%   100%
+0.0000 0.2434 0.4968 0.7488 1.0000
+null device
+1
+>
+>
+jointGwasMc_HDL.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$Freq.A1.1000G.EUR, na.rm=TRUE); quantile(Data1$N, na.rm=TRUE); quantile(Data1$P_value, na.rm=TRUE); png("/mnt/lustre/home/mturchin20/Data/GlobalLipids2013/jointGwasMc_HDL.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$Freq.A1.1000G.EUR, breaks=100); hist(Data1$N, breaks=100); hist(Data1$P_value, breaks=100); expP <- -log10(c(1:length(Data1$P_value[!is.na(Data1$P_value)])) / (length(Data1$P_value[!is.na(Data1$P_value)])+1)); plot(expP, -log10(sort(Data1$P_value[!is.na(Data1$P_value)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2447441 rows and 10 (of 10) columns from 0.182 GB file in 00:01:35
+Warning message:
+In fread("file:///dev/stdin", header = TRUE) :
+C function strtod() returned ERANGE for one or more fields. The first was string input '1.79e-339'. It was read using (double)strtold() as numeric value 0.0000000000000000E+00 (displayed here using %.16E); loss of accuracy likely occurred. This message is designed to tell you exactly what has been done by fread's C code, so you can search yourself online for many references about double precision accuracy and these specific C functions. You may wish to use colClasses to read the column as character instead and then coerce that column using the Rmpfr package for greater accuracy.
+0%    25%    50%    75%   100%
+0.0000 0.2388 0.5515 0.8496 1.0000
+0%    25%    50%    75%   100%
+50000  92613  94294  94311 187167
+0%    25%    50%    75%   100%
+0.0000 0.2435 0.4968 0.7483 1.0000
+null device
+1
+>
+>
+jointGwasMc_TG.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$Freq.A1.1000G.EUR, na.rm=TRUE); quantile(Data1$N, na.rm=TRUE); quantile(Data1$P_value, na.rm=TRUE); png("/mnt/lustre/home/mturchin20/Data/GlobalLipids2013/jointGwasMc_TG.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$Freq.A1.1000G.EUR, breaks=100); hist(Data1$N, breaks=100); hist(Data1$P_value, breaks=100); expP <- -log10(c(1:length(Data1$P_value[!is.na(Data1$P_value)])) / (length(Data1$P_value[!is.na(Data1$P_value)])+1)); plot(expP, -log10(sort(Data1$P_value[!is.na(Data1$P_value)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2439432 rows and 10 (of 10) columns from 0.182 GB file in 00:01:29
+0%    25%    50%    75%   100%
+0.0000 0.2401 0.5567 0.8470 1.0000
+0%      25%      50%      75%     100%
+50002.0  88741.0  90996.0  91013.0 177860.9
+0%        25%        50%        75%       100%
+1.100e-249  2.463e-01  4.983e-01  7.491e-01  1.000e+00
+null device
+1
+>
+>
+jointGwasMc_TC.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$Freq.A1.1000G.EUR, na.rm=TRUE); quantile(Data1$N, na.rm=TRUE); quantile(Data1$P_value, na.rm=TRUE); png("/mnt/lustre/home/mturchin20/Data/GlobalLipids2013/jointGwasMc_TC.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$Freq.A1.1000G.EUR, breaks=100); hist(Data1$N, breaks=100); hist(Data1$P_value, breaks=100); expP <- -log10(c(1:length(Data1$P_value[!is.na(Data1$P_value)])) / (length(Data1$P_value[!is.na(Data1$P_value)])+1)); plot(expP, -log10(sort(Data1$P_value[!is.na(Data1$P_value)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2446981 rows and 10 (of 10) columns from 0.182 GB file in 00:01:31
+0%    25%    50%    75%   100%
+0.0000 0.2375 0.5528 0.8483 1.0000
+0%       25%       50%       75%      100%
+50001.00  92609.49  94577.00  94595.00 187365.00
+0%        25%        50%        75%       100%
+1.560e-283  2.425e-01  4.970e-01  7.484e-01  1.000e+00
+null device
+1
+>
+>
+~~~
+
+
+
+
+
+
+
+##GIANT2010 dbsnp 130, GWAS = , N = provided per SNP
+##20150829
+
+cd /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/
+wget http://hgdownload.cse.ucsc.edu/goldenPath/hg18/database/snp130.txt.gz
+
+####Taken from earlier in script
+
+##mkdir /mnt/gluster/data/external_public_supp/GIANT2010
+##mkdir /mnt/gluster/data/external_public_supp/GIANT2014_5
+##mkdir /mnt/gluster/data/external_public_supp/GIANT2013
+
+##cd /mnt/gluster/data/external_public_supp/GIANT2010
+
+##wget http://www.broadinstitute.org/collaboration/giant/images/b/b7/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/4/49/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/8/87/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.txt.gz
+
+~~~~
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GIANT2010]$ls -lrt
+total 432452
+-rw-rw-r-- 1 mturchin20 mturchin20 22469737 Jun 30  2011 GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 24655014 Jun 30  2011 GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 19937269 Jun 30  2011 GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 36383913 May 19 19:55 GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wdbSNP_human_9606_b142_GRCh37p13.ChrBP.vs2.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 43392872 May 19 19:57 GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wdbSNP_human_9606_b142_GRCh37p13.ChrBP.vs3.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 38174702 May 19 20:03 GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wdbSNP_human_9606_b142_GRCh37p13.ChrBP.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 33378341 May 19 20:12 GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.wdbSNP_human_9606_b142_GRCh37p13.ChrBP.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 36031144 May 19 20:20 GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.wdbSNP_human_9606_b142_GRCh37p13.ChrBP.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 38991094 May 19 20:36 GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.wdbSNP_human_9606_b142_GRCh37p13.ChrBP.vs3.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 41427585 May 19 20:36 GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.wdbSNP_human_9606_b142_GRCh37p13.ChrBP.vs3.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20      139 May 20 21:16 GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.4SNPs.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 38308587 May 20 21:57 GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 36168037 May 20 22:10 GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20 33507782 May 20 22:10 GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz
+-rw-rw-r-- 1 mturchin20 mturchin20      138 May 21 15:55 GIANT_2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.4otherSNPs.txt.gz
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GIANT2010]$for i in `ls -lrt | awk '{ print $9 }' | grep publicrelease_HapMapCeuFreq.txt.gz`; do echo $i; zcat $i | head -n 5; done
+GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.txt.gz
+MarkerName Allele1 Allele2 Freq.Allele1.HapMapCEU p N
+rs10 a c 0.0333 0.708 80566
+rs1000000 g a 0.6333 0.506 123865
+rs10000010 c t 0.425 0.736 123827
+rs10000012 c g 0.8083 0.042 123809
+GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.txt.gz
+MarkerName Allele1 Allele2 Freq.Allele1.HapMapCEU p N
+rs10 a c 0.0333 0.8826 78380
+rs1000000 a g 0.3667 0.1858 133822
+rs10000010 t c 0.575 0.8947 132858
+rs10000012 c g 0.8083 0.1312 133785
+GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.txt.gz
+MarkerName Allele1 Allele2 Freq.Allele1.HapMapCEU p N
+rs10 c a 0.9667 0.42 57031
+rs1000000 g a 0.6333 0.55 77168
+rs10000010 t c 0.575 0.0029 77152
+rs10000012 g c 0.1917 0.99 77117
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GIANT2010]$for i in `ls -lrt | awk '{ print $9 }' | grep publicrelease_HapMapCeuFreq.txt.gz`;  do paste <(zcat $i | wc) <(zcat $i | perl -lane 'print $#F;' | sort | uniq -c) | xargs echo $i; done
+GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.txt.gz 2471517 14829102 82685870 2471517 5
+GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.txt.gz 2469636 14817816 85061092 2469636 5
+GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.txt.gz 2483326 14899956 78051825 2483326 5
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GIANT2010]$for i in `ls -lrt | awk '{ print $9 }' | grep publicrelease_HapMapCeuFreq.txt.gz`; do echo $i; paste -d @ <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[0] !~ m/^rs\d+/) { print join("\t", @F); }' | awk '{ print $1 }' | sort | uniq -c) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[3] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $4 }' | sort | uniq -c ) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[4] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $5 }' | sort | uniq -c ) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[5] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $6 }' | sort | uniq -c ) | sed 's/@/ @ /g'| column -s $'@' -t ; done
+GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.txt.gz
+1 MarkerName          1 Freq.Allele1.HapMapCEU          1 p          3 1e+05
+									1 N
+GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.txt.gz
+1 MarkerName          1 Freq.Allele1.HapMapCEU          1 p          2 1e+05
+									1 N
+GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.txt.gz
+1 MarkerName          1 Freq.Allele1.HapMapCEU          1 p          1 N
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GIANT2010]$for i in `ls -lrt | awk '{ print $9 }' | grep publicrelease_HapMapCeuFreq.txt.gz`; do echo $i; zcat $i | perl -lane 'if ($F[3] eq ".") { $F[3] = "NA"; }; print join("\t", @F);' | R -q -e "library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1\$Freq.Allele1.HapMapCEU, na.rm=TRUE); quantile(Data1\$N, na.rm=TRUE); quantile(Data1\$p, na.rm=TRUE); png(\""$i".QCCheck.vs1.png\", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1\$Freq.Allele1.HapMapCEU, breaks=100); hist(Data1\$N, breaks=100); hist(Data1\$p, breaks=100); expP <- -log10(c(1:length(Data1\$p["\!"is.na(Data1\$p)])) / (length(Data1\$p["\!"is.na(Data1\$p)])+1)); plot(expP, -log10(sort(Data1\$p["\!"is.na(Data1\$p)])),xlab=\"Expected p-Values\", ylab=\"Observed p-Values\"); abline(0, 1, col=\"RED\"); dev.off();"; done
+GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$Freq.Allele1.HapMapCEU, na.rm=TRUE); quantile(Data1$N, na.rm=TRUE); quantile(Data1$p, na.rm=TRUE); png("GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$Freq.Allele1.HapMapCEU, breaks=100); hist(Data1$N, breaks=100); hist(Data1$p, breaks=100); expP <- -log10(c(1:length(Data1$p[!is.na(Data1$p)])) / (length(Data1$p[!is.na(Data1$p)])+1)); plot(expP, -log10(sort(Data1$p[!is.na(Data1$p)])),xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2471516 rows and 6 (of 6) columns from 0.077 GB file in 00:00:18
+0%    25%    50%    75%   100%
+0.0083 0.2083 0.4917 0.7833 0.9917
+0%    25%    50%    75%   100%
+61957 123254 123842 123862 123912
+0%      25%      50%      75%     100%
+2.05e-62 2.39e-01 4.92e-01 7.47e-01 1.00e+00
+null device
+1
+>
+>
+GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$Freq.Allele1.HapMapCEU, na.rm=TRUE); quantile(Data1$N, na.rm=TRUE); quantile(Data1$p, na.rm=TRUE); png("GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$Freq.Allele1.HapMapCEU, breaks=100); hist(Data1$N, breaks=100); hist(Data1$p, breaks=100); expP <- -log10(c(1:length(Data1$p[!is.na(Data1$p)])) / (length(Data1$p[!is.na(Data1$p)])+1)); plot(expP, -log10(sort(Data1$p[!is.na(Data1$p)])),xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2469635 rows and 6 (of 6) columns from 0.079 GB file in 00:00:17
+0%    25%    50%    75%   100%
+0.0083 0.2333 0.5250 0.8083 0.9917
+0%    25%    50%    75%   100%
+66930 131979 133732 133818 133859
+0%       25%       50%       75%      100%
+4.470e-52 2.286e-01 4.898e-01 7.471e-01 1.000e+00
+null device
+1
+>
+>
+GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$Freq.Allele1.HapMapCEU, na.rm=TRUE); quantile(Data1$N, na.rm=TRUE); quantile(Data1$p, na.rm=TRUE); png("GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$Freq.Allele1.HapMapCEU, breaks=100); hist(Data1$N, breaks=100); hist(Data1$p, breaks=100); expP <- -log10(c(1:length(Data1$p[!is.na(Data1$p)])) / (length(Data1$p[!is.na(Data1$p)])+1)); plot(expP, -log10(sort(Data1$p[!is.na(Data1$p)])),xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2483325 rows and 6 (of 6) columns from 0.073 GB file in 00:00:16
+0%    25%    50%    75%   100%
+0.0083 0.2083 0.5000 0.7833 1.0000
+0%   25%   50%   75%  100%
+38611 77010 77160 77167 77221
+0%      25%      50%      75%     100%
+7.66e-15 2.40e-01 5.00e-01 7.50e-01 1.00e+00
+null device
+1
+>
+>
+~~~
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp130.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);') --file2 /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.txt.gz | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.wUCSCGB_snp130.vs3.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp130.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);') --file2 /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.txt.gz | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wUCSCGB_snp130.vs3.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp130.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);') --file2 /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.txt.gz | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.wUCSCGB_snp130.vs3.txt.gz &
+
+
+
+
+
+
+
+
+##GIANT2014/5 dbsnp 130, GWAS = , N = provided per SNP
+##20150829
+
+####Taken from earlier in script
+
+##mkdir /mnt/gluster/data/external_public_supp/GIANT2010
+##mkdir /mnt/gluster/data/external_public_supp/GIANT2014_5
+##mkdir /mnt/gluster/data/external_public_supp/GIANT2013
+
+##cd /mnt/gluster/data/external_public_supp/GIANT2014_5
+
+##wget http://www.broadinstitute.org/collaboration/giant/images/0/01/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/f/f0/All_ancestries_SNP_gwas_mc_merge_nogc.tbl.uniq.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/1/15/SNP_gwas_mc_merge_nogc.tbl.uniq.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/e/eb/GIANT_2015_WHRadjBMI_COMBINED_EUR.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/f/f6/GIANT_2015_WHRadjBMI_COMBINED_AllAncestries.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/5/52/GIANT_2015_HIPadjBMI_COMBINED_EUR.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/0/0e/GIANT_2015_HIPadjBMI_COMBINED_AllAncestries.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/7/73/GIANT_2015_WCadjBMI_COMBINED_EUR.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/3/3f/GIANT_2015_WCadjBMI_COMBINED_AllAncestries.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/5/54/GIANT_2015_WHR_COMBINED_EUR.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/d/d7/GIANT_2015_WHR_COMBINED_AllAncestries.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/e/e4/GIANT_2015_HIP_COMBINED_EUR.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/6/6f/GIANT_2015_HIP_COMBINED_AllAncestries.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/5/57/GIANT_2015_WC_COMBINED_EUR.txt.gz
+##wget http://www.broadinstitute.org/collaboration/giant/images/e/ea/GIANT_2015_WC_COMBINED_AllAncestries.txt.gz
+
+#Focusing on 'European Ancestry' files since in http://www.nature.com.proxy.uchicago.edu/ng/journal/v46/n11/full/ng.3097.html we have this statement -- "...We first performed a GWAS meta-analysis of adult height using the summary statistics from 79 studies consisting of 253,288 individuals of European ancestry (Online Methods)...."
+
+ln -s /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.txt.gz /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2014_Height_publicrelease_HapMapCeuFreq.ForAnalysis.txt.gz
+ln -s /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.gz /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_BMI.ForAnalysis.txt.gz
+ln -s /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.txt.gz /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.txt.gz
+
+~~~
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GIANT2014_5]$ls -lrt | grep ForAnalysis
+lrwxrwxrwx 1 mturchin20 mturchin20      114 Aug 29 13:33 GIANT_2014_Height_publicrelease_HapMapCeuFreq.ForAnalysis.txt.gz -> /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.txt.gz
+lrwxrwxrwx 1 mturchin20 mturchin20       85 Aug 29 13:33 GIANT_2015_BMI.ForAnalysis.txt.gz -> /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.gz
+lrwxrwxrwx 1 mturchin20 mturchin20       91 Aug 29 13:33 GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.txt.gz -> /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.txt.gz
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GIANT2014_5]$for i in `ls -lrt | awk '{ print $9 }' | grep ForAnalysis`; do echo $i; zcat $i | head -n 5; done
+GIANT_2014_Height_publicrelease_HapMapCeuFreq.ForAnalysis.txt.gz
+MarkerName      Allele1 Allele2 Freq.Allele1.HapMapCEU  b       SE      p       N
+rs4747841       A       G       0.551   -0.0011 0.0029  0.70    253213
+rs4749917       T       C       0.436   0.0011  0.0029  0.70    253213
+rs737656        A       G       0.367   -0.0062 0.0030  0.042   253116
+rs737657        A       G       0.358   -0.0062 0.0030  0.041   252156
+GIANT_2015_BMI.ForAnalysis.txt.gz
+SNP     A1      A2      Freq1.Hapmap    b       se      p       N
+rs1000000       G       A       0.6333  1e-04   0.0044  0.9819  231410
+rs10000010      T       C       0.575   -0.0029 0.003   0.3374  322079
+rs10000012      G       C       0.1917  -0.0095 0.0054  0.07853 233933
+rs10000013      A       C       0.8333  -0.0095 0.0044  0.03084 233886
+GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.txt.gz
+PaxHeader/GIANT_2015_WHRadjBMI_COMBINED_EUR.txt000644 777777 000120 00000000234 12466640262 021316 xustar00med-dsnadmin000000 000000 17 uid=334083809
+20 ctime=1423655090
+20 atime=1423655079
+38 LIBARCHIVE.creationtime=1423655076
+23 SCHILY.dev=16777228
+~~~
+
+#Editing GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.txt.gz so as to fix the header issue
+
+cp -p /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.txt.gz /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.HeaderFix.txt.gz
+
+#Manually edited /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.HeaderFix.txt.gz using vi; removed the following lines up until the beginning of the visible header
+#Also removed the very last line which has an issue
+~~~
+PaxHeader/GIANT_2015_WHRadjBMI_COMBINED_EUR.txt000644 777777 000120 00000000234 12466640262 021316 xustar00med-dsnadmin000000 000000 17 uid=334083809
+20 ctime=1423655090
+20 atime=1423655079
+38 LIBARCHIVE.creationtime=1423655076
+23 SCHILY.dev=16777228
+20 SCHILY.ino=80523
+18 SCHILY.nlink=1
+GIANT_2015_WHRadjBMI_COMBINED_EUR.txt000644 ���000120 00702223325 12466640262 020237 0ustar00med-dsnadmin000000 000000 MarkerName       Allele1 Allele2 FreqAllele1HapMapCEU    b       se      p       N
+.
+.
+.
+
+~~~
+
+rm /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.txt.gz
+
+~~~
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GIANT2014_5]$for i in `ls -lrt | awk '{ print $9 }' | grep ForAnalysis`; do echo $i; zcat $i | head -n 5; done
+GIANT_2014_Height_publicrelease_HapMapCeuFreq.ForAnalysis.txt.gz
+MarkerName      Allele1 Allele2 Freq.Allele1.HapMapCEU  b       SE      p       N
+rs4747841       A       G       0.551   -0.0011 0.0029  0.70    253213
+rs4749917       T       C       0.436   0.0011  0.0029  0.70    253213
+rs737656        A       G       0.367   -0.0062 0.0030  0.042   253116
+rs737657        A       G       0.358   -0.0062 0.0030  0.041   252156
+GIANT_2015_BMI.ForAnalysis.txt.gz
+SNP     A1      A2      Freq1.Hapmap    b       se      p       N
+rs1000000       G       A       0.6333  1e-04   0.0044  0.9819  231410
+rs10000010      T       C       0.575   -0.0029 0.003   0.3374  322079
+rs10000012      G       C       0.1917  -0.0095 0.0054  0.07853 233933
+rs10000013      A       C       0.8333  -0.0095 0.0044  0.03084 233886
+GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.HeaderFix.txt.gz
+MarkerName      Allele1 Allele2 FreqAllele1HapMapCEU    b       se      p       N
+rs10011200      C       G       0.5333  0.017   0.0043  0.00011 142475
+rs8051831       T       C       0.0917  0.034   0.0089  0.00011 138860
+rs17542520      A       G       0.0917  0.028   0.0071  0.00011 142581
+rs6954671       G       C       0.4167  0.016   0.0042  0.00011 142637
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GIANT2014_5]$for i in `ls -lrt | awk '{ print $9 }' | grep ForAnalysis`; do paste <(zcat $i | wc) <(zcat $i | perl -lane 'print $#F;' | sort | uniq -c) | xargs echo $i; done
+GIANT_2014_Height_publicrelease_HapMapCeuFreq.ForAnalysis.txt.gz 2550859 20406872 119190473 2550859 7
+GIANT_2015_BMI.ForAnalysis.txt.gz 2554638 20437104 125031676 2554638 7
+GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.HeaderFix.txt.gz 2542433 20339456 118045185 1 0 2542432 7
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GIANT2014_5]$for i in `ls -lrt | awk '{ print $9 }' | grep ForAnalysis`; do echo $i; paste -d @ <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[0] !~ m/^rs\d+/) { if ($F[0] !~ m/.*\d+(_|:)\d+/) { print join("\t", @F); } }' | awk '{ print $1 }' | sort | uniq -c) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[3] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $4 }' | sort | uniq -c ) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[6] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $7 }' | sort | uniq -c ) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[7] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $8 }' | sort | uniq -c ) | sed 's/@/ @ /g'| column -s $'@' -t ; done
+GIANT_2014_Height_publicrelease_HapMapCeuFreq.ForAnalysis.txt.gz
+1 MarkerName             1 Freq.Allele1.HapMapCEU          1 p          1 N
+1 SNP_A-2097957       3577 NA
+GIANT_2015_BMI.ForAnalysis.txt.gz
+1 SNP          1 Freq1.Hapmap          1 p          5 2e+05
+54674 NA	                                 1 3e+05
+							1 N
+GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.HeaderFix.txt.gz
+column: line too long
+1 MarkerName      54824 NA              1 N
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GIANT2014_5]$for i in `ls -lrt | awk '{ print $9 }' | grep ForAnalysis`; do echo $i; zcat $i | sed 's/F
+req1.Hapmap/Freq.Allele1.HapMapCEU/g' | sed 's/FreqAllele1HapMapCEU/Freq.Allele1.HapMapCEU/g' | sed 's/SNP/MarkerName/g' | R -q -e "library(data.table); Data1 <- fread(
+'file:///dev/stdin', header=TRUE); quantile(Data1\$Freq.Allele1.HapMapCEU, na.rm=TRUE); quantile(Data1\$N, na.rm=TRUE); quantile(Data1\$p, na.rm=TRUE); png(\""$i".QCChe
+ck.vs1.png\", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1\$Freq.Allele1.HapMapCEU, breaks=100); hist(Data1\$N, breaks=100); hist(Data1\$p, breaks=1
+00); expP <- -log10(c(1:length(Data1\$p["\!"is.na(Data1\$p)])) / (length(Data1\$p["\!"is.na(Data1\$p)])+1)); plot(expP, -log10(sort(Data1\$p["\!"is.na(Data1\$p)])),xlab=\"Expected p-Values\", ylab=\"Observed p-Values\"); abline(0, 1, col=\"RED\"); dev.off();"; done
+GIANT_2014_Height_publicrelease_HapMapCeuFreq.ForAnalysis.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$Freq.Allele1.HapMapCEU, na.rm=TRUE); quantile(Data1$N, na.rm=TRUE); quantile(Data1$p, na.rm=TRUE); png("GIANT_2014_Height_publicrelease_HapMapCeuFreq.ForAnalysis.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$Freq.Allele1.HapMapCEU, breaks=100); hist(Data1$N, breaks=100); hist(Data1$p, breaks=100); expP <- -log10(c(1:length(Data1$p[!is.na(Data1$p)])) / (length(Data1$p[!is.na(Data1$p)])+1)); plot(expP, -log10(sort(Data1$p[!is.na(Data1$p)])),xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2550858 rows and 8 (of 8) columns from 0.111 GB file in 00:00:30
+0%   25%   50%   75%  100%
+0.000 0.192 0.467 0.774 1.000
+0%    25%    50%    75%   100%
+50003 241207 251631 253085 253280
+0%      25%      50%      75%     100%
+3.2e-158  9.8e-02  3.5e-01  6.6e-01  1.0e+00
+null device
+1
+>
+>
+GIANT_2015_BMI.ForAnalysis.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$Freq.Allele1.HapMapCEU, na.rm=TRUE); quantile(Data1$N, na.rm=TRUE); quantile(Data1$p, na.rm=TRUE); png("GIANT_2015_BMI.ForAnalysis.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$Freq.Allele1.HapMapCEU, breaks=100); hist(Data1$N, breaks=100); hist(Data1$p, breaks=100); expP <- -log10(c(1:length(Data1$p[!is.na(Data1$p)])) / (length(Data1$p[!is.na(Data1$p)])+1)); plot(expP, -log10(sort(Data1$p[!is.na(Data1$p)])),xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2554637 rows and 8 (of 8) columns from 0.116 GB file in 00:00:27
+0%    25%    50%    75%   100%
+0.0083 0.1833 0.4464 0.7583 1.0000
+0%      25%      50%      75%     100%
+50004.7 222251.0 233524.0 233952.0 322154.0
+0%        25%        50%        75%       100%
+7.510e-153  2.318e-01  4.870e-01  7.447e-01  1.000e+00
+null device
+1
+>
+>
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$Freq.Allele1.HapMapCEU, na.rm=TRUE); quantile(Data1$N, na.rm=TRUE); quantile(Data1$p, na.rm=TRUE); png("GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.HeaderFix.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$Freq.Allele1.HapMapCEU, breaks=100); hist(Data1$N, breaks=100); hist(Data1$p, breaks=100); expP <- -log10(c(1:length(Data1$p[!is.na(Data1$p)])) / (length(Data1$p[!is.na(Data1$p)])+1)); plot(expP, -log10(sort(Data1$p[!is.na(Data1$p)])),xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2542431 rows and 8 (of 8) columns from 0.110 GB file in 00:00:34
+0%    25%    50%    75%   100%
+0.0083 0.1833 0.4500 0.7583 0.9917
+0%    25%    50%    75%   100%
+50001 131441 142322 142675 210086
+0%     25%     50%     75%    100%
+3.6e-35 2.4e-01 5.0e-01 7.5e-01 1.0e+00
+null device
+1
+>
+>
+~~~
+
+#Note -- GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.HeaderFix.txt.gz has 'MarkerName's that are chr##:###### and hg18_##_######
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp130.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);') --file2 /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2014_Height_publicrelease_HapMapCeuFreq.ForAnalysis.txt.gz | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2014_Height_publicrelease_HapMapCeuFreq.ForAnalysis.wUCSCGB_snp130.vs3.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp130.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);') --file2 /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_BMI.ForAnalysis.txt.gz | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_BMI.ForAnalysis.wUCSCGB_snp130.vs3.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp130.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);') --file2 /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.HeaderFix.txt.gz | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.ForAnalysis.wUCSCGB_snp130.vs3.HeaderFix.txt.gz &
+
+
+
+
+
+
+
+
+
+
+
+##PGC 2013 dbsnp ###, GWAS = , N = 
 ##20150601
 
 mkdir /mnt/gluster/data/external_public_supp/PGC2013 
@@ -2497,7 +3241,7 @@ CHR     SNP     BP      A1   A2 FRQ_A_12882     FRQ_U_21770     INFO    OR      
 12716151 216174232 1348769658
 ~~~
 
-##TAG 2010
+##TAG 2010 dbsnp ###, GWAS = , N =
 ##20150601
 
 mkdir /mnt/gluster/data/external_public_supp/TAG2010
@@ -2540,8 +3284,14 @@ CHR     SNP     BP      A1   A2 FRQ_A   FRQ_U   INFO    OR      SE      P
 #CHECK_0: There is another dataset with two variables for platelets from Nicole Soranzo that Joe Pickrell got from her in 2014 ASHG manuscript, e.g. "Summary statistics from a large GWAS of platelet traits39 were generously provided by Nicole Soranzo. The data consisted of summary statistics from association studies of two traits: platelet counts and mean platelet volume..." (source: http://www.sciencedirect.com/science/article/pii/S0002929714001062)
 
 
-##ICBP2011
+
+
+##ICBP2011 dbSNP 126, GWAS = (29 SBP/DBP w/ combined follow-up, 7 in MAP/PP w/ combined follow-up), N = provided per SNP
 ##20150811
+
+#For dbSNP 126
+#source: http://www.nature.com.proxy.uchicago.edu/ng/journal/v43/n10/full/ng.922.html
+#"...Imputation of the allele dosage of ungenotyped SNPs in HapMap CEU v21a or v22...All study-specific effect estimates and coded alleles were oriented to the forward strand of the HapMap release 22, with the alphabetically higher allele as the coded allele..." 
 
 #From wolfy.uchicago.edu (e.g. home desktop) because need to download from dbGaP webpage using AsperaConnect or something
 #Below source: https://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=dr_files&drid=45646&filter=drid (only accessible to me I guess but it's the generic 'instructions' page for an 'authorized access' download from dbGaP I think
@@ -2565,12 +3315,10 @@ This command includes a download ticket which will be valid for a limited time. 
 %ASPERA_CONNECT_DIR% â path to Aspera Connect directory. You may have to adjust some ascp-specific command line keys for your environment and network connectivity. Please refer to the AsperaConnect user manual for more information.
 ~~~
 
-mkdir /Users/mturchin20/clstrHme/Data/dbGaPTempDownloads/
-mkdir /mnt/gluster/home/mturchin20/Data/dbGaPTempDownloads/
-ln -s /mnt/gluster/home/mturchin20/Data/dbGaPTempDownloads/ /mnt/lustre/home/mturchin20/Data/dbGaPTempDownloads/glusterMnt
+#mkdir /Users/mturchin20/clstrHme/Data/dbGaPTempDownloads/
+mkdir /Users/mturchin20/clstrHme2/Data/dbGaPTempDownloads/
 
 #Downloaded from Firefox browser to the above directory
-#Downloaded VTE into gluster via the symbolic link created as described above
 
 #From source: http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=std
 cd /mnt/lustre/home/mturchin20/Software/
@@ -2605,29 +3353,159 @@ tar -xvzf /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/Ro
 
 #So technically it looks like the .../dump/pha003588.v1.p1.tgz files contain Chr/Bp position information but I'm unsure if there's been post-processing between those files and the 'ICBP2011_SBP_results_v2.txt' type files. I think I will go with the 'result' files and add in the ChrBP information myself so it's more in line with how I am approaching the other files too...
 ~~~
-[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data]$zcat ../dump/pha003588.v1.p1.tgz | awk '{ print $3, "\t", $4 }' | tail -n +5 | grep rs | perl -lane 'if ($F[0] =~ m/rs(\d+)/) { $F[0] = $1; } print join("\t", @F);' | sort -rg -k 1,1 | head -n 10
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data]$zcat ../dump/pha003588.v1.p1.tgz | awk '{ print $3, "\t", $4 }' | tail -n +5 | grep rs | perl -lane 'if ($F[0] =~ m/rs(\d+)/) { $F[0] = $1; } print join("\t", @F);' | sort -rg -k 1,1 | head -n 5
 56149945        0.40451364016227
 28969975        0.877195032949737
 28968498        0.0595783379209321
 28968497        0.492645641683983
 28968494        0.0692415847883944
-28968490        0.611171816089357
-28968487        0.463524451109665
-28968482        0.754435874936928
-28968478        0.489683496986528
-28968477        0.395289009720228
-[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data]$cat ICBP2011_SBP_results_v2.txt | awk '{ print $1, "\t", $11 }' | grep rs | perl -lane 'if ($F[0] =~ m/rs(\d+)/) { $F[0] = $1; } print join("\t", @F);' | sort -rg -k 1,1 | head -n 10
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data]$cat ICBP2011_SBP_results_v2.txt | awk '{ print $1, "\t", $11 }' | grep rs | perl -lane 'if ($F[0] =~ m/rs(\d+)/) { $F[0] = $1; } print join("\t", @F);' | sort -rg -k 1,1 | head -n 5
 28969975        0.877195032949737
 28968498        0.0595783379209321
 28968497        0.492645641683983
 28968494        0.0692415847883944
 28968490        0.611171816089357
-28968487        0.463524451109665
-28968482        0.754435874936928
-28968478        0.489683496986528
-28968477        0.395289009720228
-28968475        0.93451350393877
 ~~~
+
+gzip /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/*results*
+
+~~~
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data]$for i in `ls -lrt | awk '{ print $9 }' | grep results`; do zcat $i | head -n 5; done
+SNP_ID  Phenotype       Minor_allele    MAF     Sample_size     Number_contrib_studies  Estimate_effect Standard_error  Coded_target_allele     Alternative_allele     P_value
+rs10    MAP     A       0.033   11771.436234    46      0.149907976115096       0.192216538424306       C       A       0.43545495142108
+rs1000000       MAP     A       0.373   28834.981022    52      0.132731566188609       0.07107920224497        G       A       0.0618491581791517
+rs10000010      MAP     C       0.425   28605.3784795   52      0.00772478995450941     0.0587842002547057      T       C       0.895451540899128
+rs10000012      MAP     G       0.192   29024.693561    52      0.0095346253630703      0.0891027368922516      G       C       0.914783348127538
+SNP_ID  Phenotype       Minor_allele    MAF     Sample_size     Number_contrib_studies  Estimate_effect Standard_error  Coded_target_allele     Alternative_allele     P_value
+rs10    PP      A       0.033   30864.245347    46      -0.0765807416199527     0.191745923428818       C       A       0.689608407493433
+rs1000000       PP      A       0.373   73344.2702230173        52      0.116212543195141       0.0711710088206335      G       A       0.102497706366436
+rs10000010      PP      C       0.425   73058.533850557 52      0.059499089797371       0.058975444263077       T       C       0.313032646787397
+rs10000012      PP      G       0.192   72686.5791272688        52      -0.204123677118336      0.0879102178534104      G       C       0.0202352931299413
+SNP_ID  Phenotype       Minor_allele    MAF     Sample_size     Number_contrib_studies  Estimate_effect Standard_error  Coded_target_allele     Alternative_allele     P_value
+rs6650104       DBP     G       0.00585623702001679     604.665344      2       -1.55397498982592       1.5508839921798 G       A       0.316346946938566
+rs10458597      DBP     T       0.00106272794931912     3310    2       2.26365236006724        4.25070190350682        T       C       0.594354722067332
+rs12565286      DBP     C       0.05702869341078        23940.60202     18      0.270170019660784       0.235156231033854       G       C       0.250598926068886
+rs11804171      DBP     A       0.057004405108274       23786.253334    18      0.266784434520624       0.235301852343122       T       A       0.256879887582599
+SNP_ID  Phenotype       Minor_allele    MAF     Sample_size     Number_contrib_studies  Estimate_effect Standard_error  Coded_target_allele     Alternative_allele     P_value
+rs6650104       SBP     G       0.00585623702001679     577.256101      2       -0.282039274730107      2.89491273284234        G       A       0.922388233210622
+rs10458597      SBP     T       0.00128949065119278     1560    1       -3.19642        9.61968834610419        T       C       0.739678628776108
+rs12565286      SBP     C       0.057307343656075       23657.53802     17      0.350754962559607       0.38334382989527        G       C       0.360197986930745
+rs11804171      SBP     A       0.056712027544547       23724.943674    18      0.380649554738311       0.381267839842624       T       A       0.318095930520557
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data]$for i in `ls -lrt | awk '{ print $9 }' | grep results`; do paste <(zcat $i | wc) <(zcat $i | perl -lane 'print $#F;' | sort | uniq -c) | xargs echo $i; done
+ICBP2011_MAP_results.txt.gz 2651710 29168810 258341514 2651710 10
+ICBP2011_PP_results.txt.gz 2652061 29172671 262169603 2652061 10
+ICBP2011_DBP_results_v2.txt.gz 2687670 29564370 300818547 2687670 10
+ICBP2011_SBP_results_v2.txt.gz 2687670 29564370 297456943 2687670 10
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data]$for i in `ls -lrt | awk '{ print $9 }' | grep results`; do echo $i; paste -d @ <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[3] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $4 }' | sort  | uniq -c) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[4] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $5 }' | sort  | uniq -c) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[10] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $11 }' | sort  | uniq -c) | sed 's/@/@ /g'| column -s $'@' -t ; done
+ICBP2011_MAP_results.txt.gz
+1 MAF     29652 NA                  1 P_value
+56 NA          1 Sample_size
+ICBP2011_PP_results.txt.gz
+1 MAF     29678 NA                  1 P_value
+56 NA          1 Sample_size
+ICBP2011_DBP_results_v2.txt.gz
+1 MAF         1 Sample_size      1066 NA
+1067 NA                                1 P_value
+ICBP2011_SBP_results_v2.txt.gz
+1 MAF         1 Sample_size     22887 NA
+22888 NA                                1 P_value
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data]$for i in `ls -lrt | awk '{ print $9 }' | grep results`; do echo $i; zcat $i | perl -lane 'print join("\t", @F);' | R -q -e "library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1\$MAF, na.rm=TRUE); quantile(Data1\$Sample_size, na.rm=TRUE); quantile(Data1\$P_value, na.rm=TRUE); png(\""$i".QCCheck.vs1.png\", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1\$MAF, breaks=100); hist(Data1\$Sample_size, breaks=100); hist(Data1\$P_value, breaks=100); expP <- -log10(c(1:length(Data1\$P_value["\!"is.na(Data1\$P_value)])) / (length(Data1\$P_value["\!"is.na(Data1\$P_value)])+1)); plot(expP, -log10(sort(Data1\$P_value["\!"is.na(Data1\$P_value)])), xlab=\"Expected p-Values\", ylab=\"Observed p-Values\"); abline(0, 1, col=\"RED\"); dev.off();"; done
+ICBP2011_MAP_results.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$MAF, na.rm=TRUE); quantile(Data1$Sample_size, na.rm=TRUE); quantile(Data1$P_value, na.rm=TRUE); png("ICBP2011_MAP_results.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$MAF, breaks=100); hist(Data1$Sample_size, breaks=100); hist(Data1$P_value, breaks=100); expP <- -log10(c(1:length(Data1$P_value[!is.na(Data1$P_value)])) / (length(Data1$P_value[!is.na(Data1$P_value)])+1)); plot(expP, -log10(sort(Data1$P_value[!is.na(Data1$P_value)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2651709 rows and 11 (of 11) columns from 0.241 GB file in 00:00:22
+0%   25%   50%   75%  100%
+0.000 0.075 0.192 0.339 0.500
+0%      25%      50%      75%     100%
+0.00 25002.59 27785.67 28820.52 29182.00
+0%          25%          50%          75%         100%
+2.450516e-70 2.499265e-01 5.000000e-01 7.502246e-01 9.999994e-01
+
+null device
+1
+>
+>
+ICBP2011_PP_results.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$MAF, na.rm=TRUE); quantile(Data1$Sample_size, na.rm=TRUE); quantile(Data1$P_value, na.rm=TRUE); png("ICBP2011_PP_results.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$MAF, breaks=100); hist(Data1$Sample_size, breaks=100); hist(Data1$P_value, breaks=100); expP <- -log10(c(1:length(Data1$P_value[!is.na(Data1$P_value)])) / (length(Data1$P_value[!is.na(Data1$P_value)])+1)); plot(expP, -log10(sort(Data1$P_value[!is.na(Data1$P_value)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2652060 rows and 11 (of 11) columns from 0.244 GB file in 00:00:22
+0%   25%   50%   75%  100%
+0.000 0.075 0.192 0.339 0.500
+0%         25%         50%         75%        100%
+72.93118 63266.29581 70402.24453 72738.04595 74078.79094
+0%          25%          50%          75%         100%
+9.814230e-99 2.488532e-01 4.999993e-01 7.501796e-01 9.999987e-01
+null device
+1
+>
+>
+ICBP2011_DBP_results_v2.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$MAF, na.rm=TRUE); quantile(Data1$Sample_size, na.rm=TRUE); quantile(Data1$P_value, na.rm=TRUE); png("ICBP2011_DBP_results_v2.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$MAF, breaks=100); hist(Data1$Sample_size, breaks=100); hist(Data1$P_value, breaks=100); expP <- -log10(c(1:length(Data1$P_value[!is.na(Data1$P_value)])) / (length(Data1$P_value[!is.na(Data1$P_value)])+1)); plot(expP, -log10(sort(Data1$P_value[!is.na(Data1$P_value)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2687669 rows and 11 (of 11) columns from 0.280 GB file in 00:00:27
+0%        25%        50%        75%       100%
+0.00000000 0.07505255 0.19326217 0.33783551 0.50000000
+0%      25%      50%      75%     100%
+0.00 57610.78 66009.65 68535.06 69899.00
+0%          25%          50%          75%         100%
+1.643488e-14 2.491495e-01 5.000000e-01 7.500955e-01 1.000000e+00
+null device
+1
+>
+>
+ICBP2011_SBP_results_v2.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=TRUE); quantile(Data1$MAF, na.rm=TRUE); quantile(Data1$Sample_size, na.rm=TRUE); quantile(Data1$P_value, na.rm=TRUE); png("ICBP2011_SBP_results_v2.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$MAF, breaks=100); hist(Data1$Sample_size, breaks=100); hist(Data1$P_value, breaks=100); expP <- -log10(c(1:length(Data1$P_value[!is.na(Data1$P_value)])) / (length(Data1$P_value[!is.na(Data1$P_value)])+1)); plot(expP, -log10(sort(Data1$P_value[!is.na(Data1$P_value)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2687669 rows and 11 (of 11) columns from 0.277 GB file in 00:00:27
+0%        25%        50%        75%       100%
+0.00000000 0.07762993 0.19541978 0.33911372 0.50000000
+0%      25%      50%      75%     100%
+0.00 57618.27 66018.67 68544.74 69909.00
+0%          25%          50%          75%         100%
+9.728597e-13 2.490807e-01 5.000000e-01 7.502985e-01 1.000000e+00
+null device
+1
+>
+>
+~~~
+
+#20150813 CHECK_0: Is it weird that p-values for PP and MAP are much more significant than either SBP or DBP? Maybe this was the (or 'there was a') reason behind only SBP/DBP being publicly being released and PP/MAP being released behind dbGaP?
+#20150830 -- Should probably try running things with SBP/DBP and then seperately with all four
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp126.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);')  --file2 /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_SBP_results_v2.txt.gz | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_SBP_results_v2.wUCSCGB_snp126.vs3.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp126.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);')  --file2 /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_DBP_results_v2.txt.gz | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_DBP_results_v2.wUCSCGB_snp126.vs3.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp126.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);')  --file2 /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_MAP_results.txt.gz | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_MAP_results.wUCSCGB_snp126.vs3.txt.gz & 
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp126.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);')  --file2 /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_PP_results.txt.gz | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_PP_results.wUCSCGB_snp126.vs3.txt.gz & 
+
+~~~
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data]$for i in `ls -lrt | awk '{ print $9 }' | grep wUCSCGB_snp126.vs3`; do echo $i; paste -d @ <(zcat $i | wc) <(zcat $i | perl -lane 'print $F[$#F];' | grep NA | wc) <(zcat $i | perl -lane 'print $F[$#F];' | grep , | wc) <(zcat $i | perl -lane 'print $F[$#F];' | grep , | perl -F, -lane 'print scalar(@F);' | sort | uniq -c) | sed 's/@/@ /g'| column -s $'@' -t ; done
+ICBP2011_SBP_results_v2.wUCSCGB_snp126.vs3.txt.gz
+2687670 32252040 328408458     41304   41304  123912       442     442   14776       308 2
+											38 3
+											19 4
+											23 5
+											17 6
+											16 7
+											14 8
+											7 9
+ICBP2011_DBP_results_v2.wUCSCGB_snp126.vs3.txt.gz
+2687670 32252040 331770062     41304   41304  123912       442     442   14776       308 2
+											38 3
+											19 4
+											23 5
+											17 6
+											16 7
+											14 8
+											7 9
+ICBP2011_PP_results.wUCSCGB_snp126.vs3.txt.gz
+2652061 31824732 293054152         0       0       0        35      35     737        35 2
+ICBP2011_MAP_results.wUCSCGB_snp126.vs3.txt.gz
+2651710 31820520 289221970         0       0       0        35      35     737        35 2
+~~~
+
+
+
+
+
+
+
+
 
 
 
@@ -2692,8 +3570,8 @@ MAGIC_FastingGlucose.txt 2470477 17293339 102729940
 
 gzip * 
 
-#CHECK_0: Create processed, ready files with dbSNP Chr BP snpID maf N pval
-#CHECK_0: Downlaod dbSNP129 version of file from UCSC Genome Browser
+#20150806 CHECK_0: Create processed, ready files with dbSNP Chr BP snpID maf N pval
+#20150806 20150806 CHECK_1: Downlaod dbSNP129 version of file from UCSC Genome Browser
 
 #On how to get dbSNP database versions as I did for dbSNP130 (but didn't include any info on that here in this log)
 #Source:
@@ -3049,14 +3927,94 @@ python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.Per
 ##2015____
 
 ##BEAGESS -- ##dbSNP, GWAS, N=?
-##2015____
+##20150818
+
+#On mturchin20@wolfy.uchicago.edu
+
+#cd /Users/mturchin20/clstrHme/Data/dbGaPTempDownloads/
+cd /Users/mturchin20/clstrHme2/Data/dbGaPTempDownloads/
+
+#Downloaded from Firefox browser to the above directory
+
+#Downloading files from dbGaP is a bit of a pain, use these directions -- http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=dbgap_use
+#Need to download the project password (a '.ngc' file), upload it via vdb-config into the SRA toolkit, then use the vdb-decrypt utility /in the directory you specificy during vdb-config/ on the encrypted file of interest
+
+
 
 ##GWASofVTE -- ##dbSNP, GWAS, N=?
-##2015____
+##20150814
+
+#On mturchin20@wolfy.uchicago.edu
+
+#cd /Users/mturchin20/clstrHme/Data/dbGaPTempDownloads/
+cd /Users/mturchin20/clstrHme2/Data/dbGaPTempDownloads/
+
+#Downloaded from Firefox browser to the above directory
+
+#Downloading files from dbGaP is a bit of a pain, use these directions -- http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=dbgap_use
+#Need to download the project password (a '.ngc' file), upload it via vdb-config into the SRA toolkit, then use the vdb-decrypt utility /in the directory you specificy during vdb-config/ on the encrypted file of interest
+
+cd /Users/mturchin20/clstrHme2/Data/dbGaPTempDownloads/45648/NHGRI/VenousThrombosis/phs000289v2/p1
+#for i in `ls -lrt | awk '{ print $9 }' | grep ncbi_enc$`; do vdb-decrypt $i; done
+cd /Users/mturchin20/clstrHme2/Data/dbGaPTempDownloads/dbGaP-9195/dbGaP-9195/45648/NHGRI/VenousThrombosis/phs000289v2/p1/phenotype
+~~~
+[  mturchin20@wolfy  ~/clstrHme2/Data/dbGaPTempDownloads/dbGaP-9195/dbGaP-9195/45648/NHGRI/VenousThrombosis/phs000289v2/p1/phenotype]$ for i in `ls -lrt | awk '{ print $9 }' | grep ncbi_enc$`; do vdb-decrypt $i; done
+2015-08-14T18:02:49 vdb-decrypt.2.5.2: Decrypting file in place phs000289.v2.p1.data_dictionary.MULTI.tar.gz.ncbi_enc
+2015-08-14T18:02:49 vdb-decrypt.2.5.2: copying phs000289.v2.p1.data_dictionary.MULTI.tar.gz.ncbi_enc to .phs000289.v2.p1.data_dictionary.MULTI.tar.gz.ncbi_enc.vdb-decrypt-tmp
+2015-08-14T18:02:49 vdb-decrypt.2.5.2: renaming .phs000289.v2.p1.data_dictionary.MULTI.tar.gz.ncbi_enc.vdb-decrypt-tmp to phs000289.v2.p1.data_dictionary.MULTI.tar.gz
+2015-08-14T18:02:49 vdb-decrypt.2.5.2: exiting: success
+2015-08-14T18:02:49 vdb-decrypt.2.5.2: Decrypting file in place phs000289.v2.p1.variable_report.MULTI.tar.gz.ncbi_enc
+2015-08-14T18:02:49 vdb-decrypt.2.5.2: copying phs000289.v2.p1.variable_report.MULTI.tar.gz.ncbi_enc to .phs000289.v2.p1.variable_report.MULTI.tar.gz.ncbi_enc.vdb-decrypt-tmp
+2015-08-14T18:02:49 vdb-decrypt.2.5.2: renaming .phs000289.v2.p1.variable_report.MULTI.tar.gz.ncbi_enc.vdb-decrypt-tmp to phs000289.v2.p1.variable_report.MULTI.tar.gz
+2015-08-14T18:02:49 vdb-decrypt.2.5.2: exiting: success
+2015-08-14T18:02:49 vdb-decrypt.2.5.2: Decrypting file in place phs000289.v2.pht001883.v1.p1.Venous_Thrombosis_Subject.MULTI.txt.gz.ncbi_enc
+.
+.
+.
+~~~
+cd /Users/mturchin20/clstrHme2/Data/dbGaPTempDownloads/dbGaP-9195/dbGaP-9195/45648/NHGRI/VenousThrombosis/phs000289v2/p1/genotype
+#Ran code
+cd /Users/mturchin20/clstrHme2/Data/dbGaPTempDownloads/dbGaP-9195/dbGaP-9195/45648/NHGRI/VenousThrombosis/phs000289v2/p1/genotype/phg000130v1
+#Ran code
+cd /Users/mturchin20/clstrHme2/Data/dbGaPTempDownloads/dbGaP-9195/dbGaP-9195/45648/NHGRI/VenousThrombosis/phs000289v2/p1/genotype/phg000088v1
+
+gzip /Users/mturchin20/clstrHme2/Data/dbGaPTempDownloads/dbGaP-9195/dbGaP-9195/45648/NHGRI/VenousThrombosis/phs000289v2/p1/genotype/phg000130v1/
+gzip /Users/mturchin20/clstrHme2/Data/dbGaPTempDownloads/dbGaP-9195/dbGaP-9195/45648/NHGRI/VenousThrombosis/phs000289v2/p1/genotype/phg000088v1/
+
+mkdir /mnt/gluster/data/external_private_supp/VenousThrombosis
+mv /Users/mturchin20/clstrHme2/Data/dbGaPTempDownloads/dbGaP-9195/dbGaP-9195/45648/NHGRI/VenousThrombosis/* /mnt/gluster/data/external_private_supp/VenousThrombosis/.
 
 
-##Blood Traits 20__ -- ##dbSNP, GWAS, N=?
+
+
+
+
+
+
+##Blood Traits 2012/HaemgenRBC2012 -- ChrBP provided, GWAS = 75 <10e-8 , N=provided
 ##20150625
+
+#20150814 CHECK_0: Meta analysis was conducted between Europeans and South East Asians, so for MAF what do exactly?
+
+mkdir /mnt/lustre/home/mturchin20/Data/HapMap/Releases
+mkdir /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release22
+mkdir /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release22/Frequencies 
+
+cd /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release22/Frequencies
+
+wget http://hapmap.ncbi.nlm.nih.gov/downloads/frequencies/2007-03/fwd_strand/non-redundant
+
+mv /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release22/Frequencies/index.html /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release22/Frequencies/index.http:__hapmap.ncbi.nlm.nih.gov_downloads_frequencies_2007-03_fwd_strand_non-redundant.html
+
+for i in `cat /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release22/Frequencies/index.http:__hapmap.ncbi.nlm.nih.gov_downloads_frequencies_2007-03_fwd_strand_non-redundant.html | perl -lane 'my $fullLine = join("", @F); if ($fullLine =~ m/.*(genotype.*.txt.gz).*/) { print $1 ; } '`; do wget http://hapmap.ncbi.nlm.nih.gov/downloads/frequencies/2007-03/fwd_strand/non-redundant/$i; done
+
+wget http://hapmap.ncbi.nlm.nih.gov/downloads/frequencies/2007-03/rs_strand/non-redundant/
+
+mv /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release22/Frequencies/index.html /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release22/Frequencies/index.http:__hapmap.ncbi.nlm.nih.gov_downloads_frequencies_2007-03_rs_strand_non-redundant.html
+
+for i in `cat /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release22/Frequencies/index.http:__hapmap.ncbi.nlm.nih.gov_downloads_frequencies_2007-03_rs_strand_non-redundant.html | perl -lane 'my $fullLine = join("", @F); if ($fullLine =~ m/.*(allele.*.txt.gz).*/) { print $1 ; } '`; do wget http://hapmap.ncbi.nlm.nih.gov/downloads/frequencies/2007-03/rs_strand/non-redundant/$i; done
+
+nbthis *
 
 mkdir /mnt/gluster/data/external_public_supp/HaemgenRBC2012
 cd /mnt/gluster/data/external_public_supp/HaemgenRBC2012
@@ -3146,7 +4104,24 @@ HaemGenRBC_Hb.txt.gz
 2593079 23337711 179093409
 ~~~
 
-##GPC2012 -- ##dbSNP, GWAS, N=?
+#20150814 20150814 CHECK_1: Need to get MAF for these datasets
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.txt.gz | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_PCV.txt.gz | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_PCV.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCV.txt.gz | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCV.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCH.txt.gz | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCH.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCHC.txt.gz | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCHC.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_Hb.txt.gz | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_Hb.wHapMap22.txt.gz &
+
+#20150814 CHECK_0: Check that ChrBP/RefAllele/OtherAllele/etc are all the same between entries and the HapMap2 database?
+
+
+
+
+
+##GPC2012 -- ##dbSNP=provided, GWAS 2 at <5e-8, N=17375
 ##20150812
 
 mkdir /mnt/gluster/data/external_public_supp/GPC2012
@@ -3159,6 +4134,130 @@ mv /mnt/gluster/data/external_public_supp/GPC2012/QdLIzcMSCb8NbDeKnhIY5zAj87L7ur
 
 unzip /mnt/gluster/data/external_public_supp/GPC2012/GPC-1.BigFiveNEO.zip
 
+gzip /mnt/gluster/data/external_public_supp/GPC2012/*full*
+
+#Info below from /mnt/gluster/data/external_public_supp/GPC2012/ReadmeGPC-1.pdf
+~~~
+The     files   contain the     following       information     (columns):      
+SNPID   CHR     BP      A1      A2      BETA    SE      PVALUE  INFO    NCOH    MAF     
+
+SNPID   rs-number    of      the     SNP     
+CHR     chromosome      number  on      which   the     SNP     is      located (build  36,     release 22)     
+BP      base    pair    position        of      the     SNP     (build  36,     release 22)     
+A1      effect  allele  of      the     SNP     
+A2      non-Â­?<80><90>effect   allele  of      the     SNP   
+BETA    pooled  effect  size    (unstandardized regression      coefficient)    
+SE      standard        error   of      the     pooled  effect  size    
+PVALUE  p-Â­?<80><90>value      associated      with    the     pooled  effect  size    
+INFO    average info    across  cohorts (INFO,  PROPER_INFO     or      R-SQUARED)   
+NCOH    number  of      cohorts for     which   SNP     association     results are     available       
+MAF     minor   allele  frequency       of      the     SNP     in      the     HAPMAP  reference       set
+~~~
+
+~~~
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GPC2012]$for i in `ls -lrt | awk '{ print $9 }' | grep txt.gz`; do echo $i; zcat $i | head -n 5; done
+GPC-1.NEO-NEUROTICISM.full.txt.gz
+rs3121561       1       980243  t       c       .048    .1644   .7703   .527    8       .267
+rs3813193       1       988364  c       g       .035    .1552   .8217   .784    9       .15
+rs3934834       1       995669  t       c       -.017   .1541   .912    .9      9       .119
+rs3766193       1       1007033 c       g       .0572   .1173   .6257   .672    9       .431
+rs3766192       1       1007060 t       c       -.0399  .1126   .7231   .778    9       .424
+GPC-1.NEO-EXTRAVERSION.full.txt.gz
+rs3121561       1       980243  t       c       -.0071  .135    .9579   .53     8       .267
+rs3813193       1       988364  c       g       .0096   .1269   .9394   .782    9       .15
+rs3934834       1       995669  t       c       .0311   .1261   .8052   .901    9       .119
+rs3766193       1       1007033 c       g       .0075   .0946   .9365   .672    9       .431
+rs3766192       1       1007060 t       c       -.0011  .0907   .9901   .778    9       .424
+GPC-1.NEO-AGREEABLENESS.full.txt.gz
+rs3121561       1       980243  t       c       .0256   .1058   .8088   .532    8       .267
+rs3813193       1       988364  c       g       -.0898  .1      .3692   .783    9       .15
+rs3934834       1       995669  t       c       -.0868  .0993   .3825   .902    9       .119
+rs3766193       1       1007033 c       g       .1615   .0765   .03479  .67     9       .431
+rs3766192       1       1007060 t       c       -.1241  .0731   .08947  .777    9       .424
+GPC-1.NEO-CONSCIENTIOUSNESS.full.txt.gz
+rs3121561       1       980243  t       c       -.0144  .1282   .9105   .531    8       .267
+rs3813193       1       988364  c       g       .0469   .1211   .6985   .782    9       .15
+rs3934834       1       995669  t       c       .0759   .1203   .5282   .9      9       .119
+rs3766193       1       1007033 c       g       .0419   .0918   .6485   .671    9       .431
+rs3766192       1       1007060 t       c       -.0514  .0879   .5586   .777    9       .424
+GPC-1.NEO-OPENNESS.full.txt.gz
+rs3121561       1       980243  t       c       -.0259  .1199   .8293   .536    8       .267
+rs3813193       1       988364  c       g       -.0019  .1144   .9868   .785    9       .15
+rs3934834       1       995669  t       c       .0097   .1139   .9324   .902    9       .119
+rs3766193       1       1007033 c       g       .0512   .087    .556    .673    9       .431
+rs3766192       1       1007060 t       c       -.0503  .0831   .5451   .779    9       .424
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GPC2012]$for i in `ls -lrt | awk '{ print $9 }' | grep txt.gz`; do paste <(zcat $i | wc) <(zcat $i | perl -lane 'print $#F;' | sort | uniq -c) | xargs echo $i; done
+GPC-1.NEO-NEUROTICISM.full.txt.gz 2305738 25363118 130839072 2305738 10
+GPC-1.NEO-EXTRAVERSION.full.txt.gz 2305822 25364042 130837422 2305822 10
+GPC-1.NEO-AGREEABLENESS.full.txt.gz 2305461 25360071 130825946 2305461 10
+GPC-1.NEO-CONSCIENTIOUSNESS.full.txt.gz 2305682 25362502 130844185 2305682 10
+GPC-1.NEO-OPENNESS.full.txt.gz 2305640 25362040 130837603 2305640 10
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GPC2012]$for i in `ls -lrt | awk '{ print $9 }' | grep txt.gz`; do echo $i; paste -d @ <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[0] !~ m/^rs\d+/) { print join("\t", @F); }' | awk '{ print $1 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[1] !~ m/(1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|X|Y|M)/) { print join("\t", @F); }' | awk '{ print $2 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[2] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $3 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[7] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $8 }' | sort  | uniq -c) <(zcat $i | sed 's/E-//g'| perl -lane 'if ($F[10] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $11 }' | sort  | uniq -c) | sed 's/@/@ /g'| column -s $'@' -t ; done
+GPC-1.NEO-NEUROTICISM.full.txt.gz
+GPC-1.NEO-EXTRAVERSION.full.txt.gz
+GPC-1.NEO-AGREEABLENESS.full.txt.gz
+GPC-1.NEO-CONSCIENTIOUSNESS.full.txt.gz
+GPC-1.NEO-OPENNESS.full.txt.gz
+[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/GPC2012]$for i in `ls -lrt | awk '{ print $9 }' | grep txt.gz`; do echo $i; zcat $i | perl -lane 'print join("\t", @F);' | R -q -e "library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1\$V11); quantile(Data1\$V8); png(\""$i".QCCheck.vs1.png\", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1\$V11, breaks=100); hist(Data1\$V8, breaks=100); expP <- -log10(c(1:length(Data1\$V8["\!"is.na(Data1\$V8)])) / (length(Data1\$V8["\!"is.na(Data1\$V8)])+1)); plot(expP, -log10(sort(Data1\$V8["\!"is.na(Data1\$V8)])), xlab=\"Expected p-Values\", ylab=\"Observed p-Values\"); abline(0, 1, col=\"RED\"); dev.off();"; done
+GPC-1.NEO-NEUROTICISM.full.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V11); quantile(Data1$V8); png("GPC-1.NEO-NEUROTICISM.full.txt.gz.QCCheck.vs1.pn
+g", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V11, breaks=100); hist(Data1$V8, breaks=100); expP <- -log10(c(1:length(Data1$V8[!is.na(Data1$V8)])
+) / (length(Data1$V8[!is.na(Data1$V8)])+1)); plot(expP, -log10(sort(Data1$V8[!is.na(Data1$V8)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col=
+"RED"); dev.off();
+Read 2305738 rows and 11 (of 11) columns from 0.122 GB file in 00:00:19
+0%   25%   50%   75%  100%
+0.010 0.116 0.225 0.358 0.500
+0%       25%       50%       75%      100%
+2.072e-06 2.446e-01 4.947e-01 7.484e-01 1.000e+00
+null device
+1
+>
+>
+GPC-1.NEO-EXTRAVERSION.full.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V11); quantile(Data1$V8); png("GPC-1.NEO-EXTRAVERSION.full.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V11, breaks=100); hist(Data1$V8, breaks=100); expP <- -log10(c(1:length(Data1$V8[!is.na(Data1$V8)])) / (length(Data1$V8[!is.na(Data1$V8)])+1)); plot(expP, -log10(sort(Data1$V8[!is.na(Data1$V8)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2305822 rows and 11 (of 11) columns from 0.122 GB file in 00:00:19
+0%   25%   50%   75%  100%
+0.010 0.116 0.225 0.358 0.500
+0%       25%       50%       75%      100%
+3.113e-07 2.475e-01 4.968e-01 7.486e-01 1.000e+00
+null device
+1
+>
+>
+GPC-1.NEO-AGREEABLENESS.full.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V11); quantile(Data1$V8); png("GPC-1.NEO-AGREEABLENESS.full.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V11, breaks=100); hist(Data1$V8, breaks=100); expP <- -log10(c(1:length(Data1$V8[!is.na(Data1$V8)])) / (length(Data1$V8[!is.na(Data1$V8)])+1)); plot(expP, -log10(sort(Data1$V8[!is.na(Data1$V8)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2305461 rows and 11 (of 11) columns from 0.122 GB file in 00:00:19
+0%   25%   50%   75%  100%
+0.010 0.116 0.225 0.358 0.500
+0%       25%       50%       75%      100%
+1.228e-06 2.486e-01 4.998e-01 7.509e-01 1.000e+00
+null device
+1
+>
+>
+GPC-1.NEO-CONSCIENTIOUSNESS.full.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V11); quantile(Data1$V8); png("GPC-1.NEO-CONSCIENTIOUSNESS.full.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V11, breaks=100); hist(Data1$V8, breaks=100); expP <- -log10(c(1:length(Data1$V8[!is.na(Data1$V8)])) / (length(Data1$V8[!is.na(Data1$V8)])+1)); plot(expP, -log10(sort(Data1$V8[!is.na(Data1$V8)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2305682 rows and 11 (of 11) columns from 0.122 GB file in 00:00:19
+0%   25%   50%   75%  100%
+0.010 0.116 0.225 0.358 0.500
+0%       25%       50%       75%      100%
+4.908e-08 2.445e-01 4.956e-01 7.491e-01 1.000e+00
+null device
+1
+>
+>
+GPC-1.NEO-OPENNESS.full.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V11); quantile(Data1$V8); png("GPC-1.NEO-OPENNESS.full.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V11, breaks=100); hist(Data1$V8, breaks=100); expP <- -log10(c(1:length(Data1$V8[!is.na(Data1$V8)])) / (length(Data1$V8[!is.na(Data1$V8)])+1)); plot(expP, -log10(sort(Data1$V8[!is.na(Data1$V8)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 2305640 rows and 11 (of 11) columns from 0.122 GB file in 00:00:19
+0%   25%   50%   75%  100%
+0.010 0.116 0.225 0.358 0.500
+0%       25%       50%       75%      100%
+2.789e-08 2.414e-01 4.923e-01 7.471e-01 1.000e+00
+null device
+1
+>
+>
+~~~
 
 
 
@@ -3170,36 +4269,312 @@ unzip /mnt/gluster/data/external_public_supp/GPC2012/GPC-1.BigFiveNEO.zip
 ##WTCCC2007 -- ##dbSNP, GWAS, N=?
 ##20150722
 
-mkdir /data/internal_restricted/carbonetto_2012_turchin_2015_wtccc
+#mkdir /data/internal_restricted/carbonetto_2012_turchin_2015_wtccc
 
 mkdir /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015
+mkdir /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/
+mkdir /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/
+mkdir /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls
+rm /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_BD_All.txt.gz; for i in `ls -lrt /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/BD/combined_controls/snptest_BD_*.txt | awk '{ print $9 }' | perl -lane 'if ($F[0] =~ m/snptest_BD_(\d+).txt/) { print $1; }'`; do cat /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/BD/combined_controls/snptest_BD_$i.txt | perl -lane 'splice (@F, 2, 0, "'$i'"); print join("\t", @F);' | gzip >> /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_BD_All.txt.gz; done &
+rm /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CD_All.txt.gz; for i in `ls -lrt /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/CD/combined_controls/snptest_CD_*.txt | awk '{ print $9 }' | perl -lane 'if ($F[0] =~ m/snptest_CD_(\d+).txt/) { print $1; }'`; do cat /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/CD/combined_controls/snptest_CD_$i.txt | perl -lane 'splice (@F, 2, 0, "'$i'"); print join("\t", @F);' | gzip >> /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CD_All.txt.gz; done &
+rm /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T2D_All.txt.gz; for i in `ls -lrt /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/T2D/combined_controls/snptest_T2D_*.txt | awk '{ print $9 }' | perl -lane 'if ($F[0] =~ m/snptest_T2D_(\d+).txt/) { print $1; }'`; do cat /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/T2D/combined_controls/snptest_T2D_$i.txt | perl -lane 'splice (@F, 2, 0, "'$i'"); print join("\t", @F);' | gzip >> /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T2D_All.txt.gz; done &
+rm /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_RA_All.txt.gz; for i in `ls -lrt /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/RA/combined_controls/snptest_RA_*.txt | awk '{ print $9 }' | perl -lane 'if ($F[0] =~ m/snptest_RA_(\d+).txt/) { print $1; }'`; do cat /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/RA/combined_controls/snptest_RA_$i.txt | perl -lane 'splice (@F, 2, 0, "'$i'"); print join("\t", @F);' | gzip >> /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_RA_All.txt.gz; done &
+rm /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_HT_All.txt.gz; for i in `ls -lrt /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/HT/combined_controls/snptest_HT_*.txt | awk '{ print $9 }' | perl -lane 'if ($F[0] =~ m/snptest_HT_(\d+).txt/) { print $1; }'`; do cat /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/HT/combined_controls/snptest_HT_$i.txt | perl -lane 'splice (@F, 2, 0, "'$i'"); print join("\t", @F);' | gzip >> /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_HT_All.txt.gz; done &
+rm /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T1D_All.txt.gz; for i in `ls -lrt /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/T1D/combined_controls/snptest_T1D_*.txt | awk '{ print $9 }' | perl -lane 'if ($F[0] =~ m/snptest_T1D_(\d+).txt/) { print $1; }'`; do cat /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/T1D/combined_controls/snptest_T1D_$i.txt | perl -lane 'splice (@F, 2, 0, "'$i'"); print join("\t", @F);' | gzip >> /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T1D_All.txt.gz; done &
+rm /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CAD_All.txt.gz; for i in `ls -lrt /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/CAD/combined_controls/snptest_CAD_*.txt | awk '{ print $9 }' | perl -lane 'if ($F[0] =~ m/snptest_CAD_(\d+).txt/) { print $1; }'`; do cat /mnt/gluster/data/external_private_supp/WTCCC/WTCCC_summary_data/7_Diseases/CAD/combined_controls/snptest_CAD_$i.txt | perl -lane 'splice (@F, 2, 0, "'$i'"); print join("\t", @F);' | gzip >> /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CAD_All.txt.gz; done & 
+
+~~~
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$for i in `ls -lrt | awk '{ print $9
+}' | grep snptest_`; do echo $i; zcat $i | head -n 5; done
+snptest_BD_All.txt.gz
+id      rsid    20      pos     allele1 allele2 average_maximum_posterior_call  controls_AA     controls_AB     controls_BB     controls_NULL   cases_AA        cases_AB
+cases_BB        cases_NULL      frequentist_add frequentist_gen bayesian_add    bayesian_gen    sex_frequentist_add     sex_frequentist_gen     good_clustering
+SNP_A-2163138   rs17685809      20      17408   A       G       0.999452        151     2571    11571   18      23      347     1491    7       0.334526        0.597571
+-0.66192        -0.74883        0.28754 0.582069        1
+SNP_A-2152189   rs7344547       20      41499   A       G       0.999627        13525   768     8       10      1780    86      1       1       0.171298        0.38123-
+0.309436        -0.372097       0.128086        0.356641        1
+SNP_A-2007171   rs6038013       20      56187   A       G       0.99864 13487   767     10      47      1773    84      1       10      0.116081        0.289526       -
+0.191341        -0.263467       0.0651527       0.233007        1
+SNP_A-2255741   rs6038037       20      57272   C       G       0.996742        1       760     13491   59      0       85      1779    4       0.152923        0.347736
+-0.269832       -0.326362       0.119146        0.222081        1
+snptest_CD_All.txt.gz
+id      rsid    19      pos     allele1 allele2 average_maximum_posterior_call  controls_AA     controls_AB     controls_BB     controls_NULL   cases_AA        cases_AB
+cases_BB        cases_NULL      frequentist_add frequentist_gen bayesian_add    bayesian_gen    sex_frequentist_add     sex_frequentist_gen     good_clustering
+SNP_A-2260116   rs8105536       19      212033  A       G       0.999244        1798    5135    3664    11      287     857     602     2       0.809669        0.82941-
+1.06997 -1.00963        0.483524        0.730203        1
+SNP_A-2293731   rs11084928      19      228776  A       G       0.999728        1174    4769    4656    9       181     773     794     0       0.196116        0.433541
+-0.70983        -0.831206       0.274287        0.627233        1
+SNP_A-4277655   rs1106581       19      244934  C       T       0.99926 6588    3409    592     19      1093    543     107     5       0.971328        0.507299       -
+1.016   -0.833665       0.673326        0.205112        1
+SNP_A-1848123   rs10418525      19      247458  A       G       0.998399        447     3451    6660    50      72      562     1109    5       0.660506        0.905707
+-0.961671       -0.674763       0.738266        0.956593        1
+snptest_T2D_All.txt.gz
+id      rsid    14      pos     allele1 allele2 average_maximum_posterior_call  controls_AA     controls_AB     controls_BB     controls_NULL   cases_AA        cases_AB
+cases_BB        cases_NULL      frequentist_add frequentist_gen bayesian_add    bayesian_gen    sex_frequentist_add     sex_frequentist_gen     good_clustering
+SNP_A-2113329   rs4562981       14      19309086        C       T       0.985262        9006    4357    287     605     1211    592     49      72      0.382706       0.315499 -0.794477       -0.885316       0.236762        0.363062        1
+SNP_A-2087294   rs4080788       14      19337785        A       C       0.99091 12056   1870    0       329     1638    240     0       46      0.437927        0.437927
+-0.697324       -0.760902       0.120296        0.120296        1
+SNP_A-1837486   rs1780870       14      19362325        C       G       0.983984        10016   3429    149     661     1348    451     28      97      0.776168       0.239097 -0.903032       -0.808739       0.969887        0.599236        1
+SNP_A-1899385   rs2318498       14      19447566        A       G       0.999566        3       448     13789   15      0       42      1879    3       0.0175519      0.0574271        0.532122        0.49189 0.0622369       0.13086 1
+snptest_RA_All.txt.gz
+id      rsid    21      pos     allele1 allele2 average_maximum_posterior_call  controls_AA     controls_AB     controls_BB     controls_NULL   cases_AA        cases_AB
+cases_BB        cases_NULL      frequentist_add frequentist_gen bayesian_add    bayesian_gen    sex_frequentist_add     sex_frequentist_gen     good_clustering
+SNP_A-2015094   rs303304        21      9941889 A       G       0.996921        9786    731     11      80      1726    117     2       15      0.365813        0.640009
+-0.541533       -0.612505       0.679479        0.584454        1
+SNP_A-4270130   rs456706        21      10022975        C       T       0.999336        0       794     9803    11      0       129     1728    3       0.40737 0.40737-0.569989        -0.63511        0.653915        0.653915        1
+SNP_A-2007909   rs7510233       21      13291078        C       G       0.998718        10591   0       0       17      1856    0       0       4       1       1      0.0902512        0.32584 1       1       1
+SNP_A-4215517   rs3875777       21      13347413        A       C       0.999367        10596   0       0       12      1859    0       0       1       1       1      0.0900234        0.330267        1       1       1
+snptest_HT_All.txt.gz
+id      rsid    05      pos     allele1 allele2 average_maximum_posterior_call  controls_AA     controls_AB     controls_BB     controls_NULL   cases_AA        cases_AB
+cases_BB        cases_NULL      frequentist_add frequentist_gen bayesian_add    bayesian_gen    sex_frequentist_add     sex_frequentist_gen     good_clustering
+SNP_A-4236757   rs7704488       05      81949   A       C       0.99813 1299    5345    5592    65      191     890     868     3       0.828643        0.215414       -1.07292 -1.04642        0.683598        0.424409        1
+SNP_A-2280280   rs10065373      05      159819  C       T       0.999376        11596   683     7       15      1821    129     1       1       0.070716        0.175719
+0.113993        -0.0747838      0.179098        0.413686        1
+SNP_A-2025745   rs6555608       05      165712  A       G       0.993881        143     2311    9618    229     29      373     1512    38      0.353652        0.434968
+-0.697044       -0.801558       0.635359        0.119975        1
+SNP_A-2224179   rs10073501      05      166577  A       G       0.99976 9709    2420    164     8       1518    401     33      0       0.152076        0.28831 -0.44683
+-0.611501       0.338506        0.23124 1
+snptest_CAD_All.txt.gz
+id      rsid    19      pos     allele1 allele2 average_maximum_posterior_call  controls_AA     controls_AB     controls_BB     controls_NULL   cases_AA        cases_AB
+cases_BB        cases_NULL      frequentist_add frequentist_gen bayesian_add    bayesian_gen    sex_frequentist_add     sex_frequentist_gen     good_clustering
+SNP_A-2260116   rs8105536       19      212033  A       G       0.999234        2105    5914    4268    14      329     925     670     2       0.94435 0.997147       -1.10518 -1.09272        0.996046        0.999921        1
+SNP_A-2293731   rs11084928      19      228776  A       G       0.999766        1376    5456    5461    8       218     865     843     0       0.633713        0.865532
+-1.03392        -1.04589        0.857118        0.971653        1
+SNP_A-4277655   rs1106581       19      244934  C       T       0.999458        7688    3888    705     20      1193    627     104     2       0.859914        0.645813
+-1.03044        -0.96573        0.774896        0.889331        1
+SNP_A-1848123   rs10418525      19      247458  A       G       0.998498        521     3941    7786    53      89      607     1223    7       0.874153        0.694526
+-1.01113        -1.00998        0.786915        0.745379        1
+snptest_T1D_All.txt.gz
+id      rsid    15      pos     allele1 allele2 average_maximum_posterior_call  controls_AA     controls_AB     controls_BB     controls_NULL   cases_AA        cases_AB
+cases_BB        cases_NULL      frequentist_add frequentist_gen bayesian_add    bayesian_gen    sex_frequentist_add     sex_frequentist_gen     good_clustering
+SNP_A-2114663   rs12916870      15      18446422        A       G       0.999376        1818    5112    3664    14      333     941     686     3       0.733095       0.936837 -1.08067        -1.08241        0.568209        0.879371        1
+SNP_A-2132755   rs7179358       15      18451755        A       G       0.998239        3885    5012    1665    46      743     927     285     8       0.157878       0.340166 -0.674617       -0.8165 0.363951        0.701199        1
+SNP_A-4221095   rs4114744       15      18782954        G       T       0.999331        0       0       10598   10      0       0       1962    1       1       1      0.0795725        0.886763        1       1       1
+SNP_A-1847162   rs4931971       15      18846941        A       T       0.984268        106     2646    7418    438     16      509     1368    70      0.686473       0.555709 -0.883581       -0.921758       0.539368        0.670874        1
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$for i in `ls -lrt | awk '{ print $9 }' | grep snptest_`; do paste <(zcat $i | wc) <(zcat $i | perl -lane 'print $#F;' | sort | uniq -c) | xargs echo $i; done
+snptest_BD_All.txt.gz 437258 9619676 59745573 437258 21
+snptest_CD_All.txt.gz 459468 10108296 62504342 459468 21
+snptest_T2D_All.txt.gz 459468 10108296 62773784 459468 21
+snptest_RA_All.txt.gz 459468 10108296 62496593 459468 21
+snptest_HT_All.txt.gz 459468 10108296 62658163 459468 21
+snptest_CAD_All.txt.gz 459468 10108296 62638982 459468 21
+snptest_T1D_All.txt.gz 459468 10108296 62525644 459468 21
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$for i in `ls -lrt | awk '{ print $9 }' | grep txt.gz`; do echo $i; paste -d @ <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[1] !~ m/^rs\d+/) { print join("\t", @F); }' | awk '{ print $2 }' | sort  | uniq -c) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[2] !~ m/(1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|X|Y|M)/) { print join("\t", @F); }' | awk '{ print $3 }' | sort  | uniq -c) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[3] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $4 }' | sort  | uniq -c) <(zcat $i | sed 's/e-//g'| perl -lane 'if ($F[15] =~ m/[^\d\.]/) { print join("\t", @F); }' | awk '{ print $16 }' | sort  | uniq -c) | sed 's/@/@ /g'| column -s $'@' -t ; done
+snptest_BD_All.txt.gz
+5685 ---            22 pos        22 frequentist_add
+22 rsid
+snptest_CD_All.txt.gz
+5937 ---            22 pos        22 frequentist_add
+22 rsid
+snptest_T2D_All.txt.gz
+5937 ---            22 pos        22 frequentist_add
+22 rsid
+snptest_RA_All.txt.gz
+5937 ---            22 pos        22 frequentist_add
+22 rsid
+snptest_HT_All.txt.gz
+5937 ---            22 pos        22 frequentist_add
+22 rsid
+snptest_CAD_All.txt.gz
+5937 ---            22 pos        22 frequentist_add
+22 rsid
+snptest_T1D_All.txt.gz
+5937 ---            22 pos        22 frequentist_add
+22 rsid
+~~~
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_BD_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_BD_All.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CD_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CD_All.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T2D_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T2D_All.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_RA_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_RA_All.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_HT_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_HT_All.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T1D_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T1D_All.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CAD_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CAD_All.wHapMap22.txt.gz &
+
+#Wrong hapmap release I think -- try release 21?
+~~~
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$zcat snptest_CD_All.wHapMap22.txt.gz | perl -lane 'if (($F[1] ne "---") && ($F[$#F] ne "NA")) { my @ChrBPAFInfo1 = split(/_/, $F[$#F]); my $chr = ((split(/hr/, $ChrBPAFInfo1[0]))[1]); if (($chr ne $F[2]) && ("0$chr" ne $F[2])) { print "fail1"; } if ($ChrBPAFInfo1[1] ne $F[3]) { print "fail2"; } my ($alt1, $alt2) = ($ChrBPAFInfo1[2], $ChrBPAFInfo1[4]); $alt1 =~ tr/AGCT/TCGA/; $alt2 =~ tr/AGCT/TCGA/; if ((($ChrBPAFInfo1[2] ne $F[4]) && ($ChrBPAFInfo1[4] ne $F[4])) && (($alt1 ne $F[4]) && ($alt2 ne $F[4]))) { print "fail3"; } }' | sort | uniq -c
+22 fail1
+169057 fail2
+22 fail3
+~~~
+
+mkdir /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release21/
+mkdir /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release21/Frequencies
+
+cd /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release21/Frequencies
+
+wget http://hapmap.ncbi.nlm.nih.gov/downloads/frequencies/2006-07/rs_strand/non-redundant/
+
+mv /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release21/Frequencies/index.html /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release21/Frequencies/index.http:__hapmap.ncbi.nlm.nih.gov_downloads_frequencies_2006-07_rs_strand_non-redundant.html
+
+for i in `cat /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release21/Frequencies/index.http:__hapmap.ncbi.nlm.nih.gov_downloads_frequencies_2006-07_rs_strand_non-redundant.html | perl -lane 'my $fullLine = join("", @F); if ($fullLine =~ m/.*(allele.*.txt.gz).*/) { print $1 ; } '`; do wget http://hapmap.ncbi.nlm.nih.gov/downloads/frequencies/2006-07/rs_strand/non-redundant/$i; done
+
+nbthis *
+
+#Edited /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py to do HapMap21 files in /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release21/Frequencies/ instead of HapMap22 files in /mnt/lustre/home/mturchin20/Data/HapMap/Releases/Release22/Frequencies/
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_BD_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_BD_All.wHapMap21.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CD_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CD_All.wHapMap21.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T2D_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T2D_All.wHapMap21.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_RA_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_RA_All.wHapMap21.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_HT_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_HT_All.wHapMap21.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T1D_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_T1D_All.wHapMap21.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CAD_All.txt.gz | gzip > /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls/snptest_CAD_All.wHapMap21.txt.gz &
+
+#Looks like using release 21 fixes the bp location problem from before
+~~~
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$zcat snptest_BD_All.wHapMap21.txt.gz | perl -lane 'if (($F[1] ne "---") && ($F[$#F] ne "NA")) { my @ChrBPAFInfo1 = split(/_/, $F[$#F]); my $chr = ((split(/hr/, $ChrBPAFInfo1[0]))[1]); if (($chr ne $F[2]) && ("0$chr" ne $F[2])) { print "fail1"; } if ($ChrBPAFInfo1[1] ne $F[3]) { print "fail2"; } my ($alt1, $alt2) = ($ChrBPAFInfo1[2], $ChrBPAFInfo1[4]); $alt1 =~ tr/AGCT/TCGA/; $alt2 =~ tr/AGCT/TCGA/; if ((($ChrBPAFInfo1[2] ne $F[4]) && ($ChrBPAFInfo1[4] ne $F[4])) && (($alt1 ne $F[4]) && ($alt2 ne $F[4]))) { print "fail3"; } }' | sort | uniq -c
+22 fail1
+40 fail2
+22 fail3
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$zcat snptest_BD_All.wHapMap21.txt.gz | perl -lane 'if (($F[1] ne "---") && ($F[$#F] ne "NA")) { my @ChrBPAFInfo1 = split(/_/, $F[$#F]); my $chr = ((split(/hr/, $ChrBPAFInfo1[0]))[1]); if (($chr ne $F[2]) && ("0$chr" ne $F[2])) { print "fail1"; } if ($ChrBPAFInfo1[1] ne $F[3]) { print "fail2\t", join("\t", @F); } my ($alt1, $alt2) = ($ChrBPAFInfo1[2], $ChrBPAFInfo1[4]); $alt1 =~ tr/AGCT/TCGA/; $alt2 =~ tr/AGCT/TCGA/; if ((($ChrBPAFInfo1[2] ne $F[4]) && ($ChrBPAFInfo1[4] ne $F[4])) && (($alt1 ne $F[4]) && ($alt2 ne $F[4]))) { print "fail3"; } }' | sort | grep fail2 | grep -v rsid | head -n 5
+fail2   SNP_A-1814403   rs1939284       11      48599131        A       C       0.996962        0       5       14168   138     0       1       1861    6       0.6991 0.6991   0.153855        0.0694368       0.736127        0.736127        1       chr11_51258029_A_1_C_0
+fail2   SNP_A-1870400   rs9418077       10      34076879        G       T       0.995835        11240   2718    156     197     1469    351     23      25      0.946301
+0.845742        -0.894994       -0.938667       0.973762        0.985055        1       chr10_34076878_C_0.917_A_0.083
+fail2   SNP_A-1893435   rs9493545       06      133530395       A       G       0.999837        14262   45      0       4       1862    5       0       1       0.732333
+0.732333        -0.102934       -0.183112       0.761404        0.761404        1       chr6_133530396_T_1_C_0
+fail2   SNP_A-1932857   rs2543671       02      24371923        A       G       0.999271        6       532     13750   23      0       63      1804    1       0.359722
+0.507548        -0.442729       -0.499745       0.426586        0.446608        1       chr2_24371889_G_0.983_A_0.017
+fail2   SNP_A-2001450   rs180945        10      115700203       C       T       0.999043        1993    6556    5727    35      246     880     739     3       0.869039
+0.502869        -1.09149        -1.00948        0.981144        0.667332        1       chr10_115700192_T_0_G_0.367
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$for i in `ls -lrt | awk '{ print $9 }' | grep snptest_ | grep wHapMap21`; do echo $i; paste -d @ <(zcat $i | grep -v rsid | perl -lane 'if (($F[1] ne "---") && ($F[$#F] ne "NA")) { my @ChrBPAFInfo1 = split(/_/, $F[$#F]); my $chr = ((split(/hr/, $ChrBPAFInfo1[0]))[1]); if (($chr ne $F[2]) && ("0$chr" ne $F[2])) { print "fail1"; } if ($ChrBPAFInfo1[1] ne $F[3]) { print "fail2"; } my ($alt1, $alt2) = ($ChrBPAFInfo1[2], $ChrBPAFInfo1[4]); $alt1 =~ tr/AGCT/TCGA/; $alt2 =~ tr/AGCT/TCGA/; if ((($ChrBPAFInfo1[2] ne $F[4]) && ($ChrBPAFInfo1[4] ne $F[4])) && (($alt1 ne $F[4]) && ($alt2 ne $F[4]))) { print "fail3"; } }' | sort | uniq -c ) <(zcat $i | grep -v rsid | perl -lane 'if (($F[1] eq "---") && ($F[$#F] ne "NA")) { print "Only_---"; } elsif (($F[1] ne "---") && ($F[$#F] eq "NA")) { print "Only_NA"; } elsif (($F[1] eq "---") && ($F[$#F] eq "NA")) { print "---_And_NA";} else { my $PH = 1; }' | sort  | uniq -c) | sed 's/@/ @ /g'| column -s $'@' -t ; done
+snptest_BD_All.wHapMap21.txt.gz
+18 fail2       5685 Only_---
+		1718 Only_NA
+snptest_T2D_All.wHapMap21.txt.gz
+18 fail2       5937 Only_---
+		1803 Only_NA
+snptest_RA_All.wHapMap21.txt.gz
+18 fail2       5937 Only_---
+		1803 Only_NA
+snptest_CD_All.wHapMap21.txt.gz
+18 fail2       5937 Only_---
+		1803 Only_NA
+snptest_CAD_All.wHapMap21.txt.gz
+18 fail2       5937 Only_---
+		1803 Only_NA
+snptest_T1D_All.wHapMap21.txt.gz
+18 fail2       5937 Only_---
+		1803 Only_NA
+snptest_HT_All.wHapMap21.txt.gz
+18 fail2       5937 Only_---
+		1803 Only_NA
+[  mturchin20@spudling26  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$for i in `ls -lrt | awk '{ print $9
+}' | grep snptest_ | grep wHapMap21 `; do echo $i; zcat $i | grep -v rsid | perl -lane 'my @ChrBPAFInfo1 = split(/_/, $F[$#F]); my $MAF = $ChrBPAFInfo1[3]; if ($MAF >
+.5) { $MAF = 1 - $MAF; } push(@F, $MAF); print join("\t", @F);' | R -q -e "library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1\$V24,
+na.rm=TRUE); quantile(Data1\$V16, na.rm=TRUE); png(\""$i".QCCheck.vs1.png\", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1\$V24, breaks=100); hist(Da
+ta1\$V16, breaks=100); expP <- -log10(c(1:length(Data1\$V16["\!"is.na(Data1\$V16)])) / (length(Data1\$V16["\!"is.na(Data1\$V16)])+1)); plot(expP, -log10(sort(Data1\$V16
+["\!"is.na(Data1\$V16)])), xlab=\"Expected p-Values\", ylab=\"Observed p-Values\"); abline(0, 1, col=\"RED\"); dev.off();"; done
+snptest_BD_All.wHapMap21.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V24, na.rm=TRUE); quantile(Data1$V16, na.rm=TRUE); png("snptest_BD_All.wHapMap2
+1.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V24, breaks=100); hist(Data1$V16, breaks=100); expP <- -log10(c(1:length(Dat
+a1$V16[!is.na(Data1$V16)])) / (length(Data1$V16[!is.na(Data1$V16)])+1)); plot(expP, -log10(sort(Data1$V16[!is.na(Data1$V16)])), xlab="Expected p-Values", ylab="Observed
+p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 437236 rows and 24 (of 24) columns from 0.070 GB file in 00:00:10
+0%   25%   50%   75%  100%
+0.000 0.067 0.192 0.333 0.500
+0%           25%           50%           75%          100%
+5.051110e-206  2.197055e-01  4.760385e-01  7.383403e-01  1.000000e+00
+null device
+1
+>
+>
+snptest_T2D_All.wHapMap21.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V24, na.rm=TRUE); quantile(Data1$V16, na.rm=TRUE); png("snptest_T2D_All.wHapMap
+21.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V24, breaks=100); hist(Data1$V16, breaks=100); expP <- -log10(c(1:length(Da
+ta1$V16[!is.na(Data1$V16)])) / (length(Data1$V16[!is.na(Data1$V16)])+1)); plot(expP, -log10(sort(Data1$V16[!is.na(Data1$V16)])), xlab="Expected p-Values", ylab="Observe
+d p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 459446 rows and 24 (of 24) columns from 0.073 GB file in 00:00:10
+0%   25%   50%   75%  100%
+0.000 0.067 0.192 0.333 0.500
+0%          25%          50%          75%         100%
+2.73190e-177  2.34115e-01  4.88371e-01  7.45486e-01  1.00000e+00
+null device
+1
+>
+>
+snptest_RA_All.wHapMap21.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V24, na.rm=TRUE); quantile(Data1$V16, na.rm=TRUE); png("snptest_RA_All.wHapMap21.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V24, breaks=100); hist(Data1$V16, breaks=100); expP <- -log10(c(1:length(Data1$V16[!is.na(Data1$V16)])) / (length(Data1$V16[!is.na(Data1$V16)])+1)); plot(expP, -log10(sort(Data1$V16[!is.na(Data1$V16)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 459446 rows and 24 (of 24) columns from 0.073 GB file in 00:00:10
+0%   25%   50%   75%  100%
+0.000 0.067 0.192 0.333 0.500
+0%       25%       50%       75%      100%
+0.0000000 0.2377435 0.4958145 0.7536580 1.0000000
+null device
+1
+>
+>
+snptest_CD_All.wHapMap21.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V24, na.rm=TRUE); quantile(Data1$V16, na.rm=TRUE); png("snptest_CD_All.wHapMap21.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V24, breaks=100); hist(Data1$V16, breaks=100); expP <- -log10(c(1:length(Data1$V16[!is.na(Data1$V16)])) / (length(Data1$V16[!is.na(Data1$V16)])+1)); plot(expP, -log10(sort(Data1$V16[!is.na(Data1$V16)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 459446 rows and 24 (of 24) columns from 0.073 GB file in 00:00:10
+0%   25%   50%   75%  100%
+0.000 0.067 0.192 0.333 0.500
+0%          25%          50%          75%         100%
+3.363040e-73 2.228815e-01 4.829155e-01 7.451227e-01 1.000000e+00
+null device
+1
+>
+>
+snptest_CAD_All.wHapMap21.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V24, na.rm=TRUE); quantile(Data1$V16, na.rm=TRUE); png("snptest_CAD_All.wHapMap21.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V24, breaks=100); hist(Data1$V16, breaks=100); expP <- -log10(c(1:length(Data1$V16[!is.na(Data1$V16)])) / (length(Data1$V16[!is.na(Data1$V16)])+1)); plot(expP, -log10(sort(Data1$V16[!is.na(Data1$V16)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 459446 rows and 24 (of 24) columns from 0.073 GB file in 00:00:10
+0%   25%   50%   75%  100%
+0.000 0.067 0.192 0.333 0.500
+0%       25%       50%       75%      100%
+0.0000000 0.2370535 0.4929550 0.7465692 1.0000000
+null device
+1
+>
+>
+snptest_T1D_All.wHapMap21.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V24, na.rm=TRUE); quantile(Data1$V16, na.rm=TRUE); png("snptest_T1D_All.wHapMap21.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V24, breaks=100); hist(Data1$V16, breaks=100); expP <- -log10(c(1:length(Data1$V16[!is.na(Data1$V16)])) / (length(Data1$V16[!is.na(Data1$V16)])+1)); plot(expP, -log10(sort(Data1$V16[!is.na(Data1$V16)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 459446 rows and 24 (of 24) columns from 0.073 GB file in 00:00:10
+0%   25%   50%   75%  100%
+0.000 0.067 0.192 0.333 0.500
+0%       25%       50%       75%      100%
+0.0000000 0.2347780 0.4902345 0.7501537 1.0000000
+null device
+1
+>
+>
+snptest_HT_All.wHapMap21.txt.gz
+> library(data.table); Data1 <- fread('file:///dev/stdin', header=FALSE); quantile(Data1$V24, na.rm=TRUE); quantile(Data1$V16, na.rm=TRUE); png("snptest_HT_All.wHapMap21.txt.gz.QCCheck.vs1.png", height=2000, width=2000, res=200); par(mfrow=c(2,2)); hist(Data1$V24, breaks=100); hist(Data1$V16, breaks=100); expP <- -log10(c(1:length(Data1$V16[!is.na(Data1$V16)])) / (length(Data1$V16[!is.na(Data1$V16)])+1)); plot(expP, -log10(sort(Data1$V16[!is.na(Data1$V16)])), xlab="Expected p-Values", ylab="Observed p-Values"); abline(0, 1, col="RED"); dev.off();
+Read 459446 rows and 24 (of 24) columns from 0.073 GB file in 00:00:10
+0%   25%   50%   75%  100%
+0.000 0.067 0.192 0.333 0.500
+0%          25%          50%          75%         100%
+1.004920e-86 2.358175e-01 4.901600e-01 7.474943e-01 1.000000e+00
+null device
+1
+>
+>
+~~~
+
+#Weird p-value results with -log10(pVals) going as high as 200?
+#Thinking this may be due to not using any type of QC cutoff, such as MAF <.01 which is detailed in manuscript but maybe not applied to released summary data?
+
+#Checked this, didn't seem to do much
+#Also wrote a script to do a rough HWE statistic and the results don't seem to show a correlation between large p-values and large HWE values either
+
+~~~
+[  mturchin20@spudling70  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$python TestHWE.vs1.py --file1 <(zcat snptest_T1D_All.wHapMap22.txt.gz | grep -v rsid) | gzip > snptest_T1D_All.wHapMap22.wHWEStat.txt.gz
+[  mturchin20@spudling70  /mnt/gluster/data/external_private_supp/WTCCC_Turchin2015/WTCCC_summary_data/7_Diseases/combined_controls]$zcat snptest_T1D_All.wHapMap22.wHWEStat.txt.gz | perl -lane 'if ($F[15] < .000000000000001) { print join("\t", @F); }' | head -n 5
+SNP_A-2092234   rs11073319      15      36429803        A       T       0.998758        10598   2       0       8       1903    26      0       34      5.92701e-30    5.92701e-30      9.61996 14.89   6.36106e-29     6.36106e-29     0       chr15_36429803_A_0_T_1  0.999905660377  9.43396226415e-05       10599.0000943   2.99981132075  1.00009433962    1.33341722275   21200   0.993260756869  0.00673924313116        1904.08761016   26.8247796786   1.08761016071   1.11359084571   3858
+SNP_A-2280823   rs12269329      10      16389024        A       G       0.992109        10506   1       0       101     1946    16      0       1       6.60017e-19    6.60017e-19      4.75024 8.12392 4.61846e-18     4.61846e-18     0       chr10_16389024_A_1_G_0  0.999952412677  4.75873227372e-05       10507.0000238   1.99995241268  1.00002379366    1.50008328263   21014   0.995922528033  0.00407747196738        1947.03261978   16.9347604485   1.03261977574   1.08476409261   3924
+SNP_A-1915623   rs7078771       10      84679040        A       G       0.990758        0       1198    9266    144     193     8       1735    27      1.82706e-21    1.03233e-271     16.3543 176.632 2.04814e-20     1.12535e-268    0       chr10_84679040_G_0.942_A_0.058  0.057243883792  0.942756116208  35.2890863914   1130.42182722  9301.28908639    39.4628893544   20928   0.101756198347  0.898243801653  21.0459710744   354.908057851   1563.04597107   1762.93883398   3872
+SNP_A-2277807   rs4959334       06      5151775 A       G       0.99938 0       0       10599   9       0       12      1948    3       7.6671e-16      7.6671e-16     3.25749  6.03659 9.46869e-15     9.46869e-15     1       chr6_5151775_T_0_C_1    0.0     1.0     1.0     1.0     10600.0 2.00009433962   21198   0.0030612244898 0.99693877551   1.01836734694   12.9632653061   1949.01836735   1.09047709531   3920
+SNP_A-4220418   rs726836        06      25951905        A       G       0.999846        0       77      10526   5       0       54      1909    0       4.94622e-16    4.94622e-16      9.0171  9.12112 3.25395e-17     3.25395e-17     1       chr6_25951905_C_1_T_0   0.00363104781666        0.996368952183  1.13979534094   77.7204093181  10527.1397953    1.1465963976    21206   0.0137544574631 0.986245542537  1.3713703515    54.257259297    1910.37137035   1.37357458493   3926
+~~~
+
+#20150815 CHECK_0: As I work on this, also starting to think about how wtccc and a few other of tese datasets may really violate the notion of all phenotypes being measured in all individuals used for the study. Clearly this is not the case for the wtccc datasets as each phenotype contains a different set of cases (and say may be the case for the PGC data, for example, too). This may be a real delimiting factor for the analysis/interpretation even if 'interesting' results come out from the analysis.
+#Datasets that should be fine:
+#Global Lipids, GIANT (for height, BMI and WHRadjBMI ?), TAG, ICBP, MAGIC, EGG, HaemgenRBC, GPC 
+#Datasets that shoudl be not fine?:
+#PGC, IBD?, GEFOS?, WTCCC, 23andMe?
+
+#PGC, IBD, TAG, BP(?dbGAP), MAGIC, GEFOS, SSGAC, EGG, GERA, BEAGESS, GWASofVTE, HaemgenRBC, GPC, 23andMe(?), WTCCC
 
 
-
-
-
-
-
-######
-##
-## top SNP hits
-##
-######
-
-######
-##
-## multivariate analysis
-##
-######
-
-
-
-
-
-
-
-
-##File Downloads
 
 
 
@@ -3258,7 +4633,7 @@ cat /mnt/lustre/home/mturchin20/Data/PGC/2013/BP2011.Table2.GWSignificant.noComm
 
 #~~~
 [  mturchin20@spudhead  ~/Data/dbSNP]$cat /mnt/lustre/home/mturchin20/Data/PGC/2013/BP2011.Table2.GWSignificant.noCommas.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/Cross2014.Table1.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/MDD2013.SupplTable19.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable11.noCommas.MarkerChrBP.txt | grep rs | wc
-     24      72     616
+24      72     616
 [  mturchin20@spudhead  ~/Data/dbSNP]$cat /mnt/lustre/home/mturchin20/Data/PGC/2013/BP2011.Table2.GWSignificant.noCommas.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/Cross2014.Table1.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/MDD2013.SupplTable19.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable11.noCommas.MarkerChrBP.txt | grep rs | awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } '
       2 rs2535629
 [  mturchin20@spudhead  ~/Data/dbSNP]$cat /mnt/lustre/home/mturchin20/Data/PGC/2013/PGC2013.Hits.MarkerChrBP.txt | wc
@@ -3445,6 +4820,11 @@ rs1207776       6       22201000        C       T       0.65    0.017   0.0045  
 #Also somewhat purposely separating the Global Lipids and GIANT work from the rest of the datasets since it seems/feels like those two datasets (or groups of datasets) can be the anchors of the project whereas most other datasets will be accessories/supportive; also this is how my mind is naturally separating things out at the moment anyways
 
 cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MainScript1.sh /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MainScript1.vs2.sh 
+
+##20150812
+#Reversed the above decision, going back to a 'per cohort/dataset' organization standpoint -- just going to process each dataset at similar stages one at a time even though in this file they will appear as separate block entries
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MainScript1.vs2.sh /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MainScript1.vs3.sh 
 
 ##20150806
 ##CHECK_0: There is another dataset with two variables for platelets from Nicole Soranzo that Joe Pickrell got from her in 2014 ASHG manuscript, e.g. "Summary statistics from a large GWAS of platelet traits39 were generously provided by Nicole Soranzo. The data consisted of summary statistics from association studies of two traits: platelet counts and mean platelet volume..." (source: http://www.sciencedirect.com/science/article/pii/S0002929714001062)
