@@ -9063,9 +9063,13 @@ join -1 1 -2 3 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivari
 #
 ###########################
 
+cd /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass
+R -q -e "library(\"devtools\"); devtools::create(\"/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass\");" 
+mkdir R
+mkdir data
 
-
-
+#Log file suggestion -- http://stackoverflow.com/questions/22843775/how-to-create-periodically-send-text-to-a-log-file-while-printing-normal-outpu
+#Post about cat vs print -- http://stackoverflow.com/questions/31843662/what-is-the-difference-between-cat-and-print
 
 
 
