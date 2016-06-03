@@ -652,8 +652,8 @@ mkdir /mnt/lustre/home/mturchin20/Data/GIANT/2010/
 #Copy/pasted table 1 from http://www.nature.com.proxy.uchicago.edu/ng/journal/v42/n11/full/ng.685.html into /mnt/lustre/home/mturchin20/Data/GIANT/2010/Heid2010.Table1.txt
 #Manually removed the below three lines from table1
 #Further SNPs evaluated in follow up but not achieving genome-wide significance in the combined analysis
-#rs2076529       6       32,471,933      BTNL2   C       0.430   2.22 × 10−8     0.041   34,532  0.012   0.011   92,778  3.71 × 10−7     0.020
-#rs7081678       10      32,030,629      ZEB1    A       0.085   5.76 × 10−7     0.045   76,270  0.094   0.013   100,527 5.57 × 10−6     0.027
+#rs2076529       6       32,471,933      BTNL2   C       0.430   2.22 Ã 10â8     0.041   34,532  0.012   0.011   92,778  3.71 Ã 10â7     0.020
+#rs7081678       10      32,030,629      ZEB1    A       0.085   5.76 Ã 10â7     0.045   76,270  0.094   0.013   100,527 5.57 Ã 10â6     0.027
 
 #2014_5
 #Copying/pasting/downoading/finding (however) list of top hits from each study
@@ -1982,36 +1982,6 @@ zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs
 zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_MEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | perl -lane 'print $#F;' | sort | uniq -c
 zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_MEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | awk '{ print $4 }' | sort | uniq -c | perl -lane 'if ($F[1] !~ m/\d+/) { print join("\t", @F); }'
 zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_MEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | awk '{ if ($4 == "None") { print $0 } } '
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_MEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | awk '{ print $5 }' | sort | uniq -c | perl -lane 'if ($F[1] !~ m/\d+/) { print join("\t", @F); }'
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_MEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | awk '{ print $6 }' | sort | uniq -c
-
-~~~
-[  mturchin20@bigmem02  /mnt/gluster/data/external_public_supp/GIANT2013]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_MEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | wc
-2767844 116249448 770991833
-[  mturchin20@bigmem02  /mnt/gluster/data/external_public_supp/GIANT2013]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_MEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | perl -lane 'print $#F;' | sort | uniq -c
-2767844 41
-[  mturchin20@bigmem02  /mnt/gluster/data/external_public_supp/GIANT2013]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_MEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | awk '{ print $4 }' | sort | uniq -c | perl -lane 'if ($F[1] !~ m/\d+/) { print join("\t", @F); }'
-1       NA
-[  mturchin20@bigmem02  /mnt/gluster/data/external_public_supp/GIANT2013]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_MEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | awk '{ if ($4 == "None") { print $0 } } '
-[  mturchin20@bigmem02  /mnt/gluster/data/external_public_supp/GIANT2013]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_MEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | awk '{ print $5 }' | sort | uniq -c | perl -lane 'if ($F[1] !~ m/\d+/) { print join("\t", @F); }'
-507290  NA
-[  mturchin20@bigmem02  /mnt/gluster/data/external_public_supp/GIANT2013]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_MEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | awk '{ print $6 }' | sort | uniq -c
-2754614 0
-     15 1
-  13215 2
-~~~       
-
-#CHECK_0: Take a look at these rsID#s/SNPs specifically for both male and female file results
-
-#~~~
-Error2a -- line2[0] present more than once in a particular file (count: 0 line2[0]: rs424881,a,g,0.225,0.00080,0.0075,0.91,60550.2,10_132097974)
-Error2a -- line2[0] present more than once in a particular file (count: 0 line2[0]: rs2160421,a,t,0.4417,-0.0052,0.0061,0.40,60541.7,15_34746878)
-Error2a -- line2[0] present more than once in a particular file (count: 0 line2[0]: rs13598,a,c,.,0.0072,0.0088,0.42,60557.3,15_46489749)
-Error2a -- line2[0] present more than once in a particular file (count: 0 line2[0]: rs5820007,t,c,0.875,0.0098,0.0095,0.30,59008.1,17_28342660)
-Error2a -- line2[0] present more than once in a particular file (count: 0 line2[0]: rs627146,a,g,0.2833,-0.012,0.0064,0.064,59129.2,18_8332477)
-Error2a -- line2[0] present more than once in a particular file (count: 0 line2[0]: rs3752976,a,g,.,-0.0051,0.014,0.71,60550.8,1_199381979)
-Error2a -- line2[0] present more than once in a particular file (count: 0 line2[0]: rs11576885,c,g,.,-0.0028,0.0068,0.68,59668.4,1_204737275)
-Error2a -- line2[0] present more than once in a particular file (count: 0 line2[0]: rs3819262,t,g,0.6917,-0.0081,0.0064,0.20,60557.4,21_37382759)
 Error2a -- line2[0] present more than once in a particular file (count: 0 line2[0]: rs12996248,t,g,0.2833,0.0050,0.0074,0.50,58638.6,2_121661536)
 Error2a -- line2[0] present more than once in a particular file (count: 0 line2[0]: rs7591686,a,g,0.7333,-0.0020,0.0072,0.78,60529.7,2_45609171)
 Error2a -- line2[0] present more than once in a particular file (count: 0 line2[0]: rs2936687,a,g,0.8167,-0.015,0.0082,0.068,60556.5,8_75279924)
@@ -2477,6 +2447,16 @@ cp -p
 
 
 #20150831 CHECK_0: mvstat df values in process...R scripts?
+
+
+
+###########################
+#
+#
+# Part B/C -- Downloading/Processing main datasets
+#
+#
+###########################
 
 
 
@@ -3141,6 +3121,11 @@ cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2
 
 cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GLC.MTedits.For2013.vs3.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GLC.MTedits.For2013.vs3.ForCSHLPoster.R
 
+#20160428 NOTE -- Editing the above 'ForCSHLPoster' a little to get figures/results for NHS presentation as well
+
+
+
+
 #20160220
 #Correcting sign issue -- quick hack to get results
 
@@ -3674,7 +3659,7 @@ PaxHeader/GIANT_2015_WHRadjBMI_COMBINED_EUR.txt000644 777777 000120 00000000234 
 23 SCHILY.dev=16777228
 20 SCHILY.ino=80523
 18 SCHILY.nlink=1
-GIANT_2015_WHRadjBMI_COMBINED_EUR.txt000644 ���000120 00702223325 12466640262 020237 0ustar00med-dsnadmin000000 000000 MarkerName       Allele1 Allele2 FreqAllele1HapMapCEU    b       se      p       N
+GIANT_2015_WHRadjBMI_COMBINED_EUR.txt000644 ï¿½ï¿½ï¿½000120 00702223325 12466640262 020237 0ustar00med-dsnadmin000000 000000 MarkerName       Allele1 Allele2 FreqAllele1HapMapCEU    b       se      p       N
 .
 .
 .
@@ -3957,66 +3942,6 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5
 
 
 
-/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GIANT2014_5.Orig3.dtlesssignif.vs1.SignCrrct.vs1.txt
-GIANT2014_5.Orig3.RSS0.vs1.SignCrrct.vs1.txt
-
-
-
-
-
-
-
-
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/DataOrganization.GIANT2010.PythonVLookUp.PutTogetherProcessAndAnnotFiles.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GIANT2014_5.Orig3.dtlesssignif.vs1.txt --file2 <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GIANT2014_5_Orig3_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz | perl -lane 'my $chr; my $pos; if (($F[3] eq "NA") || ($F[3] eq "None")) { $chr = "NA"; $pos = "NA"; } else { $chr = ((split(/_/, $F[3]))[0]); $pos = ((split(/_/, $F[3]))[1]); } splice(@F, 1, 0, ($chr, $pos)); splice(@F, 8, 1); splice(@F, 11, 1); splice(@F, 14, 1); print join("\t", @F);') | \
-gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GIANT2014_5.Orig3.dtlesssignif.vs1.annot.vs1.txt.gz
-#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GIANT2014_5.Orig3.dtlesssignif.vs1.annot.vs1.txt.gz
-#snp chr pos a1 a2 chrbp maf annot beta_height se_height n_height beta_BMI se_BMI n_BMI beta_WHRadjBMI se_WHRadjBMI n_WHRadjBMI Z.height Z.BMI Z.WHRadjBMI mvstat mvp unip
-
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/DataOrganization.GIANT2010.PythonVLookUp.PutTogetherProcessAndAnnotFiles.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.vs2.dtlesssignif.vs1.SignCrrct.vs1.txt --file2 <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT_AllPheno_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.SignCrrct.vs1.RAF.txt.gz | perl -lane 'my $chr; my $pos; if ($F[3] eq "NA") { $chr = "NA"; $pos = "NA"; } else { $chr = ((split(/_/, $F[3]))[0]); $pos = ((split(/_/, $F[3]))[1]); } splice(@F, 1, 0, ($chr, $pos)); splice(@F, 8, 1); splice(@F, 11, 1); splice(@F, 14, 1); print join("\t", @F);') | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.dtlesssignif.vs1.SignCrrect.vs1.annot.vs1.RAF.txt.gz
-
-#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.dtlesssignif.vs1.SignCrrect.vs1.annot.vs1.RAF.txt.gz
-#snp chr pos a1 a2 chrbp raf annot beta_height se_height n_height beta_BMI se_BMI n_BMI beta_WHRadjBMI se_WHRadjBMI n_WHRadjBMI Z.height Z.BMI Z.WHRadjBMI mvstat mvp unip
-
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.dtlesssignif.vs1.SignCrrect.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[6] > .5) { $F[6] = 1 - $F[6]; $F[17] = $F[17] * -1; $F[18] = $F[18] * -1; $F[19] = $F[19] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.dtlesssignif.vs1.SignCrrect.vs1.annot.vs1.MAF.txt.gz 
-
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/DataOrganization.GIANT2014_5.PythonVLookUp.CreateFullAnnotFile.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt --file2 /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz,/mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.gz,/mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.txt.gz | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GIANT2014_5_Orig3_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz
-
-
-
-
-
-
-
-join <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | awk '{ print $1, "\t", $2 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.gz | sort) | perl -lane 'if ($F[1] ne $F[2]) { F[7] = -1 * $F[7]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.gz
-
-
-
-
-
-
-
-
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GLC.MTedits.ForGIANT2014_5.Orig3.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GLC.MTedits.ForGIANT2014_5.Orig3.vs1.SignCrrct.vs1.R
-
-
-/mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz
-/mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.gz
-/mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.txt.gz
-
-height=read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz",header=T)
-BMI=read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.gz",header=T)
-WHRadjBMI=read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.txt.gz",header=T)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -4160,6 +4085,17 @@ CHR     SNP     BP      A1   A2 FRQ_A_12882     FRQ_U_21770     INFO    OR      
 12716151 216174232 1348769658
 ~~~
 
+
+
+
+
+
+
+
+
+
+
+
 ##TAG 2010 dbsnp ###, GWAS = , N = 74053
 ##20150601
 
@@ -4230,67 +4166,143 @@ zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.tbl.gz | awk '{ prin
 0.0002  1.4694  7347
 0.0001  0.5955  5955
 -0.0002 1.1889  5944.5
-[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/TAG2010]$zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.tbl.gz | perl -lane 'my $SEovrBet; if ($F[8] != 0) { $SEovrBet = $F[9] / $F[8]; } else { $SEovrBet = $F[9]; } print $F[8], "\t", $F[9], "\t", abs($SEovrBet);' | sort -k 3,3 -g | head -n 10
-OR      SE      0
-0       0.0808  0.0808
-1.0235  0.0828  0.0808988764044944
-0       0.0809  0.0809
-0       0.081   0.081
-0       0.0811  0.0811
-0       0.0811  0.0811
-0       0.0811  0.0811
-0       0.0811  0.0811
-0       0.0811  0.0811
-[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/TAG2010]$zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.logonset.tbl.gz | perl -lane 'my $SEovrBet; if ($F[8] != 0) { $SEovrBet = $F[9] / $F[8]; } else { $SEovrBet = $F[9]; } print $F[8], "\t", $F[9], "\t", abs($SEovrBet);' | sort -k 3,3 -rg | head -n 10
-0.0001  0.158   1580
-0.0001  0.1482  1482
--0.0001 0.1338  1338
--0.0002 0.2598  1299
--0.0002 0.1589  794.5
--0.0002 0.1589  794.5
--0.0002 0.1589  794.5
--0.0002 0.1584  792
-0.0001  0.0784  784
-0.0001  0.0741  741
-[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/TAG2010]$zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.former.tbl.gz | perl -lane 'my $SEovrBet; if ($F[8] != 0) { $SEovrBet = $F[9] / $F[8]; } else { $SEovrBet = $F[9]; } print $F[8], "\t", $F[9], "\t", abs($SEovrBet);' | sort -k 3,3 -rg | head -n 10
-0.0001  0.8011  8011
--0.0001 0.4908  4908
--0.0001 0.4321  4321
--0.0001 0.4161  4161
--0.0001 0.4019  4019
-0.0001  0.3906  3906
-0.0001  0.3542  3542
-0.0003  0.9047  3015.66666666667
-0.0001  0.2955  2955
-0.0001  0.271   2710
-[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/TAG2010]$zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.evrsmk.tbl.gz | perl -lane 'my $SEovrBet; if ($F[8] != 0) { $SEovrBet = $F[9] / $F[8]; } else { $SEovrBet = $F[9]; } print $F[8], "\t", $F[9], "\t", abs($SEovrBet);' | sort -k 3,3 -rg | head -n 10
--0.0002 0.6485  3242.5
-0.0002  0.4935  2467.5
-0.0003  0.7362  2454
--0.0001 0.2229  2229
-0.0003  0.6205  2068.33333333333
--0.0001 0.1913  1913
--0.0002 0.369   1845
-0.0001  0.1763  1763
-0.0001  0.1762  1762
-0.0001  0.1689  1689
-[  mturchin20@spudling26  /mnt/gluster/data/external_public_supp/TAG2010]$zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.tbl.gz | perl -lane 'my $SEovrBet; if ($F[8] != 0) { $SEovrBet = $F[9] / $F[8]; } else { $SEovrBet = $F[9]; } print $F[8], "\t", $F[9], "\t", abs($SEovrBet);' | sort -k 3,3 -rg | head -n 10
-0.0001  4.4321  44321
--0.0002 2.4013  12006.5
-0.0001  0.9381  9381
--0.0001 0.9091  9091
--0.0001 0.8273  8273
-0.0001  0.7681  7681
--0.0007 5.1579  7368.42857142857
-0.0002  1.4694  7347
-0.0001  0.5955  5955
--0.0002 1.1889  5944.5
+join <(zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.logonset.IncAllele.tbl.gz | awk '{ print $2, "\t", $4 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.evrsmk.tbl.gz | perl -lane 'if ($F[8] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = 1 - $F[5]; $F[8] = $F[8] * -1; } ($F[0], $F[1]) = ($F[1], $F[0]); print join("\t", @F);' | sort) | perl -lane 'if ($F[1] ne $F[4]) { $F[11] = $F[11] * -1; } splice(@F, 1, 1); ($F[0], $F[1]) = ($F[1], $F[0]); print join("\t", @F);' | grep -v -w NA | gzip > /mnt/gluster/data/external_public_supp/TAG2010/tag.evrsmk.MatchedTologonset.IncAllele.tbl.gz
+join <(zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.logonset.IncAllele.tbl.gz | awk '{ print $2, "\t", $4 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.tbl.gz | perl -lane 'if ($F[8] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = 1 - $F[5]; $F[8] = $F[8] * -1; } ($F[0], $F[1]) = ($F[1], $F[0]); print join("\t", @F);' | sort) | perl -lane 'if ($F[1] ne $F[4]) { $F[11] = $F[11] * -1; } splice(@F, 1, 1); ($F[0], $F[1]) = ($F[1], $F[0]); print join("\t", @F);' | grep -v -w NA | gzip > /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.MatchedTologonset.IncAllele.tbl.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+~~~
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1]$zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.logonset.IncAllele.tbl.gz | sort -k 2,2 | head -n 10
+CHR     SNP     BP      A1      A2      FRQ_A   FRQ_U   INFO    OR      SE      P
+12      rs1000000       125456933       A       G       0.2149  0.2149  1       0.0015  0.0028  0.5847
+4       rs10000010      21227772        C       T       0.503   0.497   1       0.0019  0.0022  0.3898
+4       rs10000012      1347325 G       C       0.1252  0.8748  1       0.0018  0.0035  0.6073
+4       rs10000013      36901464        A       C       0.7617  0.7617  1       0.0011  0.0027  0.6714
+4       rs10000017      84997149        T       C       0.2181  0.2181  1       0.0024  0.0028  0.4005
+3       rs1000002       185118462       T       C       0.4848  0.4848  1       0.0003  0.0023  0.8782
+4       rs10000023      95952929        T       G       0.6007  0.6007  1       0.0037  0.0023  0.1137
+4       rs10000029      138905074       C       T       0.0178  0.9822  1       0.0073  0.0152  0.6312
+3       rs1000003       99825597        G       A       0.1601  0.8399  1       0.0001  0.0031  0.9695
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1]$zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.former.MatchedTologonset.IncAllele.tbl.gz | head -n 10
+CHR     SNP     BP      A1      A2      FRQ_A   FRQ_U   INFO    OR      SE      P
+12      rs1000000       125456933       A       G       0.2174  0.2174  1       0.027   0.0194  0.1647
+4       rs10000010      21227772        C       T       0.498   0.502   1       0.0052  0.0158  0.7428
+4       rs10000012      1347325 G       C       0.1304  0.8696  1       0.0181  0.0242  0.454
+4       rs10000013      36901464        C       A       0.2327  0.7673  1       0.0049  0.0191  -0.7969
+4       rs10000017      84997149        T       C       0.2208  0.2208  1       0.0101  0.0211  0.631
+3       rs1000002       185118462       C       T       0.5149  0.4851  1       0.0262  0.016   -0.1004
+4       rs10000023      95952929        G       T       0.4025  0.5975  1       0.0054  0.0163  -0.7399
+4       rs10000029      138905074       C       T       0.0184  0.9816  1       0.0176  0.1325  0.8943
+3       rs1000003       99825597        G       A       0.1574  0.8426  1       0.0006  0.0218  0.9781
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1]$zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.evrsmk.MatchedTologonset.IncAllele.tbl.gz | head -n 10
+CHR     SNP     BP      A1      A2      FRQ_A   FRQ_U   INFO    OR      SE      P
+12      rs1000000       125456933       G       A       0.7634  0.2366  1       0.0063  0.0141  -0.6532
+4       rs10000010      21227772        C       T       0.4965  0.5035  1       0.0105  0.0116  0.3663
+4       rs10000012      1347325 G       C       0.1637  0.8363  1       0.0131  0.0177  0.4572
+4       rs10000013      36901464        C       A       0.2492  0.7508  1       0.0009  0.0139  -0.9479
+4       rs10000017      84997149        T       C       0.2451  0.2451  1       0.0086  0.0152  0.571
+3       rs1000002       185118462       T       C       0.4801  0.4801  1       0.0176  0.0116  0.1291
+4       rs10000023      95952929        G       T       0.4126  0.5874  1       0.0041  0.0118  -0.7252
+4       rs10000029      138905074       C       T       0.1855  0.8145  1       0.0099  0.1235  0.9362
+3       rs1000003       99825597        A       G       0.8152  0.8152  1       0.0077  0.0159  -0.6266
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1]$zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.MatchedTologonset.IncAllele.tbl.gz | head -n 10
+CHR     SNP     BP      A1      A2      FRQ_A   FRQ_U   INFO    OR      SE      P
+12      rs1000000       125456933       G       A       0.7836  0.2164  1       0.1189  0.0995  -0.2322
+4       rs10000010      21227772        C       T       0.4972  0.5028  1       0.0847  0.0809  0.2955
+4       rs10000012      1347325 G       C       0.1308  0.8692  1       0.0459  0.1225  0.7082
+4       rs10000013      36901464        C       A       0.231   0.769   1       0.1827  0.0986  -0.06375
+4       rs10000017      84997149        T       C       0.2209  0.2209  1       0.0564  0.1064  0.5958
+3       rs1000002       185118462       C       T       0.5145  0.4855  1       0.0489  0.0819  -0.5508
+4       rs10000023      95952929        G       T       0.4026  0.5974  1       0.0554  0.0841  -0.51
+4       rs10000029      138905074       T       C       0.9827  0.9827  1       0.6773  0.7148  -0.3434
+3       rs1000003       99825597        A       G       0.8435  0.8435  1       0.1192  0.1125  -0.2893
 ~~~
 
-zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.logonset.tbl.gz | perl -lane 'my $scaledSE; if ($F[8] == 0) { $scaledSE = $F[9] / 1580; } else { $scaledSE = ($F[9] / abs($F[8])) / 1580; } push(@F, (74053 * (1 - $scaledSE))); print join("\t", @F);' | awk '{ print $1, "\t", $3, "\t", $2, "\t", $6, "\t", $11, "\t", $12 }' | gzip > /mnt/gluster/data/external_public_supp/TAG2010/tag.logonset.formatted.scaledSEN.tbl.gz
-zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.former.tbl.gz | perl -lane 'my $scaledSE; if ($F[8] == 0) { $scaledSE = $F[9] / 8011; } else { $scaledSE = ($F[9] / abs($F[8])) / 8011; } push(@F, (74053 * (1 - $scaledSE))); print join("\t", @F);' | awk '{ print $1, "\t", $3, "\t", $2, "\t", $6, "\t", $11, "\t", $12 }' | gzip > /mnt/gluster/data/external_public_supp/TAG2010/tag.former.formatted.scaledSEN.tbl.gz
-zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.evrsmk.tbl.gz | perl -lane 'my $scaledSE; if ($F[8] == 0) { $scaledSE = $F[9] / 3242.5; } else { $scaledSE = ($F[9] / abs($F[8])) / 3242.5; } push(@F, (74053 * (1 - $scaledSE))); print join("\t", @F);' | awk '{ print $1, "\t", $3, "\t", $2, "\t", $6, "\t", $11, "\t", $12 }' | gzip > /mnt/gluster/data/external_public_supp/TAG2010/tag.evrsmk.formatted.scaledSEN.tbl.gz
-zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.tbl.gz | perl -lane 'my $scaledSE; if ($F[8] == 0) { $scaledSE = $F[9] / 44321; } else { $scaledSE = ($F[9] / abs($F[8])) / 44321; } push(@F, (74053 * (1 - $scaledSE))); print join("\t", @F);' | awk '{ print $1, "\t", $3, "\t", $2, "\t", $6, "\t", $11, "\t", $12 }' | gzip > /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.formatted.scaledSEN.tbl.gz
+zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.logonset.IncAllele.tbl.gz | awk '{ print $1, "\t", $3, "\t", $2, "\t", $6, "\t", $11, "\t74053" }' | gzip > /mnt/gluster/data/external_public_supp/TAG2010/tag.logonset.IncAllele.formatted.maxN.tbl.gz
+zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.former.MatchedTologonset.IncAllele.tbl.gz | awk '{ print $1, "\t", $3, "\t", $2, "\t", $6, "\t", $11, "\t74053" }' | gzip > /mnt/gluster/data/external_public_supp/TAG2010/tag.former.MatchedTologonset.IncAllele.formatted.maxN.tbl.gz
+zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.evrsmk.MatchedTologonset.IncAllele.tbl.gz | awk '{ print $1, "\t", $3, "\t", $2, "\t", $6, "\t", $11, "\t74053" }' | gzip > /mnt/gluster/data/external_public_supp/TAG2010/tag.evrsmk.MatchedTologonset.IncAllele.formatted.maxN.tbl.gz
+zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.MatchedTologonset.IncAllele.tbl.gz | awk '{ print $1, "\t", $3, "\t", $2, "\t", $6, "\t", $11, "\t74053" }' | gzip > /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.MatchedTologonset.IncAllele.formatted.maxN.tbl.gz
+
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join -a 1 -a 2 -1 3 -2 3 -e NA2 -o 0 1.1 1.2 1.4 1.5 1.6 2.1 2.2 2.4 2.5 2.6 <(zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.logonset.IncAllele.formatted.maxN.tbl.gz | sort -g -k 3,3) <(zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.former.MatchedTologonset.IncAllele.formatted.maxN.tbl.gz | sort -g -k 3,3 ) | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
+join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.evrsmk.MatchedTologonset.IncAllele.formatted.maxN.tbl.gz  | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 9)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
+join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.MatchedTologonset.IncAllele.formatted.maxN.tbl.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 14)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
+sed 's/FRQ_A/RAF/g' | perl -lane 'print $F[0], "\t", join("\t", split(/_/, $F[1]));' | gzip > /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.txt.pre1.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+~~~
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1]$zcat /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.txt.pre1.gz | head -n 10
+rs1172982  1    100002699       0.6717  0.7307  74053   1       100002699       0.6656  0.1343  74053   1 100002699     0.6563  0.6712  74053   1 100002699     0.6681  0.6283  74053
+rs1172981  1    100002785       0.0736  0.5609  74053   1       100002785       0.9214  -0.2204 74053   1 100002785     0.8893  -0.9351 74053   1 100002785     0.9227  -0.849  74053
+rs11166327 1    100003455       0.0691000000000001      0.6123  74053   1       100003455       0.9284  -0.2026 74053   1 100003455     0.8962  -0.6423 74053   1       100003455 0.9299        -0.9616 74053
+rs4908018  1    100006955       0.0738  0.5364  74053   1       100006955       0.9211  -0.2506 74053   1 100006955     0.8891  -0.9414 74053   1 100006955     0.9224  -0.8526 74053
+rs2392072  1    100007331       0.6739  0.7426  74053   1       100007331       0.6681  0.1538  74053   1 100007331     0.6595  0.7959  74053   1 100007331     0.671   0.4886  74053
+rs12129588 1    100007519       0.0865  0.8712  74053   1       100007519       0.909   -0.3236 74053   1 100007519     0.124   0.74    74053   1 100007519     0.909   -0.6867 74053
+rs10875256 1    100007856       0.074   0.5412  74053   1       100007856       0.9208  -0.2383 74053   1 100007856     0.8888  -0.9605 74053   1 100007856     0.9221  -0.8255 74053
+rs7541580  1    100008014       0.7545  0.7303  74053   1       100008014       0.7538  0.3041  74053   1 100008014     0.7371  0.7455  74053   1 100008014     0.755   0.5979  74053
+rs883532   1    100008025       0.7543  0.7289  74053   1       100008025       0.7537  0.3126  74053   1 100008025     0.7371  0.7511  74053   1 100008025     0.7549  0.613   74053
+rs883533   1    100008439       0.074   0.5386  74053   1       100008439       0.9207  -0.2291 74053   1 100008439     0.8887  -0.9712 74053   1 100008439     0.922   -0.8316 74053
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1]$zcat /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.txt.pre1.gz | wc
+2530634 53143318 342155691
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1]$zcat /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.txt.pre1.gz | perl -lane 'print $#F;' | sort | uniq -c
+2530633 20
+      1 24
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1]$zcat /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.txt.pre1.gz | perl -lane 'if ($#F == 24) { print join("\t", @F); }' 
+SNP     CHR     BP      FRQ     A       P       74053   CHR     BP      FRQ     A       P       74053   CHR     BP      FRQ     A       P       74053   CHR     BP      FRQ     A P     74053
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1]$zcat /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.txt.pre1.gz | perl -lane 'print $#F;' | sort | uniq -c
+2530634 20
+~~~
+
+zcat /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.txt.pre1.gz | grep -v NA2 | gzip > /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.txt.pre2.gz
+
+zcat /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.txt.pre2.gz | perl -lane 'splice(@F, 21, 3); splice(@F, 16, 3); splice(@F, 11, 3); splice(@F, 6, 3); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.txt.gz
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/TAG/2010/TAG2010.Table2.MarkerChrBP.txt --file2 /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.wGWASannot.txt.gz 
+
+~~~
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1]$zcat /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
+2372914 0
+     14 1
+   3647 2
+~~~
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/process.MTedits.ForTAG2010.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/process.MTedits.ForTAG2010.vs1.SignCrrct.vs1.R
+
+LANG2=${LANG}   
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+#join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 1.12 1.13 2.2 2.3 2.4 2.5 2.6 2.7 2.8 <(zcat /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/TAG2010.dtlesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/TAG2010.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
+join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 1.12 1.13 2.2 2.3 2.4 2.5 2.6 2.7 2.8 <(zcat /mnt/gluster/data/external_public_supp/TAG2010/TAG2010.AllPhenos.MatchedTologonset.IncAllele.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/TAG2010.dtlesslesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/TAG2010.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/TAG2010.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | grep -v NA4 | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/TAG2010.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+
+#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/TAG2010.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+#snp chr pos raf p_logonset n_logonset p_former n_former p_evrsmk n_evrsmk p_cpd n_cpd annot Z.logonset Z.former Z.cpd Z.evrsmk mvstat mvp unip
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/TAG2010.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[13] = $F[13] * -1; $F[14] = $F[14] * -1; $F[15] = $F[15] * -1; $F[16] = $F[16] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/TAG2010.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MAGIC2010/Vs1/GLC.MTedits.ForMAGIC2010.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/GLC.MTedits.ForTAG2010.vs1.SignCrrct.vs1.R
+
+
+
 
 
 
@@ -4315,10 +4327,10 @@ zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.cpd.tbl.gz | perl -lane 
 ~~~
 Browser download (using AsperaConnect plugin) into:
 
- new directory â you will be asked for download location.
+ new directory Ã¢ÂÂ you will be asked for download location.
 
  if process fails - it can be continued later from this page (which can be accessed from "Downloads" tab).
-    default location â change it in Aspera preferences
+    default location Ã¢ÂÂ change it in Aspera preferences
 
     default download directory is usually set to "Desktop", which is hardly good place for large files
 
@@ -4329,7 +4341,7 @@ OR
 Run ascp manually using command line below. 
 "%ASPERA_CONNECT_DIR%\bin\ascp" -QTr -l 300M -k 1 -i "%ASPERA_CONNECT_DIR%\etc\asperaweb_id_dsa.openssh" -W A869B89C8E1A84D3EA8F7D3D242B62CA62482ECA6FA4B45B48A99342E22060B8D6EDEB65E21E3478D92444D39011EF190D dbtest@gap-upload.ncbi.nlm.nih.gov:data/instant/mturchin20/45646 . 
 This command includes a download ticket which will be valid for a limited time. Once the ticket is expired you will need to visit this page again to get the command with an updated ticket.
-%ASPERA_CONNECT_DIR% â path to Aspera Connect directory. You may have to adjust some ascp-specific command line keys for your environment and network connectivity. Please refer to the AsperaConnect user manual for more information.
+%ASPERA_CONNECT_DIR% Ã¢ÂÂ path to Aspera Connect directory. You may have to adjust some ascp-specific command line keys for your environment and network connectivity. Please refer to the AsperaConnect user manual for more information.
 ~~~
 
 #mkdir /Users/mturchin20/clstrHme/Data/dbGaPTempDownloads/
@@ -4961,6 +4973,256 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs
 
 
 
+##iGENBP2015
+##20160421
+
+mkdir /mnt/gluster/data/external_public_supp/iGENBP2015
+
+cd /mnt/gluster/data/external_public_supp/iGENBP2015
+
+#Downloaded from EGA using Matthew's access, https://www.ebi.ac.uk/ega/datasets/EGAD00010000819 and https://www.ebi.ac.uk/ega/about/your_EGA_account/download_streaming_client
+
+#On MacBook Air
+#cd 
+#java -jar
+#login mstephens@uchicago.edu
+#password: ?????
+#request dataset EGAD00010000819 abc request_EGAD00010000819
+#download request_EGAD00010000819
+#decrypt _ega-box-493_DBP_summary_stats.txt.cip abc
+#decrypt _ega-box-493_SBP_summary_stats.txt.cip abc
+#decrypt _ega-box-493_HT_summary_stats.txt.cip abc
+#decrypt _ega-box-493_MAP_summary_stats.txt.cip abc
+#decrypt _ega-box-493_PP_summary_stats.txt.cip abc
+
+gzip /mnt/gluster/data/external_public_supp/iGENBP2015/*
+
+paste <(zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_DBP_summary_stats.txt.gz | awk '{ print $4 }' | sort -g) <(zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | awk '{ print $4 }' | sort -g) <(zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_PP_summary_stats.txt.gz | awk '{ print $4 }' | sort -g) <(zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_MAP_summary_stats.txt.gz | awk '{ print $4 }' | sort -g) | vi - 
+
+for i in `ls -lrt /mnt/gluster/data/external_public_supp/iGENBP2015/. | grep ega-box | awk '{ print $9 }'`; do
+	echo /mnt/gluster/data/external_public_supp/iGENBP2015/$i;
+	zcat /mnt/gluster/data/external_public_supp/iGENBP2015/$i | head -n 10	
+done
+
+for i in `ls -lrt /mnt/gluster/data/external_public_supp/iGENBP2015/. | grep ega-box | awk '{ print $9 }'`; do
+	echo /mnt/gluster/data/external_public_supp/iGENBP2015/$i;
+	zcat /mnt/gluster/data/external_public_supp/iGENBP2015/$i | awk '{ print $4 }' | grep -v Beta | R -q -e "Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); var(Data1[,1]);";
+done
+
+~~~
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork]$for i in `ls -lrt /mnt/gluster/data/external_public_supp/iGENBP2015/. | grep ega-box | awk '{ print $9 }'`; do
+>         echo /mnt/gluster/data/external_public_supp/iGENBP2015/$i;
+>         zcat /mnt/gluster/data/external_public_supp/iGENBP2015/$i | head -n 10 
+> done
+/mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_DBP_summary_stats.txt.gz
+SNP     CHR     POS     Beta    N
+rs11099098      4       81388936        0.5092  83890.1
+rs13149993      4       81377569        0.464   92729.4
+rs11105378      12      88614872        -0.4897 93131.4
+rs12579302      12      88574634        0.478   93302.1
+rs11105354      12      88550654        0.4782  93193.5
+rs7136259       12      88605319        -0.4433 99947.3
+rs12230074      12      88614998        0.4806  90515.1
+rs17249754      12      88584717        -0.5308 64491.7
+rs11105368      12      88598572        -0.5284 64482.6
+/mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz
+SNP     CHR     POS     Beta    N
+rs11105354      12      88550654        1.0347  93206.5
+rs11105378      12      88614872        -1.0509 93144.4
+rs12579302      12      88574634        1.0286  93315.1
+rs12230074      12      88614998        1.0472  90528.2
+rs7136259       12      88605319        -0.898  99960.3
+rs2681485       12      88549753        0.8682  97835.7
+rs11105368      12      88598572        -1.0764 64495.6
+rs11105364      12      88593407        1.0741  64505.6
+rs17249754      12      88584717        -1.0728 64504.7
+/mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_HT_summary_stats.txt.gz
+SNP     CHR     POS     Beta    N
+rs1558902       16      52361075        0.1215  44430.5
+rs11099098      4       81388936        0.1256  34088.5
+rs7193144       16      52368187        -0.1163 44427.7
+rs8050136       16      52373776        0.1154  44431
+rs1458038       4       81383747        0.1228  34085
+rs9939609       16      52378028        0.1161  44428.5
+rs13149993      4       81377569        0.1129  37523.3
+rs9935401       16      52374339        0.1145  44435.5
+rs17817449      16      52370868        -0.1156 42441.4
+/mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_MAP_summary_stats.txt.gz
+SNP     CHR     POS     Beta    N
+rs11105354      12      88550654        0.6666  92197.5
+rs11105378      12      88614872        -0.6781 92135.4
+rs12579302      12      88574634        0.6638  92306.1
+rs12230074      12      88614998        0.6713  89519.1
+rs7136259       12      88605319        -0.5878 98951.3
+rs11105368      12      88598572        -0.7066 64482.6
+rs11105364      12      88593407        0.7055  64492.6
+rs17249754      12      88584717        -0.7069 64491.7
+rs2681485       12      88549753        0.5647  96826.8
+/mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_PP_summary_stats.txt.gz
+SNP     CHR     POS     Beta    N
+rs11105354      12      88550654        0.5208  93193.5
+rs11105378      12      88614872        -0.527  93131.4
+rs12579302      12      88574634        0.5153  93302.1
+rs12230074      12      88614998        0.5298  90515.1
+rs740406        19      2183221 -0.7295 91115
+rs1558118       19      2183083 0.6605  91115.1
+rs17477177      7       106199094       -0.5308 99344.1
+rs12705390      7       106198013       0.5263  99271
+rs17398575      7       106196688       0.531   99040.5
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork]$for i in `ls -lrt /mnt/gluster/data/external_public_supp/iGENBP2015/. | grep ega-box | awk '{ print $9 }'`; do
+>         echo /mnt/gluster/data/external_public_supp/iGENBP2015/$i;
+>         zcat /mnt/gluster/data/external_public_supp/iGENBP2015/$i | awk '{ print $4 }' | grep -v Beta | R -q -e "Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); var(Data1[,1]);";
+> done
+/mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_DBP_summary_stats.txt.gz
+> Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); var(Data1[,1]);
+     0%     25%     50%     75%    100% 
+-0.9704 -0.0507  0.0001  0.0508  0.9292 
+[1] 0.007225688
+> 
+> 
+/mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz
+> Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); var(Data1[,1]);
+     0%     25%     50%     75%    100% 
+-1.6847 -0.0876  0.0002  0.0879  1.8349 
+[1] 0.02180375
+> 
+> 
+/mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_HT_summary_stats.txt.gz
+> Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); var(Data1[,1]);
+     0%     25%     50%     75%    100% 
+-0.4023 -0.0161  0.0000  0.0161  0.3398 
+[1] 0.000767995
+> 
+> 
+/mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_MAP_summary_stats.txt.gz
+> Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); var(Data1[,1]);
+     0%     25%     50%     75%    100% 
+-1.0147 -0.0592  0.0001  0.0594  1.1646 
+[1] 0.009853744
+> 
+> 
+/mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_PP_summary_stats.txt.gz
+> Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); var(Data1[,1]);
+     0%     25%     50%     75%    100% 
+-1.0536 -0.0584  0.0001  0.0587  1.0419 
+[1] 0.009765907
+> 
+> 
+~~~
+
+cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | perl -lane 'print join("\t", @F[0..11]);' | grep SBP | perl -lane 'my $varY = $F[10]**2 * 2 * $F[7] * $F[8] * (1 - $F[8]); print $varY;' | R -q -e "Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));"
+cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | perl -lane 'print join("\t", @F[0..11]);' | grep DBP | perl -lane 'my $varY = $F[10]**2 * 2 * $F[7] * $F[8] * (1 - $F[8]); print $varY;' | R -q -e "Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));"
+cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | perl -lane 'print join("\t", @F[0..11]);' | grep PP | perl -lane 'my $varY = $F[10]**2 * 2 * $F[7] * $F[8] * (1 - $F[8]); print $varY;' | R -q -e "Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));"
+cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | perl -lane 'print join("\t", @F[0..11]);' | grep MAP | perl -lane 'my $varY = $F[10]**2 * 2 * $F[7] * $F[8] * (1 - $F[8]); print $varY;' | R -q -e "Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));"
+
+~~~
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | perl -lane 'print join("\t", @F[0..11]);' | grep SBP | perl -lane 'my $varY = $F[10]**2 * 2 * $F[7] * $F[8] * (1 - $F[8]); print $varY;' | R -q -e "Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));"
+in20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | perl -lane 'print join("\t", @F[0..11]);' | grep MAP | perl -lane 'my $varY = $F[10]**2 * 2 * $F[7] * $F[8] * (1 - $F[8]); print $varY;' | R -q -e "Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));"
+> Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));
+[1]  11.00000 434.46853  43.88172
+> 
+> 
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | perl -lane 'print join("\t", @F[0..11]);' | grep DBP | perl -lane 'my $varY = $F[10]**2 * 2 * $F[7] * $F[8] * (1 - $F[8]); print $varY;' | R -q -e "Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));"
+> Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));
+[1]   5.00000 162.42747  16.25914
+> 
+> 
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | perl -lane 'print join("\t", @F[0..11]);' | grep PP | perl -lane 'my $varY = $F[10]**2 * 2 * $F[7] * $F[8] * (1 - $F[8]); print $varY;' | R -q -e "Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));"
+> Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));
+[1]  10.00000 219.57919  41.20232
+> 
+> 
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | perl -lane 'print join("\t", @F[0..11]);' | grep MAP | perl -lane 'my $varY = $F[10]**2 * 2 * $F[7] * $F[8] * (1 - $F[8]); print $varY;' | R -q -e "Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));"
+> Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));
+[1]  14.00000 209.79683  50.63987
+> 
+> 
+~~~
+
+#var(Y) values for each phenotype
+#SBP = 434.46853
+#DBP = 162.42747
+#PP = 219.57919
+#MAP = 209.79683
+
+##python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp129.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);')  --file2 /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wUCSCGB_snp129.vs3.txt.gz & 
+##python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp130.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);')  --file2 /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wUCSCGB_snp130.vs3.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap21.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap22.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap23.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap24.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap27.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap28.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_DBP_summary_stats.txt.gz | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_DBP_summary_stats.wHapMap27.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_PP_summary_stats.txt.gz | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_PP_summary_stats.wHapMap27.txt.gz &
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsinHapMap.vs3.py --file1 placeholder.gz --file2 /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_MAP_summary_stats.txt.gz | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_MAP_summary_stats.wHapMap27.txt.gz &
+
+#Going with HapMap27 -- see below
+~~~
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap21.txt.gz | awk '{ print $6 }' | grep NA | wc
+  25610   25610   76830
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap22.txt.gz | awk '{ print $6 }' | grep NA | wc
+   2826    2826    8478
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap23.txt.gz | awk '{ print $6 }' | grep NA | wc
+    375     375    1125
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap24.txt.gz | awk '{ print $6 }' | grep NA | wc
+    364     364    1092
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap27.txt.gz | awk '{ print $6 }' | grep NA | wc
+     40      40     120
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap28.txt.gz | awk '{ print $6 }' | grep NA | wc
+    121     121     363
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap21.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[5]); if ($F[2] eq $vals1[1]) { print "match"; } else { print "nope"; }' | sort | uniq -c
+1308179 match
+ 819704 nope
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[5]); if ($F[2] eq $vals1[1]) { print "match"; } else { print "nope"; }' | sort | uniq -c
+2125048 match
+   2835 nope
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap23.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[5]); if ($F[2] eq $vals1[1]) { print "match"; } else { print "nope"; }' | sort | uniq -c
+2126749 match
+   1134 nope
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap24.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[5]); if ($F[2] eq $vals1[1]) { print "match"; } else { print "nope"; }' | sort | uniq -c
+2127513 match
+    370 nope
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap27.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[5]); if ($F[2] eq $vals1[1]) { print "match"; } else { print "nope"; }' | sort | uniq -c
+2127840 match
+     43 nope
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap28.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[5]); if ($F[2] eq $vals1[1]) { print "match"; } else { print "nope"; }' | sort | uniq -c
+2127756 match
+    127 nope
+~~~
+
+zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap27.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[5]); if (($F[5] ne "NA") && ($vals1[3] > 0) && ($vals1[3] < 1)) { push(@F, sqrt(434.46853 / (2 * $F[4] * $vals1[3] * (1 - $vals1[3]))));} else {push (@F, "NA"); } print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.wHapMap27.wSE.txt.gz
+zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_DBP_summary_stats.wHapMap27.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[5]); if (($F[5] ne "NA") && ($vals1[3] > 0) && ($vals1[3] < 1)) { push(@F, sqrt(162.42747 / (2 * $F[4] * $vals1[3] * (1 - $vals1[3]))));} else {push (@F, "NA"); } print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_DBP_summary_stats.wHapMap27.wSE.txt.gz
+zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_PP_summary_stats.wHapMap27.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[5]); if (($F[5] ne "NA") && ($vals1[3] > 0) && ($vals1[3] < 1)) { push(@F, sqrt(219.57919 / (2 * $F[4] * $vals1[3] * (1 - $vals1[3]))));} else {push (@F, "NA"); } print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_PP_summary_stats.wHapMap27.wSE.txt.gz
+zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_MAP_summary_stats.wHapMap27.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[5]); if (($F[5] ne "NA") && ($vals1[3] > 0) && ($vals1[3] < 1)) { push(@F, sqrt(209.79683 / (2 * $F[4] * $vals1[3] * (1 - $vals1[3]))));} else {push (@F, "NA"); } print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_MAP_summary_stats.wHapMap27.wSE.txt.gz
+
+
+
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | perl -lane 'print join("\t", @F[0..11]);' | grep MAP | perl -lane 'my $varY = $F[10]**2 * 2 * $F[7] * $F[8] * (1 - $F[8]); print $varY;' | R -q -e "Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));"
+> Data1 <- read.table(file('stdin'), header=F); print(c(length(Data1[,]), mean(Data1[,1]), sd(Data1[,1])));
+[1]  14.00000 209.79683  50.63987
+>
+>
+~
+
+#var(Y) values for each phenotype
+#SBP = 434.46853
+#DBP = 162.42747
+#PP = 219.57919
+#MAP = 209.79683
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5349,10 +5611,6 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs
 
 
 
-
-
-
-
 ##MAGIC2012 -- ??dbSNP (no obvious mention of specific dbSNP in main article or a few of the supplementary notes/tables...assuming same as MAGIC2010 for now?), 0 GWAS, (6 + 7 <5e-8 follow-up) N = 51750 (source: http://www.nature.com.proxy.uchicago.edu/ng/journal/v44/n6/full/ng.2274.html) 
 ##20150806
 
@@ -5538,6 +5796,10 @@ python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.Per
 
 
 
+
+
+
+
 ##GEFOS2015 --
 ##(from GEFOS 2012 "...HapMap(37) Phase 2 release 22 using Genome Build 36..." dbSNP (source: http://www.nature.com/ng/journal/v44/n5/full/ng.2249.html), 34 <5e-8 82 <5e-6 GWAS, N=~33k for FN, ~32k for LS)
 ##20150225
@@ -5553,6 +5815,263 @@ wget http://www.gefos.org/sites/default/files/fa2stu.MAF0_.005.pos_.out_.gz
 wget http://www.gefos.org/sites/default/files/fn2stu.MAF0_.005.pos_.out_.gz
 wget http://www.gefos.org/sites/default/files/ls2stu.MAF0_.005.pos_.out_.gz
 
+# /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.out_.gz, /mnt/gluster/data/external_public_supp/GEFOS2015/fn2stu.MAF0_.005.pos_.out_.gz, /mnt/gluster/data/external_public_supp/GEFOS2015/ls2stu.MAF0_.005.pos_.out_.gz
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1
+
+~~~
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.out_.gz | head -n 10
+chromosome      position        rs_number       reference_allele        other_allele    eaf     beta    se      beta_95L        beta_95U        z       p-value _-log10_p-value q_statistic     q_p-value       i2      n_studies      n_samples       effects
+1       12775981        chr1:12775981   G       T       0.955927        -0.062953       0.040715        -0.142754       0.016849        -1.546183       0.129581        0.887459        2.757511        0.599189        0.000000       5       -9      ---+-
+1       12776140        chr1:12776140   C       T       0.997375        0.031278        0.263981        -0.486125       0.548682        0.118487        0.907511        0.042148        4.533338        0.103657        0.558824       3       -9      +--??
+1       12776161        chr1:12776161   G       A       0.965792        -0.056473       0.040835        -0.136511       0.023564        -1.382954       0.175175        0.756528        2.318770        0.677354        0.000000       5       -9      ---+-
+1       12776218        chr1:12776218   A       C       0.133095        0.027112        0.023202        -0.018364       0.072588        1.168497        0.251993        0.598612        4.922087        0.295386        0.187337       5       -9      --+-+
+1       12776441        chr1:12776441   C       T       0.999364        0.472124        0.349409        -0.212718       1.156966        1.351206        0.185290        0.732147        0.957117        0.619676        0.000000       3       -9      -++??^
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.out_.gz | wc
+9955366 189151954 1374529291
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.out_.gz | awk '{ if ($6 > .01) { print $0 } } ' | wc
+8293153 157569907 1143500630
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.out_.gz | awk '{ if ($6 > .05) { print $0 } } ' | wc
+6283522 119386918 864281277
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.out_.gz | awk '{ if (($6 >= .05) && ($6 <= .95)) { print $0 } } ' | wc
+6050596 114961324 831285723
+
+~~~
+
+#zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.out_.gz | perl -lane 'if ($F[6] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = 1 - $F[5]; $F[6] = $F[6] * -1; } print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.IncAllele.out_.gz
+zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.out_.gz | awk '{ if (($6 >= .05) && ($6 <= .95)) { print $0 } } ' | perl -lane 'if ($F[6] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = 1 - $F[5]; $F[6] = $F[6] * -1; } print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.maf05.IncAllele.out_.gz
+#From http://www.nature.com.proxy.uchicago.edu/nature/journal/v526/n7571/full/nature14878.html
+#Doing >.05 maf cutoff since it's unclear whether single-snp tests or skat were using for results < .05 
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join -1 1 -2 3 <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.maf05.IncAllele.out_.gz | awk '{ print $3, "\t", $4 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fn2stu.MAF0_.005.pos_.out_.gz | awk '{ if (($6 >= .05) && ($6 <= .95)) { print $0 } } ' | perl -lane 'if ($F[6] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = 1 - $F[5]; $F[6] = $F[6] * -1; } print join("\t", @F);' | sort -k 3,3) | perl -lane 'if ($F[1] ne $F[4]) { $F[12] = $F[12] * -1; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/fn2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.out_.gz
+join -1 1 -2 3 <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.maf05.IncAllele.out_.gz | awk '{ print $3, "\t", $4 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/ls2stu.MAF0_.005.pos_.out_.gz | awk '{ if (($6 >= .05) && ($6 <= .95)) { print $0 } } ' | perl -lane 'if ($F[6] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = 1 - $F[5]; $F[6] = $F[6] * -1; } print join("\t", @F);' | sort -k 3,3) | perl -lane 'if ($F[1] ne $F[4]) { $F[12] = $F[12] * -1; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/ls2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.out_.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+#From http://www.ncbi.nlm.nih.gov/pubmed/26367794
+#53,236
+#From http://www.nature.com.proxy.uchicago.edu/nature/journal/v526/n7571/full/nature14878.html
+#32,965
+
+zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.maf05.IncAllele.out_.gz | awk '{ print $1, "\t", $2, "\t", $3, "\t", $6, "\t", $12, "\t32965" }' | grep -v chromosome | cat <(echo "chromosome       position        rs_number       eaf     p-value        32965") - | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.maf05.IncAllele.formatted.out_.gz 
+
+zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fn2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.out_.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $6, "\t", $12, "\t32965" }' | grep -v chromosome | cat <(echo "chromosome       position        rs_number       eaf     p-value        32965") - | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/fn2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.out_.gz 
+zcat /mnt/gluster/data/external_public_supp/GEFOS2015/ls2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.out_.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $6, "\t", $12, "\t32965" }' | grep -v chromosome | cat <(echo "chromosome       position        rs_number       eaf     p-value        32965") - | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/ls2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.out_.gz 
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join -a 1 -a 2 -1 3 -2 3 -e NA2 -o 0 1.1 1.2 1.4 1.5 1.6 2.1 2.2 2.4 2.5 2.6 <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.maf05.IncAllele.formatted.out_.gz | sort -k 3,3) <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fn2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.out_.gz | sort -k 3,3 ) | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
+join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/ls2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.out_.gz | sort -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 9)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
+perl -lane 'print $F[0], "\t", join("\t", split(/_/, $F[1]));' | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.vs2.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+#When including sort -g vs sort (no -g); originally did -g and got odd 'NA2' pattern seen below. Reran using just 'sort -k 3,3' and not 'sort -g -k 3,3' -- maybe has something to do with there being 'chr#:#####' & 'rs#####' SNPs and not just 'rs######' SNPs?
+~~~
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.vs2.gz | grep -w rs1026364
+rs1026364  3    113370010       0.345267        0.233148        32965   3       113370010       0.345267        0.003349        32965   3       113370010       0.345267        0.170923        32965
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | grep -w rs1026364
+rs1026364  NA2  NA2     NA2     NA2     NA2     3       113370010       0.345267        0.003349        32965   3       113370010       0.345267        0.170923        32965
+rs1026364  3    113370010       0.345267        0.233148        32965   NA2     NA2     NA2     NA2     NA2     NA2     NA2     NA2     NA2     NA2
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | wc
+8243611 131897776 868195497
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | head -n 10
+rs10875231 1    100000012       0.736038        0.504973        32965   1       100000012       0.736038        0.268903        32965   1       100000012       0.736038        0.439536        32965
+rs6678176  1    100000827       0.671599        0.939880        32965   1       100000827       0.671599        0.393617        32965   1       100000827       0.671599        0.464566        32965
+rs78286437 1    100000843       0.0640414       0.361240        32965   1       100000843       0.0640414       0.692619        32965   1       100000843       0.9359586       -0.970171       32965
+rs76909621 1    100001201       0.0715195       0.643955        32965   1       100001201       0.9284805       -0.003477       32965   1       100001201       0.9284805       -0.51181        32965
+rs78642210 1    100002490       0.0565632       0.387533        32965   1       100002490       0.0565632       0.723796        32965   1       100002490       0.9434368       -0.997111       32965
+rs77140576 1    100002713       0.078043        0.653540        32965   1       100002713       0.921957        -0.001641       32965   1       100002713       0.921957        -0.629039       32965
+rs113470118     1       100002714       0.0567224       0.394022        32965   1       100002714       0.0567224       0.679943        32965   1       100002714       0.0567224       0.993266        32965
+rs7545818  1    100002882       0.65529 0.956953        32965   1       100002882       0.65529 0.404991        32965   1       100002882       0.65529 0.477079        32965
+rs75635821 1    100002991       0.0770883       0.590676        32965   1       100002991       0.9229117       -0.00239        32965   1       100002991       0.9229117       -0.776492       32965
+rs78948828 1    100003204       0.0550517       0.396100        32965   1       100003204       0.0550517       0.681206        32965   1       100003204       0.0550517       0.993171        32965
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | perl -lane 'print $#F;' | sort | uniq -c
+8243611 15
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | grep -v NA2 | wc
+3740785 59852560 443480696
+[  mturchin20@spudhead  /mnt/gluster/data/external_public_supp/GEFOS2015]$join <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | sort) <(cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.Marker.txt | sort) | wc
+     61     976    6416
+[  mturchin20@spudhead  /mnt/gluster/data/external_public_supp/GEFOS2015]$cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.Marker.txt | wc
+     61      61     616
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$join <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | sort) <(cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.Marker.txt | sort) | awk '{ print $1, "\t", $2, "\t", $3, "\t", $7, "\t", $8, "\t", $12, "\t", $13 }' | sed 's/NA2//g' | head -n 10
+rs10048146       16      86710660        16      86710660        16      86710660
+rs10226308       7       37938422        7       37938422        7       37938422
+rs10416218       19      33599127
+rs10416218                       19      33599127        19      33599127
+rs1053051        12      107367225       12      107367225       12      107367225
+rs11623869       14      103883633       14      103883633       14      103883633
+rs11755164       6       44639184        6       44639184        6       44639184
+rs12407028       1       68647716        1       68647716        1       68647716
+rs1286083        14      91442779
+rs1286083                        14      91442779        14      91442779
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBP.pre1.txt | sed 's/NA2//g' | head -n 10
+rs10048146       16      86710660        16      86710660        16      86710660
+rs10226308       7       37938422        7       37938422        7       37938422
+rs10416218       19      33599127                                
+rs10416218                       19      33599127        19      33599127
+rs1053051        12      107367225       12      107367225       12      107367225
+rs11623869       14      103883633       14      103883633       14      103883633
+rs11755164       6       44639184        6       44639184        6       44639184
+rs12407028       1       68647716        1       68647716        1       68647716
+rs1286083        14      91442779                                
+rs1286083                        14      91442779        14      91442779
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBP.pre1.txt | sed 's/NA2//g' | awk '{ print $1, "\t", $2, "\t", $3 }' | head -n 10
+rs10048146       16      86710660
+rs10226308       7       37938422
+rs10416218       19      33599127
+rs10416218       19      33599127
+rs1053051        12      107367225
+rs11623869       14      103883633
+rs11755164       6       44639184
+rs12407028       1       68647716
+rs1286083        14      91442779
+rs1286083        14      91442779
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBP.pre1.txt | sed 's/NA2//g' | awk '{ print $1, "\t", $2, "\t", $3 }' | perl -lane 'print $#F;' | sort | uniq -c
+     61 2
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | wc
+6050597 96809552 713179241
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | perl -lane 'print $#F;' | sort | uniq -c
+6050597 15
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | grep -v NA2 | wc
+5929103 94865648 702696457
+~~~
+
+zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | grep -v NA2 | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre2.gz
+
+zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre2.gz | perl -lane 'splice(@F, 21, 3); splice(@F, 16, 3); splice(@F, 11, 3); splice(@F, 6, 3); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.gz
+
+#ls -lrt | grep -E 'annot|tophit|gl' | awk '{ print $9 }' | perl -lane 'if ($F[0] =~ m/^(GEFOS2015)(\..*)/) { my $val1 = $1 . $2; my $val2 = $1 . ".GEFOS2015GWAShits" . $2; system("mv $val1 $val2"); }'
+#mv GLC.MTedits.ForGEFOS2015.vs1.SignCrrct.vs1.R GLC.MTedits.ForGEFOS2015.wGEFOS2012GWAShits.vs1.SignCrrct.vs1.R
+#mv GLC.MTedits.ForGEFOS2015.vs1.SignCrrct.vs1.DiscHit.vs1.R GLC.MTedits.ForGEFOS2015.wGEFOS2012GWAShitsvs1.SignCrrct.vs1.DiscHit.vs1.R
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+#join <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | sort -g) <(cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.Marker.txt | sort -g) | awk '{ print $1, "\t", $2, "\t", $3, "\t", $7, "\t", $8, "\t", $12, "\t", $13 }' > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBP.pre1.txt
+cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBP.pre1.txt | sed 's/NA2//g' | awk '{ print $1, "\t", $2, "\t", $3 }' > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBP.txt
+#join <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | sort -g) <(cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.Marker.txt | sort -g) | awk '{ print $1, "\t", $2, "\t", $3, "\t", $4, "\t", $5, "\t", $10, "\t", $15 }' > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.txt
+join <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.pre1.gz | sort -g) <(cat /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.Table1.Marker.txt | sort -g) | awk '{ print $1, "\t", $2, "\t", $3, "\t", $7, "\t", $8, "\t", $12, "\t", $13 }' > /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.Table1.MarkerChrBP.txt
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+#mv /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.out_.gz /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.GEFOS2012GWAShits.out_.gz
+#mv /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.DiscHit.out_.gz /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.GEFOS2012GWAShits.DiscHit.out_.gz
+#cat /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.Table1.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.SupplTable13.edited.MarkerChrBP.txt | sort | uniq > /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.Table1SupplTable13.MarkerChrBP.txt
+
+~~~
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$cat /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.Table1.MarkerChrBP.txt
+rs11024028       11      16756873        11      16756873        11      16756873
+rs6542457        2       119154872       2       119154872       2       119154872
+~~~
+
+#python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBP.txt --file2 /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.gz | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.out_.gz
+##python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.DiscHit.MarkerChrBP.txt --file2 /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.gz | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.DiscHit.out_.gz
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.SupplTable13.edited.MarkerChrBP.txt --file2 /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.gz | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.out_.gz
+#python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.Table1.SupplTable13.edited.MarkerChrBP.txt --file2 /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.out_.gz | gzip > /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.DiscAndRepl.out_.gz
+
+#A few 'hit SNPs' are not in all 3 files...hence lower 'hit SNP' count below?
+~~~
+#[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.out_.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
+#5823487 0
+#     52 1
+# 105564 2
+#[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.DiscHit.out_.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
+#5883838 0
+#     22 1
+#  45243 2
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.out_.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
+5879198 0
+     30 1
+  49875 2
+~~~
+
+#cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/process.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/process.MTedits.ForGEFOS2015.vs1.SignCrrct.vs1.R
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+#join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 2.2 2.3 2.4 2.5 2.6 2.7 <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.out_.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
+##join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 2.2 2.3 2.4 2.5 2.6 2.7 <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.DiscHit.out_.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.DiscHit.vs1.RAF.txt.pre1.gz
+join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 2.2 2.3 2.4 2.5 2.6 2.7 <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/AllPhenos2stu.MAF0_.005.pos_.maf05.MatchedTofa.IncAllele.formatted.RAF.wGWASannot.out_.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+#zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | grep -v NA4 | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+##zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.DiscHit.vs1.RAF.txt.pre1.gz | grep -v NA4 | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.DiscHit.vs1.RAF.txt.gz
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | grep -v NA4 | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+
+#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+#snp chr pos raf p_fa n_fa p_fn n_fn p_ls n_ls annot Z.fa Z.fn Z.ls mvstat mvp unip
+##Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+##snp chr pos raf p_fa n_fa p_fn n_fn p_ls n_ls annot Z.fa Z.fn Z.ls mvstat mvp unip
+##Same to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.DiscHit.vs1.RAF.txt.gz
+
+#zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[11] = $F[11] * -1; $F[12] = $F[12] * -1; $F[13] = $F[13] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz
+##zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.DiscHit.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[11] = $F[11] * -1; $F[12] = $F[12] * -1; $F[13] = $F[13] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.DiscHit.vs1.MAF.txt.gz
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[11] = $F[11] * -1; $F[12] = $F[12] * -1; $F[13] = $F[13] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz
+
+#cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/GLC.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GLC.MTedits.ForGEFOS2015.vs1.SignCrrct.vs1.R
+##cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GLC.MTedits.ForGEFOS2015.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GLC.MTedits.ForGEFOS2015.vs1.SignCrrct.vs1.DiscHit.vs1.R
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GLC.MTedits.ForGEFOS2015.wGEFOS2012GWAShits.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GLC.MTedits.ForGEFOS2015.vs1.SignCrrct.vs1.R
+
+#cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.txt | sed 's/NA2/.99/g' | R -q -e "Data1 <- read.table(file('stdin'), header=F); Data1 <- cbind(Data1, apply(Data1[,5:ncol(Data1)], 1, function(x) { val1 <- max(-log10(abs(x))); val2 <- 0; if (val1 > -log10(5e-8)) { val2 <- 1; }; return(val2); })); write.table(Data1, row.names=FALSE, col.names=FALSE, quote=FALSE);" > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.txt 
+
+#cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.txt | perl -lane 'if ($F[$#F] == 1) { print join("\t", @F); }' > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.DiscHit.txt
+#cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.txt | perl -lane 'if ($F[$#F] != 1) { print join("\t", @F); }' | grep ^rs > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.ReplHit.txt
+#cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.DiscHit.txt | awk '{ print $1, "\t", $2, "\t", $3 }' > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.DiscHit.MarkerChrBP.txt
+#cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.ReplHit.txt | awk '{ print $1, "\t", $2, "\t", $3 }' > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.ReplHit.MarkerChrBP.txt
+
+##cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.newtophits.vs1.SignCrrct.vs1.txt | grep -v snp | awk '{ print $1, "\t", $2, "\t", $3 }' | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.ReplHit.MarkerChrBP.txt --file2 - > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.newtophits.vs1.SignCrrct.vs1.ReplHit.GWASannot.txt
+#python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.ReplHit.MarkerChrBP.txt --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.newtophits.vs1.SignCrrct.vs1.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.newtophits.vs1.SignCrrct.vs1.ReplHit.GWASannot.txt
+
+#python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.MarkerChrBPMAFpVals.wGWASHitAnnot.ReplHit.MarkerChrBP.txt --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.DiscHit.newtophits.vs1.SignCrrct.vs1.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.DiscHit.newtophits.vs1.SignCrrct.vs1.ReplHit.GWASannot.txt
+
+#~~~
+#[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.DiscHit.newtophits.vs1.SignCrrct.vs1.ReplHit.GWASannot.txt
+#snp     chr     pos     maf     annot   Z.fa    Z.fn    Z.ls    lbfav   0
+#chr10:124064829 10      124064829       0.411456        0       1.9669  4.9093  4.9436  7.4444  0
+#rs1023940       6       151932778       0.465155        0       2.358   5.8998  7.1902  14.7391 2       rs7751941       6       151946658       2
+#rs10946458      6       21391282        0.338425        0       -1.2118 -5.508  -4.4321 7.8613  2       rs9466056       6       21384613        2
+#rs11024028      11      16756873        0.147176        0       1.6368  5.5971  5.6686  10.3758 0
+#rs2291467       11      68216756        0.228162        0       -3.1525 -5.0423 -7.4457 13.7298 2       rs3736228       11      68201295        2
+#rs35481967      4       88750703        0.242959        0       0.5711  4.7758  5.4164  8.7743  2       rs6532023       4       88773849        2
+#~~~
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5565,7 +6084,7 @@ wget http://www.gefos.org/sites/default/files/ls2stu.MAF0_.005.pos_.out_.gz
 
 #Seems like across all studies Hapmap Phase II release 22 was used (below source: http://hmg.oxfordjournals.org/content/24/4/1155.long#sec-9), which is db126
 ~~~
-Genotypes within each study were obtained using high-density SNP arrays and then imputed for â¼2.5 M HapMap SNPs (Phase II, release 22; http://hapmap.ncbi.nlm.nih.gov/). 
+Genotypes within each study were obtained using high-density SNP arrays and then imputed for Ã¢ÂÂ¼2.5 M HapMap SNPs (Phase II, release 22; http://hapmap.ncbi.nlm.nih.gov/). 
 ~~~
 
 #From 2013 paper maybe different HapMap? Try both?
@@ -5778,6 +6297,446 @@ zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.tx
 
 ##EGG2013 -- BW (& all studies?) 126dbSNP,  Pubertal Grwoth 10 GWAS, PG= ~14k, ~11k, ~9k
 ##20160225
+
+#Correcting sign issue -- quick hack to get results + first full run through of TAG2010
+
+#NOTE -- flipping sign on p-value to make coding downstream easier for this, ie I'm not implying something by creating negative p-values here. This is just for a quick run through.
+
+#From http://egg-consortium.org/pubertal-growth.html
+~~~
+Analysis I:A single height measurement at age 10 in girls and 12 in boys that targets the take-off phase of the growth spurt.
+Phenotype	Description	Maximum N	Downloadable file
+10F	Height SDS for females at age 10.	6,974	Pubertal_growth_10F.txt.gz
+12M	Height SDS for males at age 12.	6,986	Pubertal_growth_12M.txt.gz
+10F + 12 M combined	Height SDS for females at age 10 and males at age 12 combined.	13,960	Pubertal_growth_10F_12M_combined.txt.gz
+Analysis II:The total amount of growth across the pubertal growth period.
+Phenotype	Description	Maximum N	Downloadable file
+PGF	Standardized difference in height between age 8 and adult in females.	5,756	Pubertal_growth_PGF.txt.gz
+PGM	Standardized difference in height between age 8 and adult in males.	5,043	Pubertal_growth_PGM.txt.gz
+PGF + PGM combined	Standardized difference in height between age 8 and adult in males and females combined.	10,799	Pubertal_growth_PGF_PGM_combined.txt.gz
+Analysis III:The total amount of growth in late adolescence, targeting the timing of peak height growth velocity.
+Phenotype	Description	Maximum N	Downloadable file
+PTF	Standardized difference in height between age 14 and adult in females.	4,946	Pubertal_growth_PTF.txt.gz
+PTM	Standardized difference in height between age 14 and adult in males.	4,282	Pubertal_growth_PTM.txt.gz
+PTF + PTM combined	Standardized difference in height between age 14 and adult in males and females combined.	9,228	Pubertal_growth_PTF_PTM_combined.txt.gz
+~~~
+
+#Female, Male, Combined
+#Init, PubGrwth, LtAdlsc
+#10/12
+#PGF/M
+#PTF/M
+
+#/mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF.wHapMap22.txt.gz
+#/mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGM.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTM.wHapMap22.txt.gz
+#/mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF_PGM_combined.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF_PTM_combined.wHapMap22.txt.gz
+
+#20160303 CHECK_0 -- Prob: Need to do a correct 'if HapMap allele matches dataset alleles' approach than what I'm doing here, in that I am only checking if reference alleles match up; if they do not then switch. Clearly need to check that dataset's ref allele matches HapMap ref allele /or/ alt allele (and if matches neither need to print warning out regarding this); also need to check 'strandedness' of dataset vs. hapmap alleles
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[3] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | perl -lane 'if ($F[5] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[12] = 1 - $F[12]; $F[5] = $F[5] * -1; } print join("\t", @F);' | sed 's/ChrBPAFInfo/Chr BP Ref RAF Alt AAF/g' | grep -v -w NA | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.IncAllele.txt.gz 
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.IncAllele.txt.gz | awk '{ print $1, "\t", $4 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[3] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | perl -lane 'if ($F[5] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[12] = 1 - $F[12]; $F[5] = $F[5] * -1; } print join("\t", @F);' | sort ) | perl -lane 'if ($F[1] ne $F[4]) { $F[8] = $F[8] * -1; } splice(@F, 1, 1); print join("\t", @F);' | sed 's/ChrBPAFInfo/Chr BP Ref RAF Alt AAF/g' |  grep -v -w NA | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF.wHapMap22.MatchedToInit.IncAllele.txt.gz
+join <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.IncAllele.txt.gz | awk '{ print $1, "\t", $4 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[3] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | perl -lane 'if ($F[5] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[12] = 1 - $F[12]; $F[5] = $F[5] * -1; } print join("\t", @F);' | sort ) | perl -lane 'if ($F[1] ne $F[4]) { $F[8] = $F[8] * -1; } splice(@F, 1, 1); print join("\t", @F);' | sed 's/ChrBPAFInfo/Chr BP Ref RAF Alt AAF/g' |  grep -v -w NA | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF.wHapMap22.MatchedToInit.IncAllele.txt.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.IncAllele.txt.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $13, "\t", $8, "\t", $9 }' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.IncAllele.formatted.txt.gz
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF.wHapMap22.MatchedToInit.IncAllele.txt.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $13, "\t", $8, "\t", $9 }' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF.wHapMap22.MatchedToInit.IncAllele.txt.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $13, "\t", $8, "\t", $9 }' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join -a 1 -a 2 -1 3 -2 3 -e NA2 -o 0 1.1 1.2 1.4 1.5 1.6 2.1 2.2 2.4 2.5 2.6 <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.IncAllele.formatted.txt.gz | sort -g -k 3,3) <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz | sort -g -k 3,3 ) | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
+join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 9)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
+perl -lane 'print $F[0], "\t", join("\t", split(/_/, $F[1]));' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+~~~
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | wc
+2668730 42699680 337613537
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | head -n 10
+rs1172982  1    100002699       0.3     0.111485796472115       6974    1       100002699       0.3     0.127540707993535 5756  1       100002699 0.3   0.83225463752849        4946
+rs1172981  1    100002785       0.067   0.724019715759309       6974    1       100002785       0.933   -0.655943984623986      5756    1       100002785       0.067   0.947916968503234       4946
+rs11166327 1    100003455       0.953   0.77213303216568        6974    1       100003455       0.047   -0.4289219779813  5756  1       100003455 0.953 0.957367290255097       4946
+rs4908018  1    100006955       0.933   0.885559813175248       6968    1       100006955       0.0669999999999999      -0.772031761489485      5750    1       100006955       0.0669999999999999      -0.951160629922146      4946
+rs2392072  1    100007331       0.717   0.180631598755801       6972    1       100007331       0.717   0.0856332413322133      5756    1       100007331       0.717   0.631732162951484       4946
+rs12129588 1    100007519       0.937   0.97770114960363        6974    1       100007519       0.063   -0.398867796731709      5756    1       100007519       0.063   -0.85441805810729       4946
+rs10875256 1    100007856       0.942   0.825018975865846       6974    1       100007856       0.058   -0.6791783105684  5756  1       100007856 0.058 -0.954434927347006      4946
+rs7541580  1    100008014       0.783   0.173661742400052       6974    1       100008014       0.783   0.0201957856190784      5756    1       100008014       0.783   0.610843129288907       4946
+rs883532   1    100008025       0.857   0.172868503768936       6974    1       100008025       0.857   0.0205608337214704      5756    1       100008025       0.857   0.612633800311247       4946
+rs883533   1    100008439       0.933   0.82511996178153        6974    1       100008439       0.0669999999999999      -0.679481301360411      5756    1       100008439       0.0669999999999999      -0.953690575479536      4946
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | perl -lane 'print $#F;' | sort | uniq -c
+2668730 15
+~~~
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | grep -v NA2 | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre2.gz
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre2.gz | perl -lane 'splice(@F, 21, 3); splice(@F, 16, 3); splice(@F, 11, 3); splice(@F, 6, 3); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.gz
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/EGG2013/EGG2013.Table1.ChrBP.txt --file2 /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.wGWASannot.txt.gz
+
+~~~
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
+2098451 0
+      9 1
+   6760 2
+~~~
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/process.MTedits.ForEGG2013.Female.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/process.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 2.2 2.3 2.4 2.5 2.6 2.7 <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosF.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Female.dtlesslesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Female.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Female.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | grep -v NA4 | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Female.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+
+#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Female.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+#snp chr pos raf p_Init n_Init p_PubGrwth n_PubGrwth p_LtAdlsc n_LtAdlsc annot Z.Init Z.PubGrwth Z.LtAdlsc mvstat mvp unip
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Female.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[11] = $F[11] * -1; $F[12] = $F[12] * -1; $F[13] = $F[13] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Female.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz
+
+#cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MAGIC2010/Vs1/GLC.MTedits.ForMAGIC2010.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/GLC.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R
+p -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GLC.MTedits.ForGIANT2014_5.Orig3.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/GLC.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R
+
+
+#Male
+
+#/mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF.wHapMap22.txt.gz
+#/mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGM.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTM.wHapMap22.txt.gz
+#/mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF_PGM_combined.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF_PTM_combined.wHapMap22.txt.gz
+
+
+#zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[3] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | perl -lane 'if ($F[5] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[12] = 1 - $F[12]; $F[5] = $F[5] * -1; } print join("\t", @F);' | sed 's/ChrBPAFInfo/Chr BP Ref RAF Alt AAF/g' | grep -v -w NA | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.IncAllele.txt.gz 
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[3] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | perl -lane 'if ($F[5] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[12] = 1 - $F[12]; $F[5] = $F[5] * -1; } print join("\t", @F);' | sed 's/ChrBPAFInfo/Chr BP Ref RAF Alt AAF/g' | grep -v -w NA | sort | uniq | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.IncAllele.txt.gz 
+
+#Don't know why but there are duplicates in /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.txt.gz and it is messing up the join functions below. Including a 'uniq' command in the usual file-prep pipeline to take care of this?
+~~~
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.txt.gz |  awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } ' | wc
+      0       0       0
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.txt.gz |  awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } ' | wc
+ 170191  340382 3146892
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.txt.gz | sort | uniq | awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } ' | wc
+      0       0       0
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.txt.gz | wc
+2500338 25003380 294536356
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGM.wHapMap22.txt.gz |  awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } ' | wc
+      0       0       0
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTM.wHapMap22.txt.gz |  awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } ' | wc
+      0       0       0
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.IncAllele.txt.gz |  awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } ' | wc
+      0       0       0
+~~~
+
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.IncAllele.txt.gz | awk '{ print $1, "\t", $4 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGM.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[3] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | perl -lane 'if ($F[5] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[12] = 1 - $F[12]; $F[5] = $F[5] * -1; } print join("\t", @F);' | sort ) | perl -lane 'if ($F[1] ne $F[4]) { $F[8] = $F[8] * -1; } splice(@F, 1, 1); print join("\t", @F);' | sed 's/ChrBPAFInfo/Chr BP Ref RAF Alt AAF/g' |  grep -v -w NA | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGM.wHapMap22.MatchedToInit.IncAllele.txt.gz
+join <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.IncAllele.txt.gz | awk '{ print $1, "\t", $4 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTM.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[3] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | perl -lane 'if ($F[5] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[12] = 1 - $F[12]; $F[5] = $F[5] * -1; } print join("\t", @F);' | sort ) | perl -lane 'if ($F[1] ne $F[4]) { $F[8] = $F[8] * -1; } splice(@F, 1, 1); print join("\t", @F);' | sed 's/ChrBPAFInfo/Chr BP Ref RAF Alt AAF/g' |  grep -v -w NA | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTM.wHapMap22.MatchedToInit.IncAllele.txt.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.IncAllele.txt.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $13, "\t", $8, "\t", $9 }' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.IncAllele.formatted.txt.gz
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGM.wHapMap22.MatchedToInit.IncAllele.txt.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $13, "\t", $8, "\t", $9 }' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGM.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTM.wHapMap22.MatchedToInit.IncAllele.txt.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $13, "\t", $8, "\t", $9 }' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTM.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join -a 1 -a 2 -1 3 -2 3 -e NA2 -o 0 1.1 1.2 1.4 1.5 1.6 2.1 2.2 2.4 2.5 2.6 <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.IncAllele.formatted.txt.gz | sort -g -k 3,3) <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGM.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz | sort -g -k 3,3 ) | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
+join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTM.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 9)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
+perl -lane 'print $F[0], "\t", join("\t", split(/_/, $F[1]));' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+~~~
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | wc
+2412663 38602608 315720084
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | head -n 10
+rs1172982  1    100002699       0.7     0.748821147764486       6983    1       100002699       0.3     -0.549175066249628      5043    1       100002699       0.7     0.448938322526613       4282
+rs1172981  1    100002785       0.933   0.747315220240481       6986    1       100002785       0.933   0.252418126095726 5043  1       100002785 0.933 0.598293959387293       4282
+rs11166327 1    100003455       0.047   0.605916439554564       6984    1       100003455       0.047   0.435496080767843 5043  1       100003455 0.047 0.777654075332975       4282
+rs4908018  1    100006955       0.0669999999999999      0.773163558756063       6984    1       100006955 0.0669999999999999    0.240631422500086 5040  1       100006955       0.0669999999999999      0.677583466060296       4282
+rs2392072  1    100007331       0.283   0.686725290930294       6984    1       100007331       0.717   -0.531312742788196      5043    1       100007331       0.283   0.546887491002122       4282
+rs12129588 1    100007519       0.063   0.633144017235698       6985    1       100007519       0.063   0.578388672123991 5043  1       100007519 0.063 0.756425228123899       4282
+rs10875256 1    100007856       0.058   0.784311591436813       6986    1       100007856       0.058   0.243288015331042 5043  1       100007856 0.058 0.67580340322148        4282
+rs7541580  1    100008014       0.217   0.663975858602998       6986    1       100008014       0.783   -0.281732781756187      5043    1       100008014       0.217   0.647752602036098       4282
+rs883532   1    100008025       0.143   0.678959121488804       6986    1       100008025       0.857   -0.275650839996547      5043    1       100008025       0.143   0.656357539969864       4282
+rs883533   1    100008439       0.0669999999999999      0.783296032799667       6986    1       100008439 0.0669999999999999    0.243097927421183 5043  1       100008439       0.0669999999999999      0.673601417574282       4282
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | perl -lane 'print $#F;' | sort | uniq -c
+2412663 15
+~~~
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | grep -v NA2 | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre2.gz
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre2.gz | perl -lane 'splice(@F, 21, 3); splice(@F, 16, 3); splice(@F, 11, 3); splice(@F, 6, 3); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.gz
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/EGG2013/EGG2013.Table1.ChrBP.txt --file2 /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.wGWASannot.txt.gz
+
+~~~
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
+2235481 0
+      9 1
+   7145 2
+~~~
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/process.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/process.MTedits.ForEGG2013.Male.vs1.SignCrrct.vs1.R
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 2.2 2.3 2.4 2.5 2.6 2.7 <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosM.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Male.dtlesslesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Male.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Male.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | grep -v NA4 | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Male.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+
+#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Male.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+#snp chr pos raf p_Init n_Init p_PubGrwth n_PubGrwth p_LtAdlsc n_LtAdlsc annot Z.Init Z.PubGrwth Z.LtAdlsc mvstat mvp unip
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Male.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[11] = $F[11] * -1; $F[12] = $F[12] * -1; $F[13] = $F[13] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Male.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz
+
+#cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MAGIC2010/Vs1/GLC.MTedits.ForMAGIC2010.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/GLC.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R
+#cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GLC.MTedits.ForGIANT2014_5.Orig3.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/GLC.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/GLC.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/GLC.MTedits.ForEGG2013.Male.vs1.SignCrrct.vs1.R
+
+
+#Combined
+
+#/mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF.wHapMap22.txt.gz
+#/mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_12M.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGM.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTM.wHapMap22.txt.gz
+#/mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF_PGM_combined.wHapMap22.txt.gz, /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF_PTM_combined.wHapMap22.txt.gz
+
+
+#zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[3] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | perl -lane 'if ($F[5] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[12] = 1 - $F[12]; $F[5] = $F[5] * -1; } print join("\t", @F);' | sed 's/ChrBPAFInfo/Chr BP Ref RAF Alt AAF/g' | grep -v -w NA | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.txt.gz 
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[3] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | perl -lane 'if ($F[5] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[12] = 1 - $F[12]; $F[5] = $F[5] * -1; } print join("\t", @F);' | sed 's/ChrBPAFInfo/Chr BP Ref RAF Alt AAF/g' | grep -v -w NA | sort | uniq | grep -v CHR | cat <(echo "RSID    CHR     POS     EA      NEA     BETA    SE      P       N       Chr BP Ref RAF Alt AAF") - | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.txt.gz 
+
+
+
+#This has the weird duplicate issue too in the 10F_12M file
+~~~
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.txt.gz |  awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } ' | wc
+ 168872  337744 3122335
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF_PGM_combined.wHapMap22.txt.gz |  awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } ' | wc
+      0       0       0
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF_PTM_combined.wHapMap22.txt.gz |  awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } ' | wc
+      0       0       0
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.txt.gz | sort | uniq | awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } ' | wc
+      0       0       0
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.txt.gz |  awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } ' | wc
+      0       0       0
+~~~
+
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.txt.gz | awk '{ print $1, "\t", $4 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF_PGM_combined.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[3] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | perl -lane 'if ($F[5] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[12] = 1 - $F[12]; $F[5] = $F[5] * -1; } print join("\t", @F);' | sort ) | perl -lane 'if ($F[1] ne $F[4]) { $F[8] = $F[8] * -1; } splice(@F, 1, 1); print join("\t", @F);' | sed 's/ChrBPAFInfo/Chr BP Ref RAF Alt AAF/g' |  grep -v -w NA | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF_PGM_combined.wHapMap22.MatchedToInit.IncAllele.txt.gz
+join <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.txt.gz | awk '{ print $1, "\t", $4 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF_PTM_combined.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[3] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | perl -lane 'if ($F[5] < 0) { ($F[3], $F[4]) = ($F[4], $F[3]); $F[12] = 1 - $F[12]; $F[5] = $F[5] * -1; } print join("\t", @F);' | sort ) | perl -lane 'if ($F[1] ne $F[4]) { $F[8] = $F[8] * -1; } splice(@F, 1, 1); print join("\t", @F);' | sed 's/ChrBPAFInfo/Chr BP Ref RAF Alt AAF/g' |  grep -v -w NA | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF_PTM_combined.wHapMap22.MatchedToInit.IncAllele.txt.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+#Below file lses the header for some reason
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.txt.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $13, "\t", $8, "\t", $9 }' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.formatted.txt.gz
+#zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.txt.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $13, "\t", $8, "\t", $9 }' | grep -v CHR | cat <(echo "CHR      POS     RSID    RAF     P       N") - | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.formatted.txt.gz
+
+#~~~
+#[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.formatted.txt.gz | head -n 10
+#12       125456933       rs1000000       0.627   0.921827254436292       13950
+#4        21227772        rs10000010      0.575   0.969120639432438       13947
+#4        1347325         rs10000012      0.808   0.813941505431574       13960
+#4        36901464        rs10000013      0.167   0.0342922524427472      13960
+#4        84997149        rs10000017      0.223   0.113768777157663       13960
+#3        185118462       rs1000002       0.525   0.1417885968771         13959
+#4        95952929        rs10000023      0.592   0.533743038349605       13940
+#4        103593179       rs10000030      0.125   0.389700571919017       13931
+#4        139819348       rs10000033      0.492   0.89484102468269        13960
+#3        99825597        rs1000003       0.125   0.796667663154212       13960
+#[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF_PGM_combined.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz | head -n 10
+#CHR      POS     RSID    RAF     P       N
+#7        92221824        rs10    0.033   -0.730355601933992      10799
+#12       125456933       rs1000000       0.627   0.525143090953062       10789
+#4        21227772        rs10000010      0.575   0.198753422730644       10783
+#4        1347325         rs10000012      0.808   0.426968972292359       10799
+#4        36901464        rs10000013      0.833   -0.978498245816837      10799
+#4        84997149        rs10000017      0.777   -0.469478265820576      10799
+#3        185118462       rs1000002       0.525   0.874470525938863       10799
+#4        95952929        rs10000023      0.592   0.210503763507433       10782
+#3        99825597        rs1000003       0.875   -0.716320272277536      10799
+#[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.formatted.txt.gz | grep CHR
+#CHR      POS     RSID    RAF     P       N
+#[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.formatted.txt.gz | head -n 10
+#CHR      POS     RSID    RAF     P       N
+#12       125456933       rs1000000       0.627   0.921827254436292       13950
+#4        21227772        rs10000010      0.575   0.969120639432438       13947
+#4        1347325         rs10000012      0.808   0.813941505431574       13960
+#4        36901464        rs10000013      0.167   0.0342922524427472      13960
+#4        84997149        rs10000017      0.223   0.113768777157663       13960
+#3        185118462       rs1000002       0.525   0.1417885968771         13959
+#4        95952929        rs10000023      0.592   0.533743038349605       13940
+#4        103593179       rs10000030      0.125   0.389700571919017       13931
+#4        139819348       rs10000033      0.492   0.89484102468269        13960
+#~~~
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF_PGM_combined.wHapMap22.MatchedToInit.IncAllele.txt.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $13, "\t", $8, "\t", $9 }' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF_PGM_combined.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF_PTM_combined.wHapMap22.MatchedToInit.IncAllele.txt.gz | awk '{ print $2, "\t", $3, "\t", $1, "\t", $13, "\t", $8, "\t", $9 }' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF_PTM_combined.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join -a 1 -a 2 -1 3 -2 3 -e NA2 -o 0 1.1 1.2 1.4 1.5 1.6 2.1 2.2 2.4 2.5 2.6 <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F_12M_combined.wHapMap22.IncAllele.formatted.txt.gz | sort -g -k 3,3) <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PGF_PGM_combined.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz | sort -g -k 3,3 ) | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
+join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_PTF_PTM_combined.wHapMap22.MatchedToInit.IncAllele.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 9)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
+perl -lane 'print $F[0], "\t", join("\t", split(/_/, $F[1]));' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+~~~
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | wc
+2379500 38072000 316832616
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | head -n 10
+rs1172982  1    100002699       0.3     0.378226807425313       13957   1       100002699       0.3     0.130556288379838       10799   1       100002699       0.7     -0.721190667447704      4282
+rs1172981  1    100002785       0.067   0.98007330979874        13960   1       100002785       0.933   -0.281103207398319      10799   1       100002785       0.933   -0.764583401138596      4282
+rs11166327 1    100003455       0.047   0.878883819019079       13958   1       100003455       0.047   0.271981247650781       10799   1       100003455       0.047   0.883868484876356       4282
+rs4908018  1    100006955       0.0669999999999999      0.92077480613094        13952   1       100006955       0.0669999999999999      0.326654064064504       10790   1       100006955       0.0669999999999999      0.748780478605554 4282
+rs2392072  1    100007331       0.717   0.518432700926805       13956   1       100007331       0.717   0.0946682726000233      10799   1       100007331       0.283   -0.953849793871725      4282
+rs12129588 1    100007519       0.063   0.75473715711479        13959   1       100007519       0.063   0.321499411975321       10799   1       100007519       0.063   0.732349691261105       4282
+rs10875256 1    100007856       0.058   0.9722809579372 13960   1       100007856       0.058   0.285260703596043       10799   1       100007856       0.058   0.749891691372287       4282
+rs7541580  1    100008014       0.783   0.520103909703256       13960   1       100008014       0.783   0.0159185546385322      10799   1       100008014       0.217   -0.95126228341394       4282
+rs883532   1    100008025       0.857   0.509478137156726       13960   1       100008025       0.857   0.0157246505697832      10799   1       100008025       0.143   -0.946258049168778      4282
+rs883533   1    100008439       0.0669999999999999      0.971476593314794       13960   1       100008439       0.0669999999999999      0.285269263149643       10799   1       100008439       0.0669999999999999      0.747865216307332 4282
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | perl -lane 'print $#F;' | sort | uniq -c
+2379500 15
+~~~
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre1.gz | grep -v NA2 | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre2.gz
+
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.pre2.gz | perl -lane 'splice(@F, 21, 3); splice(@F, 16, 3); splice(@F, 11, 3); splice(@F, 6, 3); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.gz
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/EGG2013/EGG2013.Table1.ChrBP.txt --file2 /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.wGWASannot.txt.gz
+
+~~~
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
+2231155 0
+      9 1
+   7067 2
+~~~
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/process.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/process.MTedits.ForEGG2013.Combined.vs1.SignCrrct.vs1.R
+
+LANG2=${LANG}
+LC_ALL2=${LC_ALL}
+LANG=C
+LC_ALL=C
+export LC_ALL LANG
+
+join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 2.2 2.3 2.4 2.5 2.6 2.7 <(zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_AllPhenosC.wHapMap22.MatchedToInit.IncAllele.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Combined.dtlesslesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Combined.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
+
+LANG=${LANG2}
+LC_ALL=${LC_ALL2}
+export LC_ALL LANG
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Combined.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | grep -v NA4 | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Combined.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+
+#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Combined.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz
+#snp chr pos raf p_Init n_Init p_PubGrwth n_PubGrwth p_LtAdlsc n_LtAdlsc annot Z.Init Z.PubGrwth Z.LtAdlsc mvstat mvp unip
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Combined.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[11] = $F[11] * -1; $F[12] = $F[12] * -1; $F[13] = $F[13] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/EGG2013Combined.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz
+
+#cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MAGIC2010/Vs1/GLC.MTedits.ForMAGIC2010.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/GLC.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R
+#cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GLC.MTedits.ForGIANT2014_5.Orig3.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/GLC.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/GLC.MTedits.ForEGG2013.Female.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1/GLC.MTedits.ForEGG2013.Combined.vs1.SignCrrct.vs1.R
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6231,299 +7190,12 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2
 
 
 
-#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.annot.vs1.SignCrrct.vs1.RAF.txt.gz
-#snp chr pos raf p_SBP n_SBP p_DBP n_DBP p_MAP n_MAP p_PP n_PP annot Z.SBP Z.DBP Z.PP Z.MAP mvstat mvp unip
 
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.annot.vs1.SignCrrct.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[13] = $F[13] * -13; $F[14] = $F[14] * -1; $F[15] = $F[15] * -1; $F[16] = $F[16] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.annot.vs1.SignCrrct.vs1.MAF.txt.gz
 
 
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.pre1.gz | grep -v NA2 | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.pre2.gz
 
 
 
-
-
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.pre2.gz | perl -lane 'splice(@F, 31, 3); splice(@F, 26, 3); splice(@F, 21, 3); splice(@F, 16, 3); splice(@F, 11, 3); splice(@F, 6, 3); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.gz
-
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/HaemgenRBC2012/HaemgenRBC2012.Table1.Edited.MarkerChrBP.txt --file2 /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.gz | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.wGWASannot.txt.gz 
-
-LANG2=${LANG}
-LC_ALL2=${LC_ALL}
-LANG=C
-LC_ALL=C
-export LC_ALL LANG
-
-join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 1.12 1.13 1.14 1.15 1.16 1.17 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9 2.10 <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.wGWASannot.txt.gz | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.pre1.gz 
-
-~~~
-[  mturchin20@spudling26  ~/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.pre1.gz | grep NA4 | wc
-    181    4344   34899
-~~~    
-
-LANG=${LANG2}
-LC_ALL=${LC_ALL2}
-export LC_ALL LANG
-
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.pre1.gz | grep -v NA4 | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.gz
-
-RBC PCV MCV MCH MCHC Hb 
-
-#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.gz
-
-
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.formatted.txt.gz
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_PCV.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_PCV.wHapMap22.formatted.txt.gz
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCV.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCV.wHapMap22.formatted.txt.gz
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCH.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCH.wHapMap22.formatted.txt.gz
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCHC.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCHC.wHapMap22.formatted.txt.gz
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_Hb.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_Hb.wHapMap22.formatted.txt.gz
-
-LANG2=${LANG}
-LC_ALL2=${LC_ALL}
-LANG=C
-LC_ALL=C
-export LC_ALL LANG
-
-join -a 1 -a 2 -1 3 -2 3 -e NA2 -o 0 1.1 1.2 1.4 1.5 1.6 2.1 2.2 2.4 2.5 2.6 <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.formatted.txt.gz | sort -g -k 3,3) <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_PCV.wHapMap22.formatted.txt.gz | sort -g -k 3,3 ) | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCV.wHapMap22.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 9)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCH.wHapMap22.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 14)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCHC.wHapMap22.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 19)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_Hb.wHapMap22.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 24)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-perl -lane 'print $F[0], "\t", join("\t", split(/_/, $F[1]));' | sed 's/chr//g' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.pre1.gz
-
-
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.pre1.gz | grep -v NA2 | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.pre2.gz
-
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.pre2.gz | perl -lane 'splice(@F, 31, 3); splice(@F, 26, 3); splice(@F, 21, 3); splice(@F, 16, 3); splice(@F, 11, 3); splice(@F, 6, 3); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.gz
-
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/HaemgenRBC2012/HaemgenRBC2012.Table1.Edited.MarkerChrBP.txt --file2 /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.gz | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.wGWASannot.txt.gz 
-
-LANG2=${LANG}
-LC_ALL2=${LC_ALL}
-LANG=C
-LC_ALL=C
-export LC_ALL LANG
-
-join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 1.12 1.13 1.14 1.15 1.16 1.17 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9 2.10 <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.wGWASannot.txt.gz | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.pre1.gz 
-
-~~~
-[  mturchin20@spudling26  ~/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.pre1.gz | grep NA4 | wc
-    181    4344   34899
-~~~    
-
-LANG=${LANG2}
-LC_ALL=${LC_ALL2}
-export LC_ALL LANG
-
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.pre1.gz | grep -v NA4 | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.gz
-
-RBC PCV MCV MCH MCHC Hb 
-
-#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.gz
-
-
-
-
-
-
-
-
-
-join <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_SBP_results_v2.wHapMap21.vs3.IncAllele.txt.gz | awk '{ print $1, "\t", $9 }' | sort) <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_DBP_results_v2.wHapMap21.vs3.txt.gz | perl -lane 'if ($F[2] ne $F[8]) { $F[3] = 1 - $F[3]; } print join("\t", @F);' | perl -lane 'if ($F[6] < 0) { ($F[8], $F[9]) = ($F[9], $F[8]); $F[3] = 1 - $F[3]; $F[6] = $F[6] * -1; } print join("\t", @F);' | sort) | perl -lane 'if ($F[1] ne $F[9]) { $F[11] = -1 * $F[11]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_DBP_results_v2.wHapMap21.vs3.MatchedToSBP.IncAllele.txt.gz
-
-RBC=read.table("/mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.txt.gz",header=T)
-MCV=read.table("/mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCV.wHapMap22.txt.gz",header=T)
-PCV=read.table("/mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_PCV.wHapMap22.txt.gz",header=T)
-MCH=read.table("/mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCH.wHapMap22.txt.gz",header=T)
-Hb=read.table("/mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_Hb.wHapMap22.txt.gz",header=T)
-MCHC=read.table("/mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCHC.wHapMap22.txt.gz",header=T)
-
-[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/PGC2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.txt.gz | head -n 10
-SNP      Pval    Chr     Position        Effect_Allele   Non_Effect_Allele       Sample_Size     Beta    SE
-rs9373124        5.11e-97        6       135464902       T       C       53337   0.0484          0.0024
-rs7776054        3.51e-96        6       135460609       A       G       53403   0.0479          0.0024
-rs9389269        4.54e-96        6       135468852       T       C       53402   0.0469          0.0023
-rs9389268        5.98e-95        6       135461324       A       G       53403   0.0471          0.0024
-rs9376090        9.04e-95        6       135452921  
-
-[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/PGC2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.txt.gz | perl -lane 'print join("\t", @F[0..$#F-1]), "\t", join("\t", (split("_", $F[$#F])));' | perl -lane 'if ($F[4] ne $F[11]) { ($F[11], $F[13]) = ($F[13], $F[11]); ($F[12], $F[14]) = ($F[14], $F[12]); } print join("\t", @F);' | head -n 10 
-SNP     Pval    Chr     Position        Effect_Allele   Non_Effect_Allele       Sample_Size     Beta    SE      ChrBPAFInfo
-rs9373124       5.11e-97        6       135464902       T       C       53337   0.0484  0.0024  chr6    135464902       T       0.78    C       0.22
-rs7776054       3.51e-96        6       135460609       A       G       53403   0.0479  0.0024  chr6    135460609       A       0.78    G       0.22
-rs9389269       4.54e-96        6       135468852       T       C       53402   0.0469  0.0023  chr6    135468852       T       0.78    C       0.22
-rs9389268       5.98e-95        6       135461324       A       G       53403   0.0471  0.0024  chr6    135461324       A       0.775   G       0.225
-rs9376090       9.04e-95        6       135452921       T       C       53537   0.0477  0.0024  chr6    135452921       T       0.78    C       0.22
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_SBP_results_v2.wHapMap21.vs3.txt.gz | perl -lane 'if ($F[2] ne $F[8]) { $F[3] = 1 - $F[3]; } print join("\t", @F);' | perl -lane 'if ($F[6] < 0) { ($F[8], $F[9]) = ($F[9], $F[8]); $F[3] = 1 - $F[3]; $F[6] = $F[6] * -1; } print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_SBP_results_v2.wHapMap21.vs3.IncAllele.txt.gz
-
-join <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_SBP_results_v2.wHapMap21.vs3.IncAllele.txt.gz | awk '{ print $1, "\t", $9 }' | sort) <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_DBP_results_v2.wHapMap21.vs3.txt.gz | perl -lane 'if ($F[2] ne $F[8]) { $F[3] = 1 - $F[3]; } print join("\t", @F);' | perl -lane 'if ($F[6] < 0) { ($F[8], $F[9]) = ($F[9], $F[8]); $F[3] = 1 - $F[3]; $F[6] = $F[6] * -1; } print join("\t", @F);' | sort) | perl -lane 'if ($F[1] ne $F[9]) { $F[11] = -1 * $F[11]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_DBP_results_v2.wHapMap21.vs3.MatchedToSBP.IncAllele.txt.gz
-join <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_SBP_results_v2.wHapMap21.vs3.IncAllele.txt.gz | awk '{ print $1, "\t", $9 }' | sort) <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_PP_results.wHapMap21.vs3.txt.gz | perl -lane 'if ($F[2] ne $F[8]) { $F[3] = 1 - $F[3]; } print join("\t", @F);' | perl -lane 'if ($F[6] < 0) { ($F[8], $F[9]) = ($F[9], $F[8]); $F[3] = 1 - $F[3]; $F[6] = $F[6] * -1; } print join("\t", @F);' | sort) | perl -lane 'if ($F[1] ne $F[9]) { $F[11] = -1 * $F[11]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_PP_results.wHapMap21.vs3.MatchedToSBP.IncAllele.txt.gz
-join <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_SBP_results_v2.wHapMap21.vs3.IncAllele.txt.gz | awk '{ print $1, "\t", $9 }' | sort) <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_MAP_results.wHapMap21.vs3.txt.gz | perl -lane 'if ($F[2] ne $F[8]) { $F[3] = 1 - $F[3]; } print join("\t", @F);' | perl -lane 'if ($F[6] < 0) { ($F[8], $F[9]) = ($F[9], $F[8]); $F[3] = 1 - $F[3]; $F[6] = $F[6] * -1; } print join("\t", @F);' | sort) | perl -lane 'if ($F[1] ne $F[9]) { $F[11] = -1 * $F[11]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_MAP_results.wHapMap21.vs3.MatchedToSBP.IncAllele.txt.gz
-
-LC_ALL2=${LC_ALL}
-LANG=C
-LC_ALL=C
-export LC_ALL LANG
-
-join -a 1 -a 2 -1 3 -2 3 -e NA2 -o 0 1.1 1.2 1.4 1.5 1.6 2.1 2.2 2.4 2.5 2.6 <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_SBP_results_v2.wHapMap21.vs3.IncAllele.formatted.txt.gz | sort -g -k 3,3) <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_DBP_results_v2.wHapMap21.vs3.MatchedToSBP.IncAllele.formatted.txt.gz | sort -g -k 3,3 ) | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_MAP_results.wHapMap21.vs3.MatchedToSBP.IncAllele.formatted.txt.gz  | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 9)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_PP_results.wHapMap21.vs3.MatchedToSBP.IncAllele.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 14)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-perl -lane 'print $F[0], "\t", join("\t", split(/_/, $F[1]));' | sed 's/chr//g' | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_AllPhenos_results.wHapMap21.vs3.MatchedToSBP.IncAllele.formatted.RAF.txt.pre1.gz
-
-LANG=${LANG2}
-LC_ALL=${LC_ALL2}
-export LC_ALL LANG
-
-zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_AllPhenos_results.wHapMap21.vs3.MatchedToSBP.IncAllele.formatted.RAF.txt.pre1.gz | grep -v NA2 | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_AllPhenos_results.wHapMap21.vs3.MatchedToSBP.IncAllele.formatted.RAF.txt.pre2.gz
-
-zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_AllPhenos_results.wHapMap21.vs3.MatchedToSBP.IncAllele.formatted.RAF.txt.pre2.gz | perl -lane 'splice(@F, 21, 3); splice(@F, 16, 3); splice(@F, 11, 3); splice(@F, 6, 3); print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_AllPhenos_results.wHapMap21.vs3.MatchedToSBP.IncAllele.formatted.RAF.txt.gz 
-
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.txt --file2 /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_AllPhenos_results.wHapMap21.vs3.MatchedToSBP.IncAllele.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_AllPhenos_results.wHapMap21.vs3.MatchedToSBP.IncAllele.formatted.RAF.wGWASannot.txt.gz
-
-
-
-
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.formatted.txt.gz
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_PCV.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_PCV.wHapMap22.formatted.txt.gz
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCV.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCV.wHapMap22.formatted.txt.gz
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCH.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCH.wHapMap22.formatted.txt.gz
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCHC.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCHC.wHapMap22.formatted.txt.gz
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_Hb.wHapMap22.txt.gz | perl -lane 'my @vals1 = split(/_/, $F[9]); push(@F, @vals1); print join("\t", @F);' | awk '{ print $3, "\t", $4, "\t", $1, "\t", $14, "\t", $2, "\t", $7 }' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_Hb.wHapMap22.formatted.txt.gz
-
-LANG2=${LANG}
-LC_ALL2=${LC_ALL}
-LANG=C
-LC_ALL=C
-export LC_ALL LANG
-
-join -a 1 -a 2 -1 3 -2 3 -e NA2 -o 0 1.1 1.2 1.4 1.5 1.6 2.1 2.2 2.4 2.5 2.6 <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.formatted.txt.gz | sort -g -k 3,3) <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_PCV.wHapMap22.formatted.txt.gz | sort -g -k 3,3 ) | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCV.wHapMap22.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 9)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCH.wHapMap22.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 14)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_MCHC.wHapMap22.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 19)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-join -a 1 -a 2 -1 1 -2 3 -e NA2 -o 0 1.2 2.1 2.2 2.4 2.5 2.6 - <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_Hb.wHapMap22.formatted.txt.gz | sort -g -k 3,3) | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); print join("\t", @F);' | perl -lane 'splice(@F, 1, 1, split(/_/, $F[1])); if ($#F == 6) { splice(@F, 1, 0, (("NA2") x 24)); } my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | perl -lane 'my $joinFields = join("_", @F[1..$#F]); print $F[0], "\t", $joinFields;' | \
-perl -lane 'print $F[0], "\t", join("\t", split(/_/, $F[1]));' | sed 's/chr//g' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.pre1.gz
-
-
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.pre1.gz | grep -v NA2 | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.pre2.gz
-
-zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.pre2.gz | perl -lane 'splice(@F, 31, 3); splice(@F, 26, 3); splice(@F, 21, 3); splice(@F, 16, 3); splice(@F, 11, 3); splice(@F, 6, 3); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.gz
-
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/HaemgenRBC2012/HaemgenRBC2012.Table1.Edited.MarkerChrBP.txt --file2 /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.txt.gz | gzip > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.wGWASannot.txt.gz 
-
-LANG2=${LANG}
-LC_ALL2=${LC_ALL}
-LANG=C
-LC_ALL=C
-export LC_ALL LANG
-
-join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 1.12 1.13 1.14 1.15 1.16 1.17 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9 2.10 <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.formatted.wGWASannot.txt.gz | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.pre1.gz 
-
-~~~
-[  mturchin20@spudling26  ~/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.pre1.gz | grep NA4 | wc
-    181    4344   34899
-~~~    
-
-LANG=${LANG2}
-LC_ALL=${LC_ALL2}
-export LC_ALL LANG
-
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.pre1.gz | grep -v NA4 | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.gz
-
-RBC PCV MCV MCH MCHC Hb 
-
-#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/HaemgenRBC2012.dtlesssignif.vs1.annot.txt.gz
-
-
-
-
-
-
-
-
-
-
-#20160221
-#Correcting sign issue -- quick hack to get results
-
-#NOTE -- flipping sign on p-value to make coding downstream easier for this, ie I'm not implying something by creating negative p-values here. This is just for a quick run through.
-
-join <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | awk '{ print $1, "\t", $2 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz) | perl -lane 'if ($F[1] ne $F[2]) { $F[5] = -1 * $F[5]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.txt.gz
-join <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | awk '{ print $1, "\t", $2 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz) | perl -lane 'if ($F[1] ne $F[2]) { $F[5] = -1 * $F[5]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.txt.gz
-
-join <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.txt.gz | awk '{ print $1, "\t", $2 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.txt.gz | sort) | perl -lane 'if ($F[1] ne $F[2]) { $F[5] = -1 * $F[5]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.MatchedToHeight.txt.gz 
-join <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.txt.gz | awk '{ print $1, "\t", $2 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.txt.gz | sort) | perl -lane 'if ($F[1] ne $F[2]) { $F[5] = -1 * $F[5]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.MatchedToHeight.txt.gz
-
-
-
-
-
-
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/process.MTedits.ForICBP2011.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/process.MTedits.ForICBP2011.vs1.SignCrrct.vs1.R
-
-#20160222 CHECK_0 -- Prob: Correct header situation for the DBP, PP and MAP files needed for process file above
-
-LANG2=${LANG}
-LC_ALL2=${LC_ALL}
-LANG=C
-LC_ALL=C
-export LC_ALL LANG
-
-join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 1.12 1.13 2.2 2.3 2.4 2.5 2.6 2.7 2.8 <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_AllPhenos_results.wHapMap21.vs3.MatchedToSBP.IncAllele.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.annot.vs1.SignCrrct.vs1.RAF.txt.pre1.gz
-
-LC_ALL=${LC_ALL2}
-export LC_ALL LANG
-
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.annot.vs1.SignCrrct.vs1.RAF.txt.pre1.gz | grep -v NA4 | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.annot.vs1.SignCrrct.vs1.RAF.txt.gz
-
-#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.annot.vs1.SignCrrct.vs1.RAF.txt.gz
-#snp chr pos raf p_SBP n_SBP p_DBP n_DBP p_MAP n_MAP p_PP n_PP annot Z.SBP Z.DBP Z.PP Z.MAP mvstat mvp unip
-
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.annot.vs1.SignCrrct.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[13] = $F[13] * -13; $F[14] = $F[14] * -1; $F[15] = $F[15] * -1; $F[16] = $F[16] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.annot.vs1.SignCrrct.vs1.MAF.txt.gz
-
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/GLC.MTedits.ForICBP2011.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/GLC.MTedits.ForICBP2011.vs1.SignCrrct.vs1.R
-
-
-
-
-
-
-
-
-
-#cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/process.MTedits.ForGIANT2010.vs2.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/process.MTedits.ForGIANT2010.vs2.SignCrrct.vs1.R
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/process.MTedits.ForGIANT2010.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/process.MTedits.ForGIANT2010.vs1.SignCrrct.vs1.R
-
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/DataOrganization.GIANT2010.PythonVLookUp.CreateFullAnnotFile.vs1.py /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/DataOrganization.GIANT2010.PythonVLookUp.CreateFullAnnotFile.vs1.SignCrrct.vs1.py
-
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/DataOrganization.GIANT2010.PythonVLookUp.CreateFullAnnotFile.vs1.SignCrrct.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt --file2 /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz,/mnt/gluster/data/external_public_supp/GIANT2010/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.txt.gz,/mnt/gluster/data/external_public_supp/GIANT2010/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.txt.gz | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT_AllPheno_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.SignCrrct.vs1.RAF.txt.gz
-
-#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT_AllPheno_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.SignCrrct.vs1.RAF.txt.gz
-###MarkerName a1 a2 raf annot beta_height se_height n_height beta_BMI se_BMI n_BMI beta_WHRadjBMI se_WHRadjBMI n_WHRadjBMI
-
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/DataOrganization.GIANT2010.PythonVLookUp.PutTogetherProcessAndAnnotFiles.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.dtlesssignif.vs1.SignCrrct.vs1.txt --file2 <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT_AllPheno_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.SignCrrct.vs1.RAF.txt.gz | perl -lane 'my $chr; my $pos; if ($F[3] eq "NA") { $chr = "NA"; $pos = "NA"; } else { $chr = ((split(/_/, $F[3]))[0]); $pos = ((split(/_/, $F[3]))[1]); } splice(@F, 1, 0, ($chr, $pos)); splice(@F, 8, 1); splice(@F, 11, 1); splice(@F, 14, 1); print join("\t", @F);') | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.dtlesssignif.vs1.SignCrrect.vs1.annot.vs1.RAF.txt.gz
-
-#Added the following header to /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.dtlesssignif.vs1.SignCrrect.vs1.annot.vs1.RAF.txt.gz
-#snp chr pos a1 a2 chrbp raf annot beta_height se_height n_height beta_BMI se_BMI n_BMI beta_WHRadjBMI se_WHRadjBMI n_WHRadjBMI Z.height Z.BMI Z.WHRadjBMI mvstat mvp unip
-
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.dtlesssignif.vs1.SignCrrect.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[6] > .5) { $F[6] = 1 - $F[6]; $F[17] = $F[17] * -1; $F[18] = $F[18] * -1; $F[19] = $F[19] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.dtlesssignif.vs1.SignCrrect.vs1.annot.vs1.MAF.txt.gz 
-
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GLC.MTedits.ForGIANT2010.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GLC.MTedits.ForGIANT2010.vs1.SignCrrct.vs1.R
 
 
 
@@ -6561,10 +7233,10 @@ SNPID   rs-number    of      the     SNP
 CHR     chromosome      number  on      which   the     SNP     is      located (build  36,     release 22)     
 BP      base    pair    position        of      the     SNP     (build  36,     release 22)     
 A1      effect  allele  of      the     SNP     
-A2      non-Â­?<80><90>effect   allele  of      the     SNP   
+A2      non-ÃÂ­?<80><90>effect   allele  of      the     SNP   
 BETA    pooled  effect  size    (unstandardized regression      coefficient)    
 SE      standard        error   of      the     pooled  effect  size    
-PVALUE  p-Â­?<80><90>value      associated      with    the     pooled  effect  size    
+PVALUE  p-ÃÂ­?<80><90>value      associated      with    the     pooled  effect  size    
 INFO    average info    across  cohorts (INFO,  PROPER_INFO     or      R-SQUARED)   
 NCOH    number  of      cohorts for     which   SNP     association     results are     available       
 MAF     minor   allele  frequency       of      the     SNP     in      the     HAPMAP  reference       set
@@ -7109,6 +7781,181 @@ SNP_A-4220418   rs726836        06      25951905        A       G       0.999846
 
 
 
+##GIS2014
+##20160330
+
+mkdir /mnt/gluster/data/external_public_supp/GIS2014
+
+cd /mnt/gluster/data/external_public_supp/GIS2014
+
+#Instructions from Beben Benyamin e-mail
+~~~
+Dear Michael,
+
+You can download the GWAS results here:
+
+sftp qbisftp@sftp.qbi.uq.edu.au 
+user: qbisftp 
+pwd: qbisftp
+
+and the files are in /incoming.data/Beben/
+
+Please read the instruction in the attached pdf document.
+
+Best wishes,
+Beben
+~~~
+
+#sftp qbisftp@sftp.qbi.uq.edu.au
+#cd incoming.data/Beben
+#get GIS_GWAS_Summary_Benyamin2014.zip
+#exit
+
+unzip /mnt/gluster/data/external_public_supp/GIS2014/GIS_GWAS_Summary_Benyamin2014.zip
+
+gzip /mnt/gluster/data/external_public_supp/GIS2014/GIS_GWAS_Summary_Benyamin2014/*.txt
+
+~~~
+[  mturchin20@bigmem01  /mnt/gluster/data/external_public_supp/GIS2014/GIS_GWAS_Summary_Benyamin2014]$for i in `ls -lrt | awk '{ print $9 }' | grep gz$`; do echo $i; zcat $i | wc; done
+Iron_Benyamin_NatCom_2014.txt.gz
+2096457 18868113 111221239
+Log10Ferritin_Benyamin_NatCom_2014.txt.gz
+2036124 18325116 108140823
+Transferrin_Benyamin_NatCom_2014.txt.gz
+2104242 18938178 111825686
+Saturation_Benyamin_NatCom_2014.txt.gz
+2102226 18920034 111523369
+[  mturchin20@bigmem01  /mnt/gluster/data/external_public_supp/GIS2014/GIS_GWAS_Summary_Benyamin2014]$for i in `ls -lrt | awk '{ print $9 }' | grep gz$`; do echo $i; zcat $i | head -n 10; done
+Iron_Benyamin_NatCom_2014.txt.gz
+SNP CHR BP A1 A2 FREQ_A1 EFFECT_A1 SE P
+rs1000000 12 125456933 A G 0.373 -0.0167 0.0119 0.1599
+rs10000010 4 21227772 T C 0.575 -0.0094 0.0099 0.3421
+rs10000012 4 1347325 C G 0.808 -0.007 0.0146 0.6309
+rs10000013 4 36901464 A C 0.833 -0.0068 0.0118 0.5678
+rs10000017 4 84997149 T C 0.223 0.0157 0.012 0.1881
+rs1000002 3 185118462 T C 0.525 0.0171 0.01 0.08538
+rs10000023 4 95952929 T G 0.592 -0.0036 0.0099 0.7207
+rs1000003 3 99825597 A G 0.875 -0.0041 0.0139 0.7701
+rs10000030 4 103593179 A G 0.125 -0.0224 0.0144 0.1188
+Log10Ferritin_Benyamin_NatCom_2014.txt.gz
+SNP CHR BP A1 A2 FREQ_A1 EFFECT_A1 SE P
+rs1000000 12 125456933 A G 0.373 -0.0155 0.0112 0.1659
+rs10000010 4 21227772 T C 0.575 -0.0017 0.0094 0.8587
+rs10000012 4 1347325 C G 0.808 -0.0202 0.0137 0.1417
+rs10000013 4 36901464 A C 0.833 -0.0029 0.0111 0.7922
+rs10000017 4 84997149 T C 0.223 2e-04 0.0112 0.9867
+rs1000002 3 185118462 T C 0.525 0.002 0.0093 0.8261
+rs10000023 4 95952929 T G 0.592 1e-04 0.0094 0.9949
+rs1000003 3 99825597 A G 0.875 -0.0168 0.0131 0.1989
+rs10000030 4 103593179 A G 0.125 -0.0056 0.0135 0.6809
+Transferrin_Benyamin_NatCom_2014.txt.gz
+SNP CHR BP A1 A2 FREQ_A1 EFFECT_A1 SE P
+rs1000000 12 125456933 A G 0.373 3e-04 0.0122 0.9807
+rs10000010 4 21227772 T C 0.575 0.0104 0.0102 0.3089
+rs10000012 4 1347325 C G 0.808 0.0028 0.015 0.8514
+rs10000013 4 36901464 A C 0.833 -0.0155 0.0122 0.2039
+rs10000017 4 84997149 T C 0.223 -0.001 0.0123 0.9329
+rs1000002 3 185118462 T C 0.525 -0.0031 0.0102 0.7615
+rs10000023 4 95952929 T G 0.592 -0.0165 0.0102 0.1075
+rs1000003 3 99825597 A G 0.875 -0.0088 0.0143 0.5399
+rs10000030 4 103593179 A G 0.125 0.0127 0.0147 0.3884
+Saturation_Benyamin_NatCom_2014.txt.gz
+SNP CHR BP A1 A2 FREQ_A1 EFFECT_A1 SE P
+rs1000000 12 125456933 A G 0.373 -0.0112 0.0119 0.3479
+rs10000010 4 21227772 T C 0.575 -0.0123 0.01 0.2183
+rs10000012 4 1347325 C G 0.808 -0.0031 0.0146 0.833
+rs10000013 4 36901464 A C 0.833 -0.0011 0.0119 0.9297
+rs10000017 4 84997149 T C 0.223 0.0141 0.012 0.2408
+rs1000002 3 185118462 T C 0.525 0.0186 0.01 0.06192
+rs10000023 4 95952929 T G 0.592 0.0052 0.01 0.6043
+rs1000003 3 99825597 A G 0.875 7e-04 0.014 0.9601
+rs10000030 4 103593179 A G 0.125 -0.0305 0.0145 0.03482
+~~~
+
+
+
+##Shin2014
+##20160420
+
+mkdir /mnt/gluster/data/external_public_supp/Shin2014
+
+cd /mnt/gluster/data/external_public_supp/Shin2014
+
+#From http://metabolomics.helmholtz-muenchen.de/gwas/index.php?task=download 
+
+wget http://metabolomics.helmholtz-muenchen.de/gwas/gwas_server/shin_et_al.associations.tar.gz
+wget http://metabolomics.helmholtz-muenchen.de/gwas/gwas_server/shin_et_al.metal.out.tar.gz
+
+mkdir /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.associations
+cd /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.associations
+mv /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.associations.tar.gz /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.associations/.
+tar -xvzf /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.associations/shin_et_al.associations.tar.gz
+gzip /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.associations/metabolites_meta/* /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.associations/xenobiotics_meta/*
+
+mkdir /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.metal
+cd /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.metal
+mv /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.metal.tar.gz /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.metal/.
+tar -xvzf /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.metal/shin_et_al.metal.tar.gz
+#gzip /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.metal/metabolites_meta/* 
+
+for i in `ls -lrt /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.metal/metabolites_meta/. | awk '{ print $9 }'`; do
+	metabolite1=`cat /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.metal/metaboliteMap.txt | grep -f <(echo $i | perl -ane 'if ($F[0] =~ m/(.*)(\.metal.pos.txt.gz)/) { print $1; }') | awk '{ print $2}'`; 
+	output1=`echo $i | perl -sane 'if ($F[0] =~ m/(.*)(\.metal.pos.txt.gz)/) { print $metabolite2, $2; } ' -- -metabolite2=$metabolite1 | sed 's/txt.gz/edited.txt.gz/g'`;
+	zcat /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.metal/metabolites_meta/$i | awk '{ print $1, "\t", $2, "\t", $3, "\t", $4, "\t", $8, "\t", $9, "\t", $10, "\t", $11, "\t", $16, "\t", $17, "\t", $18 }' | gzip > /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.metal/metabolites_meta/$output1;
+done
+
+rm /mnt/gluster/data/external_public_supp/Shin2014/shin_et_al.metal/metabolites_meta/M*.metal.pos.txt.gz 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##Kettunen2016
+##20160420
+
+mkdir /mnt/gluster/data/external_public_supp/Kettunen2016
+
+cd /mnt/gluster/data/external_public_supp/Kettunen2016
+
+#From http://www.computationalmedicine.fi/data#NMR_GWAS
+
+#Copy and pasted 'inspect element' -> 'console' from Chrome into /mnt/gluster/data/external_public_supp/Kettunen2016/www.computationalmedicine.fi_data.SourceCode
+
+~~~
+[  mturchin20@bigmem01  /mnt/gluster/data/external_public_supp/Kettunen2016]$cat www.computationalmedicine.fi_data.SourceCode | sed 's/<\/a>/   /g' | perl -lane 'foreach my $entry1 (@F) { print $entry1; }' | grep href | sed 's/href="//g' | perl -lane 'if ($F[0] =~ m/(.*)(">)(.*)/) { print $1; }' | head -n 10
+https://computationalmedicine.blob.core.windows.net/nmrgwas/Summary_statistics_MAGNETIC_AcAce.txt.gz?se=2016-04-23&sr=b&sp=r&sig=ozMtPoHatF1LBUZBaB8cQqHagmDwWBNXIJEPPj00aw8%3D&sv=2014-02-14
+https://computationalmedicine.blob.core.windows.net/nmrgwas/Summary_statistics_MAGNETIC_Ace.txt.gz?se=2016-04-23&sr=b&sp=r&sig=nAE9AZyB2LPrb56zywdUhGyq%2FInMjPBfQb02FqM%2B58E%3D&sv=2014-02-14
+https://computationalmedicine.blob.core.windows.net/nmrgwas/Summary_statistics_MAGNETIC_Ala.txt.gz?se=2016-04-23&sr=b&sp=r&sig=4Jz2vVaSxxJ125ARY6rUT%2BJ%2FvuH4vBmKlTi6kX9z7cU%3D&sv=2014-02-14
+https://computationalmedicine.blob.core.windows.net/nmrgwas/Summary_statistics_MAGNETIC_Alb.txt.gz?se=2016-04-23&sr=b&sp=r&sig=FKqRx4%2BIXsJ3Ov5ZzeEeTjqQI14kmkeVPh2E4c1JEo0%3D&sv=2014-02-14
+https://computationalmedicine.blob.core.windows.net/nmrgwas/Summary_statistics_MAGNETIC_ApoA1.txt.gz?se=2016-04-23&sr=b&sp=r&sig=6FvlxgKSltIvy%2BILE5BqykIwpHhc41qRw7m97YsVJa0%3D&sv=2014-02-14
+https://computationalmedicine.blob.core.windows.net/nmrgwas/Summary_statistics_MAGNETIC_ApoB.txt.gz?se=2016-04-23&sr=b&sp=r&sig=nPVjQizpmXe3xospWIduaJH7tExbgqgmqW0UepKZRHo%3D&sv=2014-02-14
+https://computationalmedicine.blob.core.windows.net/nmrgwas/Summary_statistics_MAGNETIC_Bis.DB.ratio.txt.gz?se=2016-04-23&sr=b&sp=r&sig=pGB%2B33%2BWv9eXaKnRh%2BEsXzCn%2FMXUYxV7widxa2HLDqw%3D&sv=2014-02-14
+https://computationalmedicine.blob.core.windows.net/nmrgwas/Summary_statistics_MAGNETIC_Bis.FA.ratio.txt.gz?se=2016-04-23&sr=b&sp=r&sig=Yy%2FKUV1%2FPcbjhbsjteSWQCvvCepIX0fhLx66KvWeCb4%3D&sv=2014-02-14
+https://computationalmedicine.blob.core.windows.net/nmrgwas/Summary_statistics_MAGNETIC_CH2.DB.ratio.txt.gz?se=2016-04-23&sr=b&sp=r&sig=GjsfUaoli8HHkMti9yDRgBTznBXRML8Z%2BcjlJrLzp54%3D&sv=2014-02-14
+https://computationalmedicine.blob.core.windows.net/nmrgwas/Summary_statistics_MAGNETIC_CH2.in.FA.txt.gz?se=2016-04-23&sr=b&sp=r&sig=V9IBG%2BihUTKjCqjax4T13j0CND%2B%2BeoPkzGhlFPhWr6k%3D&sv=2014-02-14
+~~~
+
+cat /mnt/gluster/data/external_public_supp/Kettunen2016/www.computationalmedicine.fi_data.SourceCode | sed 's/<\/a>/   /g' | perl -lane 'foreach my $entry1 (@F) { print $entry1; }' | grep href | sed 's/href="//g' | perl -lane 'if ($F[0] =~ m/(.*)(">)(.*)/) { print $1; }' > /mnt/gluster/data/external_public_supp/Kettunen2016/www.computationalmedicine.fi_data.SourceCode.JustFileURLs
+
+for i in `cat /mnt/gluster/data/external_public_supp/Kettunen2016/www.computationalmedicine.fi_data.SourceCode.JustFileURLs`; do
+	outfile1=`echo $i | perl -ane 'if ($F[0] =~ m/(.*)(Summary.*.gz)(\?.*)/) { print $2; }'`;
+	wget -O $outfile1 $i; 
+done
+
+-O
+
+
+
+
 
 
 
@@ -7214,6 +8061,9 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2
 
 
 
+
+
+
 LANG2=${LANG}
 LC_ALL2=${LC_ALL}
 LANG=C
@@ -7309,9 +8159,101 @@ Execution of -e aborted due to compilation errors.
 
 
 
+###########################
+#
+#
+# Part A -- GWAS hits
+#
+#
+###########################
 
 ##top SNP hits
 #Copying/pasting/downoading/finding (however) list of top hits from each study
+
+##GlobalLipids2010
+##20160311
+
+mkdir /mnt/lustre/home/mturchin20/Data/GlobalLipids2010
+
+#Copy/pasted table 1 from http://www.nature.com/nature/journal/v466/n7307/fig_tab/nature09270_T1.html into /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.txt
+
+cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.txt | grep rs[0-9] | perl -lane 'foreach my $entry1 (@F) {if ($entry1 =~ m/^rs[0-9]/) { print $entry1; }}' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt
+
+#There were 102 GWAS hits but only 95 went on for secondary analyses, hence why title includes '95' loci but not 102
+~~~
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/Analyses/PathwayWork]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | wc
+    102     102    1024
+~~~
+
+join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | sort) | awk '{ print $1, "\t", $12, "\t", $13 }' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.MarkerChrBP.txt 
+
+
+
+
+
+
+##GlobalLipids2013
+##20160311
+
+#From above in file
+#~~~
+###NOTE_A (see below)
+##Supplementary file ng.2797-S1.pdf was downloaded from http://www.nature.com/ng/journal/v45/n11/extref/ng.2797-S1.pdf and the .pdf was saved as a .txt file using Adobe Acrobat
+##In excel, all tables except for supplementary tables 2 and 3 were removed manually, producing file ng.2797-S1.edited.vs2.txt
+##Supplementary table 2 contains 62 novel loci and supplementary table 3 contains 157 previously identified loci
+#
+#cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.txt | perl -lane 'foreach my $val1 (@F) { print $val1 ; } ' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.txt
+#
+#cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.txt | grep ^rs > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.txt
+#
+#cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.txt | awk '{ print $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.rsIDs.txt
+#
+#cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.txt | grep -v -f /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.rsIDs.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.missingSNPs.txt
+#
+##/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.txt was run through HapMart to get the chromosome and position locations for each rsID. 2 SNPs were missing and their information was manually included. These 2 SNPs were rs1047891 and rs9411489. Information was retrieved from UCSC Genome Browser hg18 and included in the /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.txt file
+##hg18 because HapMart only had hg18 but switching to hg19 with the final annotated file
+##rs1047891 chr2 211248752
+##rs9411489 chr 
+##NOTE -- Previously reported ABO SNP rs9411489 has merged into rs635634 (source: supplementary of http://hmg.oxfordjournals.org/content/21/6/1444.full or https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&uact=8&ved=0CCsQFjAB&url=http%3A%2F%2Fhmg.oxfordjournals.org%2Fcontent%2Fsuppl%2F2011%2F12%2F07%2Fddr581.DC1%2Fddr581supp_table1.doc&ei=HxKiU8_OIYOOyAS-tICoCg&usg=AFQjCNHO1Honaz_0R7CcVLsZan3LNJulKQ&sig2=TIdN-hlZUyRQZeMxiDGWHg&bvm=bv.69137298,d.aWw)
+##rs635634 chr9 135144821
+#~~~
+
+join -1 1 -2 3 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.txt | sort ) <(zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | sort -k 3,3) | awk '{ print $1,"\t", $3 }' | sed 's/\:/ /g' | sed 's/chr//g' | perl -lane 'print join("\t", @F);' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.MarkerChrBP.txt
+
+#From http://www.nature.com/ng/journal/v45/n11/full/ng.2797.html -- so expecting total of 157 loci
+#~~~
+#...To identify new loci and refine known loci influencing these lipids, we examined 188,577 individuals using genome-wide and custom genotyping arrays. We identify and annotate 157 loci associated with lipid levels at P < 5 ÃÂ 10Ã¢ÂÂ8, including 62 loci not previously associated with lipid levels in humans...
+#~~~
+
+#20160311 CHECK_0 -- Prob: Missing 3 SNPs/rsIDs from using any of the 3 '/data/external_public/GlobalLipid/jointGwasMc_*.txt.gz' GWAS files? 
+~~~
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/Analyses/PathwayWork]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.MarkerChrBP.txt | wc
+    154     462    3351
+~~~
+
+
+
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/Analyses/PathwayWork]$zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | head -n 10
+SNP_hg18        SNP_hg19        rsid    A1      A2      beta    se      N       P-value Freq.A1.1000G.EUR
+chr10:10000135  chr10:9960129   rs4747841       g       a       0.0026  0.0048  93561.00        0.7538  0.5092
+chr10:10000265  chr10:9960259   rs4749917       t       c       0.0028  0.0048  93561.00        0.7295  0.5092
+chr10:100002729 chr10:100012739 rs737656        g       a       0.0098  0.0049  94311.00        0.09234 0.6794
+chr10:100002880 chr10:100012890 rs737657        g       a       0.0102  0.0049  94311.00        0.0934  0.6794
+chr10:100003553 chr10:100013563 rs7086391       c       t       0.0005  0.0062  94311.00        0.8723  0.781
+chr10:100003805 chr10:100013815 rs878177        t       c       0.0096  0.0050  94311.00        0.124   0.3483
+chr10:10000459  chr10:9960453   rs12219605      t       g       0.0027  0.0048  93561.00        0.7409  0.5092
+chr10:100005593 chr10:100015603 rs3763689       g       t       0.0027  0.0059  94311.00        0.6502  0.7797
+chr10:100006329 chr10:100016339 rs1983865       t       c       0.0111  0.0048  94311.00        0.05496 0.4591
+
+
+
+
+
+
+
+
+
+
 
 #PGC 2013
 #20150601
@@ -7344,126 +8286,10 @@ cat /mnt/lustre/home/mturchin20/Data/PGC/2013/Cross2014.Table1.txt | grep rs | a
 
 
 #MDD (CrossMDDBipolar) -- 15 SNPs
-#Copy/pasted SNPs with pvals "...In the MDD-bipolar cross-disorder analysis, 15 SNPs exceeded genome-wide significance (P<5 × 10(-8)), and all were in a 248 kb interval of high LD on 3p21.1 (chr3:52 425 083-53 822 102, minimum P=5.9 × 10(-9) at rs2535629)..." in Supplemental Table 19 from http://www.nature.com.proxy.uchicago.edu/mp/journal/v18/n4/full/mp201221a.html (http://www.nature.com.proxy.uchicago.edu/mp/journal/v18/n4/suppinfo/mp201221s1.html) into /mnt/lustre/home/mturchin20/Data/PGC/2013/MDD2013.SupplTable19.txt
+#Copy/pasted SNPs with pvals "...In the MDD-bipolar cross-disorder analysis, 15 SNPs exceeded genome-wide significance (P<5 Ã 10(-8)), and all were in a 248âkb interval of high LD on 3p21.1 (chr3:52â425â083-53â822â102, minimum P=5.9 Ã 10(-9) at rs2535629)..." in Supplemental Table 19 from http://www.nature.com.proxy.uchicago.edu/mp/journal/v18/n4/full/mp201221a.html (http://www.nature.com.proxy.uchicago.edu/mp/journal/v18/n4/suppinfo/mp201221s1.html) into /mnt/lustre/home/mturchin20/Data/PGC/2013/MDD2013.SupplTable19.txt
 
 cat /mnt/lustre/home/mturchin20/Data/PGC/2013/MDD2013.SupplTable19.txt | awk '{ print $1, "\t", $2, "\t", $3 }' > /mnt/lustre/home/mturchin20/Data/PGC/2013/MDD2013.SupplTable19.MarkerChrBP.txt
 
-
-#SCZ -- 10 SNPs, 3 SNPs w/ joint BP
-#Copy/pasted supplementary tables 4 and 11 from http://www.nature.com.proxy.uchicago.edu/ng/journal/v43/n10/full/ng.940.html#supplementary-information into /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable4.txt and /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable11.txt
-(also pasted table 2 into /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.Table2.txt but I don't think I'm going to use this form of the results)
-
-cat /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable4.txt | awk '{ if ($4 <= 0.00000005) { print $0 } }' > /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable4.GWSignificant.txt
-cat /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable4.GWSignificant.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sed 's/,//g' > /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable4.GWSignificant.noCommas.MarkerChrBP.txt
-cat /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable11.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sed 's/,//g' > /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable11.noCommas.MarkerChrBP.txt
-
-cat /mnt/lustre/home/mturchin20/Data/PGC/2013/BP2011.Table2.GWSignificant.noCommas.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/Cross2014.Table1.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/MDD2013.SupplTable19.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable11.noCommas.MarkerChrBP.txt | grep rs | wc
-cat /mnt/lustre/home/mturchin20/Data/PGC/2013/BP2011.Table2.GWSignificant.noCommas.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/Cross2014.Table1.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/MDD2013.SupplTable19.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable11.noCommas.MarkerChrBP.txt | grep rs | awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } '
-cat /mnt/lustre/home/mturchin20/Data/PGC/2013/BP2011.Table2.GWSignificant.noCommas.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/Cross2014.Table1.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/MDD2013.SupplTable19.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable11.noCommas.MarkerChrBP.txt | grep rs | sort | uniq >  /mnt/lustre/home/mturchin20/Data/PGC/2013/PGC2013.Hits.MarkerChrBP.txt
-
-#~~~
-[  mturchin20@spudhead  ~/Data/dbSNP]$cat /mnt/lustre/home/mturchin20/Data/PGC/2013/BP2011.Table2.GWSignificant.noCommas.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/Cross2014.Table1.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/MDD2013.SupplTable19.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable11.noCommas.MarkerChrBP.txt | grep rs | wc
-24      72     616
-[  mturchin20@spudhead  ~/Data/dbSNP]$cat /mnt/lustre/home/mturchin20/Data/PGC/2013/BP2011.Table2.GWSignificant.noCommas.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/Cross2014.Table1.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/MDD2013.SupplTable19.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/PGC/2013/SCZ2013.SupplTable11.noCommas.MarkerChrBP.txt | grep rs | awk '{ print $1 }' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } } '
-      2 rs2535629
-[  mturchin20@spudhead  ~/Data/dbSNP]$cat /mnt/lustre/home/mturchin20/Data/PGC/2013/PGC2013.Hits.MarkerChrBP.txt | wc
-     23      69     591
-#~~~
-
-mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/PGC2013/
-mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/PGC2013/Vs1
-
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/process.MTedits.ForGIANT2013.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/PGC2013/Vs1/process.MTedits.ForPGC2013.vs1.R
-
-#Copy/pasted commands from /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/PGC2013/Vs1/process.MTedits.ForPGC2013.vs1.R into an interactive sessions in $PWD /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/PGC2013/Vs1/
-
-mv /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/PGC2013/Vs1/.RData /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/PGC2013/Vs1/RData.PGC2013.Cross.process.20150602
-gzip /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/PGC2013/Vs1/RData.PGC2013.Cross.process.20150602
-
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/DataOrganization.GIANT2013.PythonVLookUp.CreateFullAnnotFile.vs1.py /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/PGC2013/Vs1/DataOrganization.PGC2013.PythonVLookUp.CreateFullAnnotFile.vs1.py
-
-
-
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/DataOrganization.GIANT2013.PythonVLookUp.CreateFullAnnotFile.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/GIANT/2013/journal.pgen.1003500.s007.noCarriageReturn.Female.MarkerChrBP.txt --file2 /mnt/gluster/data/external_public_supp/GIANT2013/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_HEIGHT_WOMEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz,/mnt/gluster/data/external_public_supp/GIANT2013/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_BMI_WOMEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz,/mnt/gluster/data/external_public_supp/GIANT2013/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_WHRadjBMI_WOMEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz,/mnt/gluster/data/external_public_supp/GIANT2013/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_WHR_WOMEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz,/mnt/gluster/data/external_public_supp/GIANT2013/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_HIPadjBMI_WOMEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz,/mnt/gluster/data/external_public_supp/GIANT2013/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_HIP_WOMEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz,/mnt/gluster/data/external_public_supp/GIANT2013/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_WCadjBMI_WOMEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz,/mnt/gluster/data/external_public_supp/GIANT2013/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_WC_WOMEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz,/mnt/gluster/data/external_public_supp/GIANT2013/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_WEIGHT_WOMEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/GIANT_Randall2013PlosGenet_stage1_publicrelease_HapMapCeuFreq_AllPheno_WOMEN_N.wUCSCGenomeBrowser_dbSNP130.vs1.Annot.vs1.txt.gz
-
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/process.MTedits.ForGIANT2014_5.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/process.MTedits.ForGIANT2013.vs1.R
-
-#Copy/pasted commands from /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/process.MTedits.ForGIANT2013.vs1.R into an interactive sessions in $PWD /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/
-
-mv /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/.RData /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/RData.GIANT2013.process.20150602
-gzip /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2013/Vs1/RData.GIANT2013.process.20150602
-
-
-
-
-
-#CHECK_0: Make a consistent criteria, or as much as possible, with what SNPs are included as 'GWAS/Hit SNPs', e.g. do you include replication findings or not, just primary analyses/first-round results? etc...?
-
-#TAG
-
-#SNP hits
-
-mkdir /mnt/lustre/home/mturchin20/Data/TAG/
-mkdir /mnt/lustre/home/mturchin20/Data/TAG/2010/
-
-#Copy/pasted table 2 from http://www.nature.com.proxy.uchicago.edu/ng/journal/v42/n5/fig_tab/ng.571_T2.html (http://www.nature.com.proxy.uchicago.edu/ng/journal/v42/n5/full/ng.571.html) into /mnt/lustre/home/mturchin20/Data/TAG/2010/TAG2010.Table2.txt
-
-cat /mnt/lustre/home/mturchin20/Data/TAG/2010/TAG2010.Table2.txt | grep rs | awk '{ print $1 }' | grep rs > /mnt/lustre/home/mturchin20/Data/TAG/2010/TAG2010.Table2.MarkerName.txt
-
-zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.*.gz | grep -w -f /mnt/lustre/home/mturchin20/Data/TAG/2010/TAG2010.Table2.MarkerName.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sort | uniq -c | awk '{ print $3, "\t", $2, "\t", $4 }' > /mnt/lustre/home/mturchin20/Data/TAG/2010/TAG2010.Table2.MarkerChrBP.txt
-
-~~~
-[  mturchin20@spudhead  ~/Data/dbSNP]$cat /mnt/lustre/home/mturchin20/Data/TAG/2010/TAG2010.Table2.MarkerName.txt | wc
-     14      14     137
-[  mturchin20@spudling50  ~]$zcat /mnt/gluster/data/external_public_supp/TAG2010/tag.*.gz | grep -w -f /mnt/lustre/home/mturchin20/Data/TAG/2010/TAG2010.Table2.MarkerName.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sort | uniq -c
-4 10       rs1028936       93339777
-4 10       rs1329650       93338100
-4 11       rs1013442       27535522
-4 11       rs1304100       27528179
-4 11       rs4074134       27603861
-4 11       rs4923457       27605156
-4 11       rs4923460       27613365
-4 11       rs6265          27636492
-4 11       rs6484320       27659764
-4 11       rs879048        27595510
-4 15       rs1051730       76681394
-4 15       rs16969968      76669980
-4 19       rs3733829       46002411
-4 9        rs3025343       135468176
-~~~     
-
-##20150830 --- Original location of these lines was here
-mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010 
-mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1 
-
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/PGC2013/Vs1/process.MTedits.ForPGC2013.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/process.MTedits.ForTAG2010.vs1.R 
-
-mv /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/.RData /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/RData.TAG2010.process.20150602
-gzip /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/TAG2010/Vs1/RData.TAG2010.process.20150602
-
-
-
-
-
-
-
-
-
-#IBD2013
-
-#SNP hits -- 163 SNPs
-
-mkdir /mnt/lustre/home/mturchin20/Data/IBDConsortium/
-mkdir /mnt/lustre/home/mturchin20/Data/IBDConsortium/2012/
-
-#Copy/pasted supplementary table 2 from http://www.nature.com.proxy.uchicago.edu/nature/journal/v491/n7422/extref/nature11582-s2.zip (http://www.nature.com.proxy.uchicago.edu/nature/journal/v491/n7422/full/nature11582.html) into /mnt/lustre/home/mturchin20/Data/IBDConsortium/2012/Jostins2012.SupplTable2.txt
-
-cat /mnt/lustre/home/mturchin20/Data/IBDConsortium/2012/Jostins2012.SupplTable2.txt | grep rs | awk '{ print $3 }' | perl -lane 'if ($F[0] =~ m/(rs\d+).*/) { print $1; }' > /mnt/lustre/home/mturchin20/Data/IBDConsortium/2012/Jostins2012.SupplTable2.noCrosses.MarkerNames.txt
-
-~~~
-[  mturchin20@spudhead  /mnt/gluster/data/external_public_supp/PGC2013]$cat /mnt/lustre/home/mturchin20/Data/IBDConsortium/2012/Jostins2012.SupplTable2.noCrosses.MarkerNames.txt | wc
-    163     163    1643
-~~~    
 
 zcat /mnt/gluster/data/external_public_supp/IBDConsortium2012/gwas_ichip_meta_release.txt.gz | grep -w -f /mnt/lustre/home/mturchin20/Data/IBDConsortium/2012/Jostins2012.SupplTable2.noCrosses.MarkerNames.txt | perl -lane 'print join("\t", @F[0..2]);' | grep -w -f /mnt/lustre/home/mturchin20/Data/IBDConsortium/2012/Jostins2012.SupplTable2.noCrosses.MarkerNames.txt > /mnt/lustre/home/mturchin20/Data/IBDConsortium/2012/Jostins2012.SupplTable2.noCrosses.MarkerNames.txt.pt1
 zcat /mnt/gluster/data/external_public_supp/IBDConsortium2012/gwas_ichip_meta_release.txt.gz | grep -w -f /mnt/lustre/home/mturchin20/Data/IBDConsortium/2012/Jostins2012.SupplTable2.noCrosses.MarkerNames.txt | perl -lane 'print $F[2], "\t", $F[0], "\t", $F[1];' > /mnt/lustre/home/mturchin20/Data/IBDConsortium/2012/Jostins2012.SupplTable2.noCrosses.MarkerChrBP.txt
@@ -7524,13 +8350,342 @@ cat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.SBPDBP.SupplTable5.Edited
 
 
 
-##MAGIC2010 -- ChrBP not provided, GWAS = 18 w/ followup, N=not provided
+
+##iGENBP2015
+##20160421
+
+mkdir /mnt/lustre/home/mturchin20/Data/iGENBP2015
+
+#Copy/pasted supplemetnary table 4 supplementary table 6 from http://www.nature.com/ng/journal/v47/n11/full/ng.3405.html into /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt & /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable6.txt
+
+#20160421 NOTE -- last two lines in SupplTable6 are not part of the '19' mentioned in the text, so removing them. A total of '12' were 'significant' in the combined analysis and had replication p-value <.05
+
+~~~
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable6.txt | sed 's/^\s*//g' | awk '{ print $1, "\t", $2, "\t", $3 }' | sed 's/,//g' | grep rs | head -n -2 | wc
+     19      57     485
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable6.txt | perl -lane 'if (($F[$#F] < .00000005) && ($F[$#F-5] < .05)) { print join("\t", @F); }' |  sed 's/^\s*//g' | awk '{ print $1, "\t", $2, "\t", $3 }' | sed 's/,//g' | grep rs | wc
+     12      36     306
+~~~
+
+cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable6.txt | sed 's/^\s*//g' | awk '{ print $1, "\t", $2, "\t", $3 }' | sed 's/,//g' | grep rs | head -n -2 > /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable6.19Hits.MarkerChrBP.txt
+cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable6.txt | perl -lane 'if (($F[$#F] < .00000005) && ($F[$#F-5] < .05)) { print join("\t", @F); }' |  sed 's/^\s*//g' | awk '{ print $1, "\t", $2, "\t", $3 }' | sed 's/,//g' | grep rs > /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable6.12Hits.MarkerChrBP.txt
+
+~~~
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | grep No | wc
+     24     897    5624
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | grep Yes | wc
+     19     722    4515
+~~~
+
+cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sed 's/,//g' | grep rs > /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.MarkerChrBP.txt
+cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | grep No | awk '{ print $1, "\t", $2, "\t", $3 }' | sed 's/,//g' | grep rs > /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.NotNovel.MarkerChrBP.txt
+cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.txt | grep Yes | awk '{ print $1, "\t", $2, "\t", $3 }' | sed 's/,//g' | grep rs > /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.Novel.MarkerChrBP.txt
+
+#20160421 CHECK_0 -- Prob: Finding that a SNP in 2015 NotNovel is the same rsID from 2011 but not within 50kb of that SNP -- presumably because using a different human genome reference. May need to liftover the 2011 results?
+#python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.txt --file2 /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.NotNovel.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.NotNovel.MarkerChrBP.w2011Hits.txt
+#python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.txt --file2 /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.Novel.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.Novel.MarkerChrBP.w2011Hits.txt
+
+#python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.Novel.MarkerChrBP.txt --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.txt
+
+#Old results look to be in Hg18 and new results look to be in Hg19
+~~~
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.NotNovel.MarkerChrBP.txt | grep 111884608
+rs3184504        12      111884608
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.txt | grep rs3184504
+rs3184504       12      110368991
+
+##From UCSC GenomeBrowser
+#
+##Hg19
+#NHGRI-EBI Catalog of Published Genome-Wide Association Studies
+#
+#rs3184504 at chr12:111884358-111884858
+#rs3184504 at chr12:111884358-111884858
+#.
+#.
+#.
+##Hg18
+#NHGRI-EBI Catalog of Published Genome-Wide Association Studies
+#
+#rs3184504 at chr12:110368741-110369241
+#rs3184504 at chr12:110368741-110369241
+#.
+#.
+#.
+
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.txt | awk '{ print "chr" $2, "\t", $3, "\t", $3, "\t", $1 }' | head -n 10
+chr12    113872179       113872179       rs10850411
+chr10    104836168       104836168       rs11191548
+chr10    104929205       104929205       rs11191593
+chr11    129778440       129778440       rs11222084
+chr5     32825609        32825609        rs1173756
+chr5     32850785        32850785        rs1173771
+chr5     157777980       157777980       rs11953630
+chr10    18767965        18767965        rs12258967
+chr17    44757806        44757806        rs12940887
+chr2     164623454       164623454       rs13002573
+~~~
+
+#cat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.txt | awk '{ print "chr" $2, "\t", $3, "\t", $3, "\t", $1 }' > /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.forUCSCGB.bed
+cat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.txt | awk '{ print "chr"$2":"$3"-"$3 }' > /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.forUCSCGB.liftoverFormat
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.txt | awk '{ print "chr"$2":"$3"-"$3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.forUCSCGB.liftoverFormat 
+
+#Used liftover utility in UCSC GenomeBrowser, https://genome.ucsc.edu/cgi-bin/hgLiftOver, from Hg18 to Hg19, and saved to /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.output & /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.output 
+#49 of 49 were successful
+#24 of 24 were successful
+
+paste /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.forUCSCGB.liftoverFormat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.output > /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles
+paste <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.txt | perl -lane 'print join("\t", @F[0..2]);' | grep -v pos) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.forUCSCGB.liftoverFormat | grep -v pos) /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.output > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles
+
+
+
+#Visual inspection a few quick code passes have things make sense
+
+~~~
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles | sed 's/:/ /g' | sed 's/-/ /g' | sed 's/chr//g' | head -n 10
+rs10850411      12      113872179       12 113872179 113872179  12 115387796 115387796
+rs11191548      10      104836168       10 104836168 104836168  10 104846178 104846178
+rs11191593      10      104929205       10 104929205 104929205  10 104939215 104939215
+rs11222084      11      129778440       11 129778440 129778440  11 130273230 130273230
+rs1173756       5       32825609        5 32825609 32825609     5 32789852 32789852
+rs1173771       5       32850785        5 32850785 32850785     5 32815028 32815028
+rs11953630      5       157777980       5 157777980 157777980   5 157845402 157845402
+rs12258967      10      18767965        10 18767965 18767965    10 18727959 18727959
+rs12940887      17      44757806        17 44757806 44757806    17 47402807 47402807
+rs13002573      2       164623454       2 164623454 164623454   2 164915208 164915208
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles | sed 's/:/ /g' | sed 's/-/ /g' | sed 's/chr//g' | awk '{ if ($2 != $7) { print $0 } } ' | wc
+      0       0       0
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles | sed 's/:/ /g' | sed 's/-/ /g' | sed 's/chr//g' | awk '{ if ($2 == $7) { print $0 } } ' | wc
+     49     441    3178
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles | sed 's/:/ /g' | sed 's/-/ /g' | sed 's/chr//g' | awk '{ print $1, "\t", $7, "\t", $8 }' | head -n 10
+rs10850411       12      115387796
+rs11191548       10      104846178
+rs11191593       10      104939215
+rs11222084       11      130273230
+rs1173756        5       32789852
+rs1173771        5       32815028
+rs11953630       5       157845402
+rs12258967       10      18727959
+rs12940887       17      47402807
+rs13002573       2       164915208
+[  mturchin20@bigmem01  ~]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles | sed 's/:/ /g' | sed 's/-/ /g' | sed 's/chr//g' | head -n 10                                                                                                                                                                                          rs10006384      4       38207753        4 38207753 38207753     4 38531358 38531358                                                                                                                                            rs10473911      5       87296415        5 87296415 87296415     5 87260659 87260659
+rs10505863      12      20228698        12 20228698 20228698    12 20337431 20337431
+rs10865196      2       44101281        2 44101281 44101281     2 44247777 44247777
+rs11066320      12      111369135       12 111369135 111369135  12 112884752 112884752
+rs11694671      2       190624076       2 190624076 190624076   2 190915831 190915831
+rs13035036      2       43102039        2 43102039 43102039     2 43248535 43248535
+rs13306677      16      55483696        16 55483696 55483696    16 56926195 56926195
+rs17089717      13      72208616        13 72208616 72208616    13 73310615 73310615
+rs17677264      8       9449460 8 9449460 9449460       8 9412050 9412050
+[  mturchin20@bigmem01  ~]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles | sed 's/:/ /g' | sed 's/-/ /g' | sed 's/chr//g' | sed 's/chr//g' | awk '{ if ($2 != $7) { print $0 } } ' | wc
+      0       0       0
+[  mturchin20@bigmem01  ~]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles | sed 's/:/ /g' | sed 's/-/ /g' | sed 's/chr//g' | sed 's/chr//g' | awk '{ if ($2 == $7) { print $0 } } ' | wc
+     24     216    1505
+[  mturchin20@bigmem01  ~]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles | sed 's/:/ /g' | sed 's/-/ /g' | sed 's/chr//g' | sed 's/chr//g' | awk '{ print $1, "\t", $7, "\t", $8 }' | head -n 10
+rs10006384       4       38531358
+rs10473911       5       87260659
+rs10505863       12      20337431
+rs10865196       2       44247777
+rs11066320       12      112884752
+rs11694671       2       190915831
+rs13035036       2       43248535
+rs13306677       16      56926195
+rs17089717       13      73310615
+rs17677264       8       9412050
+~~~
+
+cat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles | sed 's/:/ /g' | sed 's/-/ /g' | sed 's/chr//g' | awk '{ print $1, "\t", $7, "\t", $8 }' > /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.Hg19.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.forUCSCGB.liftoverFormat.liftoveredToHg19.AllFiles | sed 's/:/ /g' | sed 's/-/ /g' | sed 's/chr//g' | sed 's/chr//g' | awk '{ print $1, "\t", $7, "\t", $8 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.Hg19.txt
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.Hg19.txt --file2 /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.NotNovel.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.NotNovel.MarkerChrBP.w2011Hits.Hg19.txt
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.Hg19.txt --file2 /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.Novel.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.Novel.MarkerChrBP.w2011Hits.Hg19.txt
+
+~~~
+[  mturchin20@bigmem01  ~/Data/iGENBP2015]$cat iGENBP2015.SupplTable4.NotNovel.MarkerChrBP.w2011Hits.Hg19.txt
+rs11105354      12      90026523        2       rs17249754      12      90060586        2
+rs13149993      4       81158545        1       rs1458038       4       81164723        1
+rs3184504       12      111884608       1       rs653178        12      112007756       1
+rs17477177      7       106411858       1       rs17477177      7       106411858       1
+rs2055450       11      100550417       2       rs633185        11      100593538       2
+rs10894192      11      130266117       2       rs11222084      11      130273230       2
+rs8032315       15      91418297        2       rs2521501       15      91437388        2
+rs11191375      10      104464657       2       rs3824755       10      104595849       2
+rs7733331       5       32828846        2       rs1173771       5       32815028        2
+rs1378942       15      75077367        1       rs1378942       15      75077367        1
+rs11960210      5       157817634       2       rs9313772       5       157804457       2
+rs12567136      1       11883731        2       rs17367504      1       11862778        2
+rs11102516      1       113161350       2       rs2932538       1       113216543       2
+rs17080102      6       151004770       0
+rs1887320       20      10965998        2       rs1327235       20      10969030        2
+rs35444 12      115552437       2       rs10850411      12      115387796       2
+rs880315        1       10796866        0
+rs1347677       11      16296412        0
+rs7405452       17      46674670        0
+rs7629767       3       42043509        2       rs3774372       3       41877414        2
+rs731141        10      95898681        2       rs9663362       10      95895177        2
+rs2301597       17      43173273        0
+rs2484294       10      115792062       2       rs2782980       10      115781527       2
+[  mturchin20@bigmem01  ~]$cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.Novel.MarkerChrBP.w2011Hits.Hg19.txt
+rs740406        19      2232221 0
+rs12579720      12      20173764        0
+rs2240736       17      59485393        0
+rs1563788       6       43308363        0
+rs2014912       4       86715670        0
+rs2107595       7       19049388        0
+rs1275988       2       26914364        0
+rs10260816      7       46010100        0
+rs751984        11      61278246        0
+rs1558902       16      53803574        0
+rs13359291      5       122476457       0
+rs1344653       2       19730845        0
+rs7604423       2       43382741        0
+rs1474698       6       56064197        0
+rs17321989      8       76869253        0
+rs10931896      2       201148076       0
+rs9687065       5       148391140       0
+rs503341        11      63587313        0
+rs490234        9       128303734       0
+~~~
+
+##Looking at 'NotNovel' SNPs that did not show up as 'hits' for the 2011 univariate results/from the papers' tables to see where they are coming from
+#~~~
+#rs17080102 -- 
+#http://snpedia.com/index.php/Rs17080102
+#PMID	[PMID 23972371OA-icon.png]
+#Trait	Blood pressure
+#Title	Genome-wide association analysis of blood-pressure traits in African-ancestry individuals reveals common associated genes in African and non-African populations.
+#Risk Allele	C
+#P-val	5E-8
+#Odds Ratio	1.02 [0.53-1.51] unit decrease
+#
+#rs880315 -- 
+#http://snpedia.com/index.php/Rs880315
+#
+#GWAS snp
+#PMID	[PMID 21572416OA-icon.png]
+#Trait	
+#Title	Meta-analysis of genome-wide association studies identifies common variants associated with blood pressure variation in east Asians.
+#Risk Allele	C
+#P-val	3E-10
+#Odds Ratio	0.5600 [0.38-0.74] mm Hg increase
+#
+#rs1347677 -- 
+#Only found a result hitting this SNP as a bone mineral density locus? So maybe 'novel' was at-all in terms of association and not blood pressure?
+#http://www.ncbi.nlm.nih.gov/pubmed/21625884
+#Genetic variants in the SOX6 gene are associated with bone mineral density in both Caucasian and Chinese populations.
+#RESULTS:
+#We confirmed that the previously reported rs7117858-A was associated with reduced hip BMD, with combined P value of 2.45 × 10(-4). Besides this SNP, we identified another 19 SNPs within or near the SOX6 gene to be significantly associated with hip BMD after false discovery rate adjustment. The most significant SNP was rs1347677 located at the intron 3 (P = 3.15 × 10(-7)). Seven additional SNPs in high linkage disequilibrium with rs1347677 were also significantly associated with hip BMD. SNPs in SOX6 showed significant skeletal site specificity since no SNP was detected to be associated with spine BMD.
+#
+#Well SOX6 may have role in blood pressure so maybe they look specifically at SOX6 locus?
+#http://circ.ahajournals.org/content/130/Suppl_2/A15751.abstract
+#Abstract 15751: A New Role of Sox6 in Renin Regulation
+#Introduction: The renin-angiotensin system (RAS) is an important component of blood pressure regulation in mammals....
+#
+#rs7405452 --
+#can't really find anything? tags hoxb-as3 and there's maybe something with muscular development --> blood pressure? http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3750649/
+#
+#rs2301597 --
+#can't really find anything? tags NMT1 which is associated with skeletal traits and also maybe blood pressure stuff too?
+#~~~
+
+#Concern is whether if do 'FDR' analysis some SNPs will not show up in 'new results' and these are false negatives. Probably include these above SNPs that don't overlap with ICBP2011 resutls solely
+
+cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.Novel.MarkerChrBP.txt <(cat /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.NotNovel.MarkerChrBP.w2011Hits.Hg19.txt | awk '{ if ($4 == 0) { print $0 } }' | awk '{ print $1, "\t", $2, "\t", $3 }') > /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.Novel.PlusNotNovel_No2011Overlap.MarkerChrBP.txt
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.Hg19.txt --file2 /mnt/lustre/home/mturchin20/Data/iGENBP2015/iGENBP2015.SupplTable4.Novel.MarkerChrBP.txt
+
+cat 
+
+#Unsure if liftovered properly to correct reference genome. See discrepancies between liftovered coordinates and what I find th main 2015 iGEN files. Original coordinates, at least here, seem to do better. But really looks like previously wanted to liftover coordinates (at least in other, previous situation).
+~~~
+[  mturchin20@bigmem01  ~]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.Hg19.txt | head -n 10
+rs10006384       4       38531358
+rs10473911       5       87260659
+rs10505863       12      20337431
+rs10865196       2       44247777
+rs11066320       12      112884752
+rs11694671       2       190915831
+rs13035036       2       43248535
+rs13306677       16      56926195
+rs17089717       13      73310615
+rs17677264       8       9412050
+[  mturchin20@bigmem01  ~]$cat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | grep rs10505863
+[  mturchin20@bigmem01  ~]$cat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | grep rs13306677
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | grep rs10505863
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | grep rs17089717
+rs17089717      13      72208616        -0.0583 71939
+[  mturchin20@bigmem01  ~]$cat/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrc
+[  mturchin20@bigmem01  ~]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.txt | grep rs17089717
+rs17089717 13 72208616 0 0.02184 2.42092 4.18162 3.46505 34.15971 6.16049 4.53845 25977.9795 9.82328
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | grep rs10006384
+rs10006384      4       38061582        0.098   95824.4
+[  mturchin20@bigmem01  ~]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.txt | grep rs10006384
+rs10006384 4 38207753 0 0.46036 3.9338 4.15981 4.008 48.54274 9.13829 5.3892 26551.25684 10.64343
+[  mturchin20@bigmem01  ~]$zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | grep rs10865196
+rs10865196      2       44043134        0.1503  99950
+[  mturchin20@bigmem01  ~]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.txt | grep rs10865196
+rs10865196 2 44101281 0 0.37523 -3.28318 -3.50453 -3.44775 33.46821 6.01872 4.96282 27671.17414 8.65452
+[  mturchin20@bigmem01  ~]$join <(zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.MarkerChrBP.Hg19.txt | sort)
+rs10006384 4 38061582 0.098 95824.4 4 38531358
+rs10865196 2 44043134 0.1503 99950 2 44247777
+rs11066320 12 111390798 0.375 59157 12 112884752
+rs11694671 2 190506815 0.0307 91123.9 2 190915831
+rs13306677 16 55483696 -0.1433 82440.9 16 56926195
+rs17089717 13 72208616 -0.0583 71939 13 73310615
+rs2052313 7 107742212 0.2428 90597 7 107761691
+rs267218 3 45608838 0.0642 90130.2 3 45633834
+rs2823119 21 15469515 -0.2998 91127 21 16547644
+rs2969070 7 2479071 -0.0191 99903.3 7 2319260
+rs320109 11 63436621 -0.3115 92843.3 11 63680045
+rs3735533 7 27212418 -0.2522 72664.8 7 27052608
+rs4778850 15 78821473 0.1331 95614.6 15 81034418
+rs6136464 20 18605571 -0.0415 91122.4 20 18657571
+rs729820 3 196402620 0.0416 60360.8 3 194921339
+rs783622 1 42139575 0.1853 99957 1 42263494
+rs920644 10 62111562 -0.0289 96995.5 10 62441556
+rs9288052 2 181182281 0.0461 99884 2 181591297
+[  mturchin20@bigmem01  ~]$join <(zcat /mnt/gluster/data/external_public_supp/iGENBP2015/_ega-box-493_SBP_summary_stats.txt.gz | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.txt | sort) | perl -lane 'print join("\t", @F[0..9]);'
+rs10006384      4       38061582        0.098   95824.4 4       38207753        0       0.46036 3.9338
+rs10865196      2       44043134        0.1503  99950   2       44101281        0       0.37523 -3.28318
+rs11066320      12      111390798       0.375   59157   12      111369135       0       0.43261 6.53595
+rs11694671      2       190506815       0.0307  91123.9 2       190624076       0       0.24175 3.66542
+rs13306677      16      55483696        -0.1433 82440.9 16      55483696        0       0.10047 -4.44518
+rs17089717      13      72208616        -0.0583 71939   13      72208616        0       0.02184 2.42092
+rs2052313       7       107742212       0.2428  90597   7       107548927       0       0.40212 -4.99188
+rs267218        3       45608838        0.0642  90130.2 3       45608838        0       0.48792 -3.51352
+rs2823119       21      15469515        -0.2998 91127   21      15469515        0       0.21574 3.26292
+rs2969070       7       2479071 -0.0191 99903.3 7       2285786 0       0.35422 5.9569
+rs320109        11      63436621        -0.3115 92843.3 11      63436621        0       0.43595 -2.81243
+rs3735533       7       27212418        -0.2522 72664.8 7       27019133        0       0.0775  -3.15593
+rs4778850       15      78821473        0.1331  95614.6 15      78821473        0       0.20508 -2.31716
+rs6136464       20      18605571        -0.0415 91122.4 20      18605571        0       0.39139 2.47572
+rs729820        3       196402620       0.0416  60360.8 3       196402628       0       0.08453 3.26285
+rs783622        1       42139575        0.1853  99957   1       42036081        0       0.43851 3.13021
+rs920644        10      62111562        -0.0289 96995.5 10      62111562        0       0.19241 -2.95709
+rs9288052       2       181182281       0.0461  99884   2       181299542       0       0.34278 3.35441
+~~~
+
+
+
+
+
+
+
+
+
+
+
+
+###MAGIC2010 -- ChrBP not provided, GWAS = 18 w/ followup, N=not provided
 
 mkdir /mnt/lustre/home/mturchin20/Data/MAGIC2010
 
 #Copy/pasted table 1 from http://www.nature.com/ng/journal/v42/n2/full/ng.520.html into /mnt/lustre/home/mturchin20/Data/MAGIC2010/MAGIC2010.Table1.txt
 
 cat /mnt/lustre/home/mturchin20/Data/MAGIC2010/MAGIC2010.Table1.txt | grep rs | awk '{ print $1 } ' > /mnt/lustre/home/mturchin20/Data/MAGIC2010/MAGIC2010.Table1.rsID.txt
+
+
+
 
 
 
@@ -7545,6 +8700,53 @@ mkdir /mnt/lustre/home/mturchin20/Data/GEFOS2012
 
 #Copy/pasted supplementary tables 4a and 4b from http://www.nature.com/ng/journal/v44/n5/full/ng.2249.html into /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a.txt and /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4b.txt
 
+#20160305 CHECK_0 -- Prob: Check these below, not getting 56 SNPs getting more than that
+
+cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a.txt | awk '{ print $1 }' | grep rs | grep -v * > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a.Marker.noStar.txt
+
+cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4b.txt | awk '{ print $1 }' | grep rs | grep -v b > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4b.Marker.nob.txt
+
+#cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a.Marker.noStar.txt /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4b.Marker.nob.txt > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.Marker.txt
+
+cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a.txt | awk '{ print $1 }' | grep rs | sed 's/\*//g' > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a.Marker.StarRemoved.txt
+cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4b.txt | awk '{ print $1 }' | grep rs | sed 's/b//g' > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4b.Marker.bRemoved.txt
+
+cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a.Marker.StarRemoved.txt /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4b.Marker.bRemoved.txt > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable4a4b.Marker.txt
+
+##Checking that getting same number of total SNPS by looking across supplementary tables 5a and 5b too from http://www.nature.com/ng/journal/v44/n5/full/ng.2249.html into /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable5a.txt and /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable5b.txt
+#
+#cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable5a.txt | awk '{ print $1 }' | grep rs > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable5a.Marker.txt
+#cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable5b.txt | awk '{ print $1 }' | grep rs > /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable5b.Marker.txt
+#
+#~~~
+#[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1]$cat /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable5a.Marker.txt /mnt/lustre/home/mturchin20/Data/GEFOS2012/GEFOS2012.SupplTable5b.Marker.txt | wc
+#     56      56     564
+#~~~
+
+
+
+
+
+
+##GEFOS2015
+##20160309
+
+#From http://www.nature.com/nature/journal/v526/n7571/full/nature14878.html
+~~~
+In total, we have identified multiple variants associated with BMD, including 3 genomeÃ¢ÂÂwide significant loci for forearm BMD, 14 for femoral neck and 19 for lumbar spine (Supplementary Tables 10, 13, 14, 15, and Extended Data Figs 7 and 8).
+~~~
+
+mkdir /mnt/lustre/home/mturchin20/Data/GEFOS2015
+
+#Copy/pasted supplementary table 13 from http://www.nature.com/nature/journal/v526/n7571/full/nature14878.html#supplementary-information into /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.SupplTable13.txt
+
+cat /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.SupplTable13.txt 
+
+cat /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.SupplTable13.txt | sed 's/^\s*//g' | grep rs | sed 's/Forearm//g' | sed 's/Femoral Neck//g' | sed 's/Lumbar Spine//g' | awk '{ print $4, "\t", $2, "\t", $3 }' | grep rs > /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.SupplTable13.edited.MarkerChrBP.txt
+
+#Copy/pasted table 1 from http://www.nature.com/nature/journal/v526/n7571/full/nature14878.html into /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.Table1.txt
+
+cat /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.Table1.txt | perl -lane 'print $F[$#F-14];' | grep rs > /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.Table1.Marker.txt
 
 
 
@@ -7563,6 +8765,25 @@ cat /mnt/lustre/home/mturchin20/Data/EGG2013/EGG2013.Table1.rsID.pre1.txt > /mnt
 
 #Manually removed ?<80><83> from /mnt/lustre/home/mturchin20/Data/EGG2013/EGG2013.Table1.rsID.txt
 
+zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.txt.gz | grep -w -f /mnt/lustre/home/mturchin20/Data/EGG2013/EGG2013.Table1.rsID.txt | awk '{ print $1, "\t", $2, "\t", $3 }'  > /mnt/lustre/home/mturchin20/Data/EGG2013/EGG2013.Table1.ChrBP.txt
+
+~~~
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$cat /mnt/lustre/home/mturchin20/Data/EGG2013/EGG2013.Table1.rsID.txt | wc
+     10      10      99
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.txt.gz | grep -w -f /mnt/lustre/home/mturchin20/Data/EGG2013/EGG2013.Table1.rsID.txt | awk '{ print $1, "\t", $2, "\t", $3 }'
+rs1172294        2       25022704
+rs1346789        2       55945556
+rs1365198        15      82189907
+rs4788196        16      29874935
+rs6507528        18      19025578
+rs6764769        3       142582970
+rs7628864        3       86933308
+rs7759938        6       105485647
+rs7846385        8       78322734
+rs960273         7       2824402
+[  mturchin20@spudling12  ~/Lab_Stuff/StephensLab/Multivariate/EGG2013/Vs1]$zcat /mnt/gluster/data/external_public_supp/EGG/Pubertal_growth_10F.txt.gz | grep -w -f /mnt/lustre/home/mturchin20/Data/EGG2013/EGG2013.Table1.rsID.txt | awk '{ print $1, "\t", $2, "\t", $3 }'  | wc
+     10      30     253
+~~~
 
 
 
@@ -7603,6 +8824,113 @@ cat /mnt/lustre/home/mturchin20/Data/HaemgenRBC2012/HaemgenRBC2012.Table1.txt | 
 ###########################
 
 
+##GlobalLipids2010
+##20160311
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1/Analyses
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1/Analyses/PathwayWork/
+
+join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | sort) | awk '{ print $12, "\t", $13, "\t", $13, "\t", $2, "\t", $3 }' | sed 's/a/A/g' | sed 's/g/G/' | sed 's/c/C/g' | sed 's/t/T/g' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.AnnovarFormat 
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/newtophits.txt | awk '{ print $1, "\t", $3, "\t", $5 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/newtophits.MarkerChrBP.txt
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/newtophits.MarkerChrBP.txt | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $4, "\t", $5 }' | sed 's/a/A/g' | sed 's/g/G/' | sed 's/c/C/g' | sed 's/t/T/g' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1/Analyses/PathwayWork/newtophits.AnnovarFormat
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1/Analyses/PathwayWork/newtophits.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.AnnovarFormat.genome_summary.csv | grep -v intergenic | grep -v ncRNA | awk -F, '{ print $2 }' | sed 's/"//g' | grep -v Gene > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1/Analyses/PathwayWork/newtophits.AnnovarFormat.genome_summary.csv | grep -v intergenic | grep -v ncRNA | awk -F, '{ print $2 }' | sed 's/"//g' | grep -v Gene > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1/Analyses/PathwayWork/newtophits.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA
+
+
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat.genome_summary.csv | grep -v intergenic | grep -v ncRNA | awk -F, '{ print $2 }' | sed 's/"//g' | grep -v Gene > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA
+
+
+
+
+
+
+##GlobalLipids2013
+##20160311
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/Analyses
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/Analyses/PathwayWork/
+
+join -1 1 -2 3 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.txt | sort ) <(zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | sort -k 3,3) | awk '{ print $3, "\t", $4, "\t", $5 }' | sed 's/\:/ /g' | sed 's/chr//g' | sed 's/a/A/g' | sed 's/g/G/' | sed 's/c/C/g' | sed 's/t/T/g' | perl -lane 'splice(@F, 1, 0, $F[1]); print join("\t", @F);' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/Analyses/PathwayWork/ng.2797-S1.edited.vs2.carriageRemoved.AnnovarFormat 
+
+join -1 1 -2 3 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.newtophits.vs3.SignCrrct.vs1.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sort ) <(zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | sort -k 3,3) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $6, "\t", $7 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/Analyses/PathwayWork/GlobalLipids2013.newtophits.vs3.SignCrrct.vs1.AnnovarFormat 
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/Analyses/PathwayWork/ng.2797-S1.edited.vs2.carriageRemoved.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/Analyses/PathwayWork/GlobalLipids2013.newtophits.vs3.SignCrrct.vs1.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/Analyses/PathwayWork/ng.2797-S1.edited.vs2.carriageRemoved.AnnovarFormat.genome_summary.csv | grep -v intergenic | grep -v ncRNA | awk -F, '{ print $2 }' | sed 's/"//g' | grep -v Gene > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/Analyses/PathwayWork/ng.2797-S1.edited.vs2.carriageRemoved.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/Analyses/PathwayWork/GlobalLipids2013.newtophits.vs3.SignCrrct.vs1.AnnovarFormat.genome_summary.csv | grep -v intergenic | grep -v ncRNA | awk -F, '{ print $2 }' | sed 's/"//g' | grep -v Gene > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/Analyses/PathwayWork/GlobalLipids2013.newtophits.vs3.SignCrrct.vs1.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA
+
+
+
+
+##GIANT2010
+##20160313
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/Analyses
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/Analyses/PathwayWork
+
+join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt | sort ) <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wHapMap22.vs3.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $4, "\t", $5 }' | sed 's/a/A/g' | sed 's/g/G/' | sed 's/c/C/g' | sed 's/t/T/g' > /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.AnnovarFormat
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wHapMap22.vs3.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $4, "\t", $5 }' | sed 's/a/A/g' | sed 's/g/G/' | sed 's/c/C/g' | sed 's/t/T/g' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/Analyses/PathwayWork/GIANT2010.newtophits.vs1.SignCrrct.vs1.AnnovarFormat
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/Analyses/PathwayWork/GIANT2010.newtophits.vs1.SignCrrct.vs1.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+/mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wHapMap22.vs3.txt.gz
+
+
+
+
+##GIANT2014_5
+##20160313
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/Analyses
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/Analyses/PathwayWork
+
+join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt | sort ) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $4, "\t", $5 }' > /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.AnnovarFormat
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GIANT2014_5.Orig3.newtophits.vs1.SignCrrct.vs1.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $4, "\t", $5 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/Analyses/PathwayWork/GIANT2014_5.Orig3.newtophits.vs1.SignCrrct.vs1.AnnovarFormat
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/Analyses/PathwayWork/GIANT2014_5.Orig3.newtophits.vs1.SignCrrct.vs1.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.AnnovarFormat.genome_summary.csv | grep -v intergenic | grep -v ncRNA | awk -F, '{ print $2 }' | sed 's/"//g' | grep -v Gene > /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/Analyses/PathwayWork/GIANT2014_5.Orig3.newtophits.vs1.SignCrrct.vs1.AnnovarFormat.genome_summary.csv | grep -v intergenic | grep -v ncRNA | awk -F, '{ print $2 }' | sed 's/"//g' | grep -v Gene > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/Analyses/PathwayWork/GIANT2014_5.Orig3.newtophits.vs1.SignCrrct.vs1.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA
+
+
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat.genome_summary.csv | grep -v intergenic | grep -v ncRNA | awk -F, '{ print $2 }' | sed 's/"//g' | grep -v Gene > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA
+
+
+
+
+##ICBP2011
+##20160313
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/Analyses
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/Analyses/PathwayWork
+
+join <(cat /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.txt | sort ) <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_DBP_results_v2.wHapMap21.vs3.MatchedToSBP.IncAllele.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $11, "\t", $12 }' > /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.AnnovarFormat
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/newtophits.vs2.SignCrrct.vs1.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sort) <(zcat /mnt/gluster/data/external_private_supp/ICBP2011/PhenoGenotypeFiles/RootStudyConsentSet_phs000585.ICBP_GWAS.v1.p1.c1.DS-CVD-IRB/AnalysisFiles/release_3_2013/data/ICBP2011_DBP_results_v2.wHapMap21.vs3.MatchedToSBP.IncAllele.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $11, "\t", $12 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/Analyses/PathwayWork/newtophits.vs2.SignCrrct.vs1.AnnovarFormat
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Data/ICBP2011/ICBP2011.AllPheno.GWASHits.MarkerChrBP.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/Analyses/PathwayWork/newtophits.vs2.SignCrrct.vs1.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
 
 
 
@@ -7613,541 +8941,132 @@ cat /mnt/lustre/home/mturchin20/Data/HaemgenRBC2012/HaemgenRBC2012.Table1.txt | 
 
 
 
-##20150522
-##CHECK_0: Redo basepair positions from dbSNP130 by incrementing w/ +1 since it seems like, based on the one file with ChrBP information from GIANT, I am always off by 1
-##From file -- /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WCadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.txt.gz 
-~~~
-.
-.
-.
-rs2296568       10      104826930       T       C       0.1333  0.018   0.0047  0.00013 229905  10_104826929
-rs526850        11      118110337       T       G       0.8667  0.024   0.0064  0.00013 153368  11_118110336
-rs10879770      12      73098595        C       G       0.7333  0.018   0.0046  0.00013 153283  12_73098594
-rs710840        4       82354254        A       G       0.2241  0.022   0.0057  0.00013 115934  4_82354253
-rs709930        14      91600266        C       T       0.725   0.018   0.0048  0.00013 153473  14_91600265
-rs17675336      3       72497988        C       G       0.7667  0.02    0.0052  0.00013 152936  3_72497987
-rs1562258       5       124282417       T       G       0.4     0.017   0.0045  0.00013 151333  5_124282416
-rs2740363       17      567161  T       C       0.6417  -0.018  0.0047  0.00013 151656  17_567160
-rs12998432      2       67578928        A       T       0.275   0.018   0.0048  0.00013 153390  2_67578927
-rs1668335       7       113647888       T       C       0.3417  0.018   0.0046  0.00013 152388  7_113647887
-rs910368        14      91558647        C       A       0.725   0.018   0.0048  0.00013 153428  14_91558646
-rs4841504       8       11062073        A       C       0.5083  0.013   0.0035  0.00013 229739  8_11062072
-rs26990 5       112814742       C       T       0.225   0.02    0.0053  0.00013 152347  5_112814741
-rs7701134       5       64578121        G       T       0.1833  0.02    0.0052  0.00013 153402  5_64578120
-rs3806502       2       136004743       C       T       0.8583  0.024   0.0064  0.00013 151190  2_136004742
-rs1564347       15      71225901        G       T       0.7083  0.017   0.0044  0.00013 153233  15_71225900
-rs10220696      14      91630696        G       A       0.725   0.018   0.0048  0.00013 153474  14_91630695
-rs10185077      2       56051616        G       T       0.45    -0.017  0.0045  0.00013 139049  2_56051615
-rs12120182      1       225880955       A       G       0.225   -0.021  0.0054  0.00013 153383  1_225880954
-rs7145052       14      91530945        C       T       0.5833  0.016   0.0041  0.00013 151554  14_91530944
-rs10779417      1       219193537       G       A       0.4492  0.017   0.0044  0.00013 143056  1_219193536
-rs196046        6       22202603        T       C       0.65    0.017   0.0045  0.00013 152250  6_22202602
-rs1219514       10      123422466       A       G       0.075   -0.029  0.0077  0.00013 153461  10_123422465
-rs735998        20      38192244        G       A       0.4083  0.017   0.0044  0.00013 153050  20_38192243
-rs1207776       6       22201000        C       T       0.65    0.017   0.0045  0.00013 152250  6_22200999
-.
-.
-.
-~~~
+##HaemgenRBC2012
+##20160309
 
-##20150615
-##Create version of main script that can work on any set of identically formatted files
-##CHECK_0: Need to think about how to traverse the different phenotypes of interest -- ask user for a line of phenotype names comma seperated that will be in header of file?
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork
 
-##20150701
-#Created a 'vs2' of this MainScript1.sh file because reorganizing large chunks of it so that 'file downloads', 'top SNP hits' and 'multivariate analysis' are done in separate sections all together for organizational purposes
-#Think this might make things a bit easier to traverse through for the time being or at least organize mentally in my head
-#Also somewhat purposely separating the Global Lipids and GIANT work from the rest of the datasets since it seems/feels like those two datasets (or groups of datasets) can be the anchors of the project whereas most other datasets will be accessories/supportive; also this is how my mind is naturally separating things out at the moment anyways
+join <(cat /mnt/lustre/home/mturchin20/Data/HaemgenRBC2012/HaemgenRBC2012.Table1.Edited.MarkerChrBP.txt | sort) <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.IncAllele.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $7, "\t", $8 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat
 
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MainScript1.sh /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MainScript1.vs2.sh 
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/GLC.MTedits.ForHaemgenRBC2012.AllPheno.vs1.newtophits.vs1.SignCrrct.vs1.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.IncAllele.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $7, "\t", $8 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/GLC.MTedits.ForHaemgenRBC2012.AllPheno.vs1.newtophits.vs1.SignCrrct.vs1.AnnovarFormat
 
-##20150812
-#Reversed the above decision, going back to a 'per cohort/dataset' organization standpoint -- just going to process each dataset at similar stages one at a time even though in this file they will appear as separate block entries
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
 
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MainScript1.vs2.sh /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MainScript1.vs3.sh 
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/GLC.MTedits.ForHaemgenRBC2012.AllPheno.vs1.newtophits.vs1.SignCrrct.vs1.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
 
-##20150830 
-#I reversed this initial decision and continued using it as a 'three-way split' type of setup, but just with the vs3 title. Making some more organizational changes so continuing on with a vs4 of things
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MainScript1.vs2.sh /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MainScript1.vs3.sh
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat.genome_summary.csv | grep -v intergenic | grep -v ncRNA | awk -F, '{ print $2 }' | sed 's/"//g' | grep -v Gene > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA
 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat.genome_summary.csv | grep intergenic | sed 's/),/);/g' | perl -F, -lane 'print $F[1];' | perl -lane 'my @genes1 = split(/;/, $F[0]); foreach my $gene (@genes1) { print $gene; }' | sed 's/"//g' | sed 's/(/ /g' | awk '{ print $1 }' | grep -v Gene | grep -v NONE > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat.genome_summary.GeneIDs.Intergenic
 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/GLC.MTedits.ForHaemgenRBC2012.AllPheno.vs1.newtophits.vs1.SignCrrct.vs1.AnnovarFormat.genome_summary.csv | grep -v intergenic | grep -v ncRNA | awk -F, '{ print $2 }' | sed 's/"//g' | grep -v Gene > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/GLC.MTedits.ForHaemgenRBC2012.AllPheno.vs1.newtophits.vs1.SignCrrct.vs1.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA
 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/GLC.MTedits.ForHaemgenRBC2012.AllPheno.vs1.newtophits.vs1.SignCrrct.vs1.AnnovarFormat.genome_summary.csv | grep intergenic | sed 's/),/);/g' | perl -F, -lane 'print $F[1];' | perl -lane 'my @genes1 = split(/;/, $F[0]); foreach my $gene (@genes1) { print $gene; }' | sed 's/"//g' | sed 's/(/ /g' | awk '{ print $1 }' | grep -v Gene | grep -v NONE > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/GLC.MTedits.ForHaemgenRBC2012.AllPheno.vs1.newtophits.vs1.SignCrrct.vs1.AnnovarFormat.genome_summary.GeneIDs.Intergenic
 
-##20150806
-##CHECK_0: There is another dataset with two variables for platelets from Nicole Soranzo that Joe Pickrell got from her in 2014 ASHG manuscript, e.g. "Summary statistics from a large GWAS of platelet traits39 were generously provided by Nicole Soranzo. The data consisted of summary statistics from association studies of two traits: platelet counts and mean platelet volume..." (source: http://www.sciencedirect.com/science/article/pii/S0002929714001062)
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/GLC.MTedits.ForHaemgenRBC2012.AllPheno.vs1.newtophits.vs1.SignCrrct.vs1.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.UniHits.MultiHits.GeneIDs.no_Intergenic_ncRNA 
 
-##20150806
-##CHECK_0: Collect 'dbSNP' vs and # of top hits for each study and come up with way to make this uniform, or at least the processing/setup of it all uniform
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.Table1.Edited.MarkerChrBP.AnnovarFormat.genome_summary.GeneIDs.Intergenic /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/GLC.MTedits.ForHaemgenRBC2012.AllPheno.vs1.newtophits.vs1.SignCrrct.vs1.AnnovarFormat.genome_summary.GeneIDs.Intergenic > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/HaemgenRBC2012.UniHits.MultiHits.GeneIDs.Intergenic
 
-##20150806
-##CHECK_0: Use beta/stderr in place of N when no N is given? What to do when no N is given in general (but maybe the 'overall number of participants' is known from the manuscript)?
-##Seems like in code 'n' is just a weighting metric of sorts, may not actually affect magnitude of results? 
-
-#From https://github.com/stephens999/multivariate/blob/master/test.funcs.R
-~~~
-#this function is similar to the "from summaries" function
-#but allows us to deal with the fact that n may be different for each SNP
-#note the "drop=FALSE" commands below stop R collapsing matrices into vectors inappropriately
-#VYX \approx (1/n) Y'X is d by p
-#VYY \approx (1/n) Y'Y is d by d
-#VXX is a p-vector of the estimated variances of the SNP
-logBF.fromVSummaries = function(VYX,VYY,VXX,U,D,n,m,d,sigmaa){
-
-dd = sum(D)
-du= sum(U)
-p = dim(VYX)[2]
-
-if(du>0){
-LUU = chol(VYY[U,U,drop=FALSE]) # a du by du matrix
-VUD = VYY[U,D,drop=FALSE]      #a du by dd matrix of the correlations of Yu with Yd
-
-c = cbind(forwardsolve(t(LUU),VYX[U,,drop=FALSE]))#c solves LUU'c = phiU, c is a du by p matrix
-b = cbind(forwardsolve(t(LUU), VUD))  # b is du by dd, and solves LUU' b = VUD, so b'b = VUD' LUU^-1 LUU'^-1 VUD = VUD' (LUU'LUU)^-1 VUD = VUD'VYYU^-1 VUD
-} else{c=matrix(0,nrow=1,ncol=p); b=matrix(0,nrow=1,ncol=dd);}
-
-C = VXX - colSums(c*c)
-
-u = VYX[D,,drop=FALSE] - crossprod(b,c)
-
-V0 = VYY[D,D,drop=FALSE] - crossprod(b)
-L0 = chol(V0)
-a = forwardsolve(t(L0),u)
-lambda = sigmaa^(-2)  / (n*C)
-k = as.numeric(1/(1+lambda))
-return((dd/2) * log(1-k) - 0.5*(n+m-(d-sum(D)-sum(U)))*log(1-(k/C) *colSums(a*a)))
-}
-
-#computes the matrix of BFs for each value of sigmaa
-#Z is a p by d matrix of Zscores
-#n is a p vector of sample sizes
-#f is a p vector of minor allele frequencies
-#VYY is a d by d matrix of the estimated variance covariance matrix of Y
-compute.allBFs.fromZscores = function(Z,VYY,n,f,sigmaa,pi0=0.5,m=0){
-d = dim(Z)[2]
-p = dim(Z)[1]
-if(m==0){m = d-1}
-VXX = 2*f *(1-f)
-VYX = t(sqrt(VXX)*Z/sqrt(n))
-
-prior = rep(0,3^d)
-gamma=matrix(0,nrow=3^d,ncol=d)
-lbf=list()
-for(ss in 1:length(sigmaa)){
-  lbf[[ss]] = matrix(0,nrow=3^d, ncol=p)
-}
-
-for(i in 0:(3^d-1)){
-  for(j in 1:d){
-    gamma[i+1,j]= (i %% 3^j) %/% 3^{j-1}
-  }
-  prior[i+1] = computeprior(gamma[i+1,],pi0)
-  U = (gamma[i+1,]==0)
-  D = (gamma[i+1,]==1)
-  #print(U); print(D);
-  if(prior[i+1]>0){
-      for(ss in 1:length(sigmaa)){
-         lbf[[ss]][i+1,] = logBF.fromVSummaries(VYX,VYY,VXX,U,D,n,m,d,sigmaa[ss])/log(10)
-         #note we just don't bother computing for models with prior = 0
-      }
-  } else {
-      for(ss in 1:length(sigmaa)){
-         lbf[[ss]][i+1,] = 0
-      }
-  }
-}
-prior[1] = pi0
-return(list(lbf=lbf,gamma=gamma,prior=prior))
-}
-~~~
-
-#Maybe can just do 'N = max N * (1-stderr^2)' ?
-#Note the 'return((dd/2) * log(1-k) - 0.5*(n+m-(d-sum(D)-sum(U)))*log(1-(k/C) *colSums(a*a)))' where we have '...0.5*(n+m...' as part of the final value -- maybe this implies n magnitude matters rather than a scaling factor? m is just d-1 so m itself is on the range of 1 to 3!, 4!, etc...
-
-
-##20150515
-##Email chain involving multiple people from UMich lipids consortium and Matthew regarding which Sfrom Kevin on 20140324 explaining the breakdown of "array gene groupings 03 31 2014.xlsx" -- logged here for consistency
-##Logged here for consistency
+join <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.txt.gz | awk '{ print $1, "\t", $2, "\t", $3 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.IncAllele.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $7, "\t", $8 }' > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.AnnovarFormat
 
 ~~~
-Details in 'annotated' file for lipid project
-Inbox
-x  
-UChicago
-x 
-
-Michael Turchin <mturchin20@gmail.com>
-6/18/14
-
-to Matthew 
-Hey Matthew,
-
-So it looks like you were able to get a column of information from whomever supplied you with that 'annotated' file that included whether the SNP of interest had been:
-1) Found as significant in the 2010 paper
-2) Not found as significant in the 2010 paper
-3) Not associated with a gene at all
-
-You use this column to grab the SNPs that had been found as significant to create priors. Right now the information that is publicly available for the 2013 paper does not include this distinction. There are supplementary files on the Nature Genetics webpage that include these lists, but they are in .pdf format, not something like an excel file. 
-
-Could we possibly try contacting the people at UMich to see if we could get some sort of excel sheet with the 'top SNP hits' or maybe more specifically an 'annotated' file like we received last time? The former would probably suffice though, I think.
-
-Or any other thoughts on this matter?
-
-Thanks Matthew!
-
-
-Matthew Stephens <stephens999@gmail.com>
-6/18/14
-
-to xwen, me 
-I think William ccd may be able to help you. To clarify, the information you are asking for is published just not in convenient form right? Ms
-
-
-
-Michael Turchin <mturchin20@gmail.com>
-6/18/14
-
-to Matthew, xwen 
-Right, and hi there William. I'm just interested in getting the list of SNP rsIDs that were considered significant according to the 2013 paper, if that is easily accessible. I think these are the SNPs in supplementary tables 2 and 3 but they are in .pdf format. 
-
-
-Xiaoquan Wen <xwen@umich.edu>
-6/18/14
-
-to Sebanti, Matthew, me 
-Hi Sebanti,
-
-See the message below. Do you have the list of SNPs that Michael is interested in?
-
-Thanks,
-William 
-
-
-Sebanti Sengupta <sebanti@umich.edu>
-Attachments6/18/14
-
-to Xiaoquan, Matthew, me 
-Hi Michael,
-
-Do you need just a list of rsid's?
-
-The known_lipid_loci file attached lists the rsid's for the loci listed in the 2010 paper and the novel_lipid_loci file lists the rsid's found to be new in the 2013 paper. They're not separated by trait, but if you need that I can try to find those lists.
-
-I hope this helps! Let me know if you need further details.
-
-Best,
-Sebanti
-
-2 Attachments 
- 
- Preview attachment known_lipid_loci.txt
-
- Text
- known_lipid_loci.txt
- Preview attachment novel_lipid_loci.txt
-
- Text
- novel_lipid_loci.txt
-
- Michael Turchin <mturchin20@gmail.com>
- 6/19/14
-
- to Sebanti, Xiaoquan, Matthew 
- Hi Sebanti,
-
- Great, these look like what we were hoping for, just the rsid's. Thanks so much! If the information regarding them separated by trait is readily available, we'd be happy to get those too, but no rush.
-
- Thanks guys, also for your quick responses. Best,
- ~Michael
-
-
- Sebanti Sengupta <sebanti@umich.edu>
- Attachments6/21/14
-
- to me, Xiaoquan, Matthew 
- Hi Michael,
-
- I've attached the list of loci with the associated traits listed (the first trait is the primary trait). Known means listed in the 2010 paper and novel means newly discovered in the 2013 paper.
-
- Let me know if you have further questions.
-
- Best,
- Sebanti
-
- Attachments area
- Preview attachment lipid_loci.xlsx
- Excel
- lipid_loci.xlsx
- .
- .
- .
- ~
-
-##20150519 
-##Using http://www.free-ocr.com/ on 'Extended Data Table 2' from http://www.nature.com/nature/journal/v518/n7538/full/nature14177.html and below is the original output (some of which I manually edited/corrected, such as the Chr:Position identifications, in /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/Locke2015.SupplTables1_2.wManualOCREdits.txt) 
-~~~
-SNP Chr: Position âNotable gene(s) Alleles EAF B SE P value
-rs6567160 18:55,980,115 MC4R(B,N) C/'l' 0.236 0.056 0.004 3.93E-53
-rs13021737 2:622,348 TMEM18(N) G/A 0.828 0.06 0.004 1.11E-50
-rs10938397 4:44,877,284 GNPDA2(N); GABRG1(B) G/A 0.434 0.04 0.003 3.21 E-38
-rs543874 1 :176,156,103 SEC16B(N) G/A 0.193 0.048 0.004 2.62E-35
-rs2207139 6:50,953,449 TFAP2B(B,N) G/A 0.177 0.045 0.004 4.13E-29
-rs11030104 11 :27,641 ,093 BDNF(B,M,N) AIG 0.792 0.041 0.004 5.56E-28
-rs3101336 1:72,523,773 NEGR1(B,C,D,N) C/T 0.613 0.033 0.003 2.66E-26
-rs7138803 12:48,533,735 BCDIN3D(N); FAIM2(D) A/G 0.384 0.032 0.003 8.15E-24
-rs10182181 2:25,003,800 ADCY3(Bâ%Ã©q(â)3)1;(g;3MC(BâG); G/A 0.462 0.031 0.003 8.78E-24
-SH2B1(B,M,Q); APOBR(M.Q);
-rs3888190 16:28,796,987 ATXN2L(Q); SBK1(Q,D); SULT1A2(Q); AIC 0.403 0.031 0.003 3.14E-23
-TUFM(Q)
-rs1516725 3:187,306,698 E TV5(N) CIT 0.872 0.045 0.005 1 .89E-22
-rs12446632 16: 1 9,842,890 GPRC5B(C,N); IQCK(Q) G/A 0.865 0.04 0.005 1 .48E-18
-rs2287019 19:50,894,012 QPCTL(N); GIPR(B,M) CIT 0.804 0.036 0.004 4.59E-18
-rs16951275 15:65,864,222 MAP2K5(B,D,N); LBXCOR1 (M) TIC 0.784 0.031 0.004 1.91 E-1 7
-rs3817334 11:47.60"/,ss9 MTC"'2(M'Q); g;âBQy;â;(Q"); SPMQ)â T/C 0.401 0.020 0.003 5.155-11
-rs2112347 5:75,050,998 POC5(M); HMGCR(B); COL4A3BP(B) TIG 0.629 0.026 0.003 6.19E-17
-rs12566985 1:74,774,781 FPGT-TNNI3K(N) G/A 0.446 0.024 0.003 3.28E-15
-rs3810291 19:52,260,843 ZC3H4(D,N,Q) A/G 0.666 0.028 0.004 4.81 E-15
-rs7141420 14:78,969,207 NRXN3(D,N) T/C 0.527 0.024 0.003 1 .23E-14
-rs13078960 3:85,890,280 CADM2(D,N) GIT 0.196 0.03 0.004 1 .74E-14
-rs10968576 9:28,404,339 LlNGO2(D,N) G/A 0.32 0.025 0.003 6.61 E-14
-rs17024393 1:109,956,211 GNAT2(N); AMPD2(D) C/'l' 0.04 0.066 0.009 7.03E-14
-rs12429545 13:53,000,207 OLFM4(B,N) AIG 0.133 0.033 0.005 1 .09E-12
-rs13107325 4:103,407,732 SLC39A8(M,N,Q) T/C 0.072 0.048 0.007 1 .83E-12
-rs11165643 1:96,696,685 PTBP2(D,N) T/C 0.583 0.022 0.003 2.07E-12
-rs17405819 8:76,969,139 HNF4G(B,N) T/C 0.7 0.022 0.003 2.07E-11
-rs1016287 2:59,159,129 LlNC01122(N) TIC 0.287 0.023 0.003 2.25E-11
-rs4256980 11 :8,630,51 5 TRIM66(D,M, N); TUB(B) GIC 0.646 0.021 0.003 2.90E-11
-rs12401738 1178,21 9,349 FUBP1 (N); USP33(D) A/G 0.352 0.021 0.003 1 .15E-10
-rs205262 6:34,671,142 C6orf106(N); SNRPC(Q) G/A 0.273 0.022 0.004 1 .75E-10
-rs12016871 13:26,915,782 MTIF3(N); GTF3A(Q) T/C 0.203 0.03 0.005 2.29E-10
-rs12940622 17:76,230,166 RPTOR(B,N) G/A 0.575 0.018 0.003 2.49E-09
-rs11847697 14:29,584,863 PRKD1 (N) TIC 0.042 0.049 0.008 3.99E-09
-rs2075650 19:50,087,459 TOMM40(B,N); APOE(B); APOC1 (B) AIG 0.848 0.026 0.005 1 .25E-08
-rs2121279 2:142,759,755 LRP1B(N) T/C 0.152 0.025 0.004 2.31 E-08
-rs29941 19:39,001,372 KCTD15(N) G/A 0.669 0.018 0.003 2.41 E-08
-rs1808579 18:19,358,886 NPC1(B,G,M,Q); C18orf8(N,Q) CI'I' 0.534 0.017 0.003 4.17E-08
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/Analyses/PathwayWork]$join <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.txt.gz | awk '{ print $1, "\t", $2, "\t", $3 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_RBC.wHapMap22.IncAllele.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $7, "\t", $8 }' > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.AnnovarFormat
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/Analyses/PathwayWork]$cat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.AnnovarFormat | wc
+2425038 12125190 79750377
+[  mturchin20@bigmem01  ~/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/Analyses/PathwayWork]$zcat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.txt.gz | wc
+2425038 38800611 262808152
 ~~~
 
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
 
+cat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.AnnovarFormat.genome_summary.csv | grep -v intergenic | grep -v ncRNA | awk -F, '{ print $2 }' | sed 's/"//g' | grep -v Gene > /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA
 
-##20150618
-##Email chain with how I received the updated IBDGC information from Stephan Ripke & co. from Broad Institute
-##Logged here for consistency
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/Permutations/
 
-~~~
+for i in {1..10}; do
+	cat /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA | sort | uniq | R -q -e "Data1 <- read.table(file('stdin'), stringsAsFactors=FALSE, header=F); write.table(matrix(sample(Data1[,1], size=300), ncol=1), quote=FALSE, row.names=FALSE, col.names=FALSE);" | grep -v ^\> | perl -lane 'print +(split(/\(/, $F[0]))[0];' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/Permutations/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA.ran300.${i}
+done
 
-Michael Turchin <mturchin20@uchicago.edu>
-Jun 5 (13 days ago)
+#scp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/Permutations/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA.ran300.* /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/Permutations/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.AnnovarFormat.genome_summary.GeneIDs.no_Intergenic_ncRNA.ran100.* mturchin20@wolfy.uchicago.edu:/Users/mturchin20/LabMisc/StephensLab/Multivariate/HaemgenRBC2012/Vs1/Analyses/PathwayWork/Permutations/.
 
-to bulik 
-Hi there Brendan,
+shuf 
 
-I'm a graduate student at the University of Chicago and I've been trying to track down some publicly available GWAS datasets that contain summary data. I noticed in your manuscript "An Atlas of Genetic Correlations across Human Diseases and Traits" that you were maybe able to get a more complete version of the IBDGC dataset beyond what is available at http://www.ibdgenetics.org/downloads.html (such as possibly the summary data for the full GWAS chip)? If this is the case I was just wondering if you had a contact person you'd recommend speaking to to get access to this summary data? Since the original publication associated with the webpage is from 2012 I'm unsure if the contact information is still up-to-date.
 
-Thanks for any direction you can provide. Best,
-~Michael  
 
-Brendan Bulik-Sullivan bulik@broadinstitute.org via uchicago.edu 
-Jun 5 (13 days ago)
 
-to Mark, Stephan, Michael 
-Hi Michael,
 
-The right people to contact are Mark Daly and Stephan Ripke (cc'ed). 
 
-Best,
-Brendan
 
 
-Michael Turchin <mturchin20@uchicago.edu>
-Jun 5 (13 days ago)
+##MAGIC2010
+##20160313
 
-to Brendan 
-Great, thanks Brendan -- I'll follow up with them.
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MAGIC2010/Vs1/Analyses
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MAGIC2010/Vs1/Analyses/PathwayWork
 
-Best,
-~Michael
 
+join <(cat /mnt/lustre/home/mturchin20/Data/MAGIC2010/MAGIC2010.Table1.MarkerChrBP.txt | sort) <(zcat /mnt/gluster/data/external_public_supp/MAGIC2010/MAGIC_ln_FastingInsulin.wHapMap22.vs3.IncAllele.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $4, "\t", $5 }' | sed 's/a/A/g' | sed 's/g/G/' | sed 's/c/C/g' | sed 's/t/T/g' > /mnt/lustre/home/mturchin20/Data/MAGIC2010/MAGIC2010.Table1.MarkerChrBP.AnnovarFormat 
 
-Michael Turchin <mturchin20@gmail.com>
-Jun 5 (13 days ago)
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MAGIC2010/Vs1/newtophits.vs2.SignCrrct.vs1.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/MAGIC2010/MAGIC_ln_FastingInsulin.wHapMap22.vs3.IncAllele.txt.gz | sort) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $4, "\t", $5 }' | sed 's/a/A/g' | sed 's/g/G/' | sed 's/c/C/g' | sed 's/t/T/g' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MAGIC2010/Vs1/Analyses/PathwayWork/newtophits.vs2.SignCrrct.vs1.AnnovarFormat
 
-to Mark, Stephan 
-Hi Mark, Stephan,
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Data/MAGIC2010/MAGIC2010.Table1.MarkerChrBP.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
 
-As my e-mail to Brendan below points out, I'm a graduate student at the University of Chicago interested in the various publicly available GWAS summary statistic datasets that exist out there at the moment. I noticed in the "An Atlas of Genetic Correlations across Human Diseases and Traits" manuscript that it was mentioned there is potentially a newer version of the IDBGC data than is currently available from http://www.ibdgenetics.org/downloads.html. I'm just curious about the status/availability of this more current dataset and whether it potentially contains the full SNP-chip/imputation list of UC/Crohn's/IBD p-values (and not just what I believe are the SNPs that went on for replication, which is what the webpage contains).
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MAGIC2010/Vs1/Analyses/PathwayWork/newtophits.vs2.SignCrrct.vs1.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
 
-Thanks for any direction or insight either of you can provide. Best,
-~Michael
 
 
-Michael Turchin <mturchin20@uchicago.edu>
-Jun 15 (3 days ago)
 
-to Mark, Stephan 
-Hi Mark, Stephan,
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/gluster/data/external_public_supp/HaemgenRBC2012/HaemGenRBC_AllPhenos.wHapMap22.MatchedToRBC.IncAllele.formatted.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
 
-As my e-mail to Brendan below points out, I'm a graduate student at the University of Chicago interested in the various publicly available GWAS summary statistic datasets that exist out there at the moment. I noticed in the "An Atlas of Genetic Correlations across Human Diseases and Traits" manuscript that it was mentioned there is potentially a newer version of the IDBGC data than is currently available from http://www.ibdgenetics.org/downloads.html. I'm just curious about the status/availability of this more current dataset and whether it potentially contains the full SNP-chip/imputation list of UC/Crohn's/IBD p-values (and not just what I believe are the SNPs that went on for replication, which is what the webpage contains).
 
-Thanks for any direction or insight either of you can provide. Best,
-~Michael
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/MAGIC2010/Vs1/newtophits.vs2.SignCrrct.vs1.txt
+/mnt/gluster/data/external_public_supp/MAGIC2010/MAGIC_ln_FastingInsulin.wHapMap22.vs3.IncAllele.txt.gz
 
 
-Mark Daly mjdaly@atgu.mgh.harvard.edu via uchicago.edu 
-Jun 15 (3 days ago)
 
-to mturchin20 
-Hi - I'm traveling through July 8 and may not respond promptly to all email - please contact Beth Raynard (luise@atgu.mgh.harvard.edu) or Jill Harris (harris@atgu.mgh.harvard.edu) if an urgent response is needed.
+##GEFOS2015
+##20160309
 
-Stephan Ripke sripke@broadinstitute.org via uchicago.edu 
-Jun 15 (3 days ago)
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/Analyses
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/Analyses/PathwayWork
 
-to Jeffrey, Michael, Mark 
-sorry for not responding before.
-jeff, mark, is it ok to share whole genome summary stats from IBD, UC, CD?
-if so, can we share the 1KG imputed ones?
+join -1 1 -2 3 <(cat /mnt/lustre/home/mturchin20/Data/GEFOS2015/GEFOS2015.SupplTable13.edited.MarkerChrBP.txt | sort) <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.maf05.IncAllele.out_.gz | sort -k 3,3) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $6, "\t", $7 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/Analyses/PathwayWork/GEFOS2015.SupplTable13.edited.MarkerChrBP.AnnovarFormat
 
+join -1 1 -2 3 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GEFOS2015.newtophits.vs1.SignCrrct.vs1.txt | awk '{ print $1, "\t", $2, "\t", $3 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GEFOS2015/fa2stu.MAF0_.005.pos_.maf05.IncAllele.out_.gz | sort -k 3,3) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $6, "\t", $7 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/Analyses/PathwayWork/GEFOS2015.newtophits.vs1.SignCrrct.vs1.AnnovarFormat
 
-Jeffrey Barrett jb26@sanger.ac.uk via uchicago.edu 
-Jun 15 (3 days ago)
 
-to Stephan, Michael, Mark 
-Yes, we should be sharing them. Iâm also working on getting the latest versions posted to the website.
 
-Cheers,
-Jeff
--- The Wellcome Trust Sanger Institute is operated by Genome Research Limited, a charity registered in England with number 1021457 and a company registered in England with number 2742969, whose registered office is 215 Euston Road, London, NW1 2BE.
 
-Michael Turchin <mturchin20@uchicago.edu>
-Jun 15 (3 days ago)
 
-to Jeffrey, Stephan, Mark 
-Great, thanks Stephan and Jeff for getting back to me as well as sharing the data! Sorry for the follow-up e-mail Stephan, I just assumed the first one got lost.
 
-Best,
-~Michael
 
 
-Mark Daly mjdaly@atgu.mgh.harvard.edu via uchicago.edu 
-Jun 15 (3 days ago)
-
-to Stephan, Michael, Jeffrey 
-These should have posted long ago - as Jeff says these should just be put up there on the IIBDGC website
-so fine to share
-
-
-The information in this e-mail is intended only for the person to whom it is
-addressed. If you believe this e-mail was sent to you in error and the e-mail
-contains patient information, please contact the Partners Compliance HelpLine at
-http://www.partners.org/complianceline . If the e-mail was sent to you in error
-but does not contain patient information, please contact the sender and properly
-dispose of the e-mail.
-
-
-Stephan Ripke sripke@broadinstitute.org via uchicago.edu 
-2:54 PM (2 hours ago)
-
-to Mark, Michael, Jeffrey 
-here are the three whole genome results
-- crohn's 
-- UC
-- IBD (taking both case sets together against all controls)
-
-these results will differ slightly from the published ones, since it's 1KG imputation. also it contains many more SNPs.
-the individuals and their covariates are identical to the analysis from the publication.
-
-http://www.broadinstitute.org/~sripke/share_links/ALHySN0Z6i4O6PZeQgpqXN9Ewtqxit_IBD15_1KG.sh2
-~~~
-
-
-##20150625
-##Email chain with how I received the Hamegen RBC data from EGA via Matthew's help
-##Logged here for consistency
-
-~~~
-Fwd: [EGA Helpdesk #472863] access to study data
-Inbox
-x  
-UChicago
-x 
-
-Matthew Stephens
-11:00 AM (2 hours ago)
-
-to me 
-Sorry it took me a little while to get this to you. Can you see if you can access the data?
-Matthew
-
----------- Forwarded message ----------
-From: "Jeff Almeida-King via RT" <ega-helpdesk@ebi.ac.uk>
-Date: Jun 10, 2015 10:40 AM
-Subject: [EGA Helpdesk #472863] access to study data
-To: <stephens999@gmail.com>
-Cc: 
-
-Dear Matthew,
-
-An EGA account has now been created with access permissions set for downloading
-the public access datasets stored at the EGA and referenced here:
-https://www.ebi.ac.uk/ega/dacs/EGAC00000000005
-
-You can download all EGA public datasets from our FTP server detailed below:
-Username: ega-box-233
-Password: 88fHetwh
-
-For details of how to access this download account please go here:
-https://www.ebi.ac.uk/ega/about/ftp-aspera
-
-Kind regards,
-Jeff
-
-On Fri Jun 05 23:42:23 2015, stephens999@gmail.com wrote:
-> I am interested in getting access to
->
-> DATASET: EGAD00010000300
->
-> the webpage https://www.ebi.ac.uk/ega/datasets/EGAD00010000300 says:
->
-> ***********
-> Who controls access to this dataset
->
-> For each dataset that requires access control, there is a
-> corresponding Data Access Committee (DAC) who determine access
-> permissions. Data access requests are reviewed by the relevant DAC,
-> not by the EGA. If you need to request access to this data set, please
-> contact:
->
-> Access to Public Datasets in the EGA
->
-> Email: ega-helpdesk@ebi.ac.uk
-> ***********
->
-> So I'm wondering who to contact.
->
-> thanks,
-> Matthew
-> (mstephens@uchicago.edu)
->
-
-
-
-This email is sent from the Hinxton Campus RT tracking system, which is managed for the Sanger Institute and the EBI by the Sanger Institute.
-
-
---
- The Wellcome Trust Sanger Institute is operated by Genome Research
-  Limited, a charity registered in England with number 1021457 and a
-   company registered in England with number 2742969, whose registered
-    office is 215 Euston Road, London, NW1 2BE.
-
-    Michael Turchin <mturchin20@gmail.com>
-    11:21 AM (2 hours ago)
-
-    to Matthew 
-    Hey Matthew,
-
-    Sounds good and no problem, I think I was going to follow-up about this sometime next week with you anyways. I'll try to take a look sometime today and let you know how it goes.
-
-    Thanks for taking a look into this! 
-~~~
-
-#qsub -l h_vmem=2g
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###########################
+#
+#
+# Part E -- bmass Code writeup
+#
+#
+###########################
+
+
+
+
+
+
+
+
