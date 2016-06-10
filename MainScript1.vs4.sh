@@ -7966,6 +7966,21 @@ done
 mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2015
 mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2015/Vs1
 
+#Notes from e-mail chain with Choongwon regarding information
+~~~
+Single field trip in 2012 -- two different regions in Nepal, each district has 2 subdistricts (so 4 total)
+and 6% of samples are from one district
+April-June, temp differences
+
+OxHb - Amount of oxygenated hemoglobin gram/deciliter (total hemoglobin * proportion of oxygen saturation)
+LB - Live Birth
+ID - Infant Death (# child die between 0-1)
+JD - Juvenile Death (# child die between 5-15)
+IS - Infant Survival (# of child survive up to age 1)
+JS - Juvenile Survival (# of child survive 5-15)
+SB - Still Birth (# of children that still birthed)
+~~~
+
 #Files downloaded from Choongwon directly
 
 ~~~
@@ -8053,10 +8068,12 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/HaemgenRBC2
 
 #Copy/pasted commands from /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2015/Vs1/process.MTedits.ForChoongwon2015.vs1.R into an interactive sessions in $PWD /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2015/Vs1/
 
+#NOTE 20160610 -- Moved main source files from /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2015/Vs1/ to /mnt/gluster/data/external_private_supp/Choongwon2015/ 
 
+mkdir /mnt/gluster/data/external_private_supp/Choongwon2015
 
-
-
+mv /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2015/Vs1/Tibetan_GWAS* /mnt/gluster/data/external_private_supp/Choongwon2015/.
+#mv /mnt/gluster/data/external_private_supp/Choongwon2015/Tibetan_GWAS_AllPhenos.txt.* /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2015/Vs1/.
 
 
 
@@ -8147,6 +8164,60 @@ Execution of -e aborted due to compilation errors.
 
 
 
+
+
+
+
+##Choongwon2016
+##20160610
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1
+mkdir /mnt/gluster/data/external_private_supp/Choongwon2016
+
+#Files downloaded from Choongwon directly into /mnt/gluster/data/external_private_supp/Choongwon2016 
+
+#Notes from e-mail chain with Choongwon regarding information
+~~~
+For 2016 data -- 
+scp cjeong@tarbell.cri.uchicago.edu:/group/dirienzo-lab/Choongwon/Tibetan.GWAS.tar
+
+Tibetan.dHb.assoc.txt.gz
+Tibetan.Hb.assoc.txt.gz
+Tibetan.OxHb.assoc.txt.gz
+Tibetan.Pulse.assoc.txt.gz
+Tibetan.Sat.assoc.txt.gz
+
+3 data groups:
+Hb (Hemoglobin)
+Sat (Oxygen Saturation)
+Pulse
+
+OxHb (Oxygenated Hemoglobin)
+dGB (Dexoygenated Hemoglobin)
+Pulse
+
+From Choongwon:
+"oxygenated hemoglobin = hemoglobin * oxygen saturation, and deoxygenated hemoglobin = hemoglobin * (1 - oxygen saturation)"
+~~~
+
+gzip /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.GWAS.tar
+
+~~~
+[  mturchin20@spudhead  /mnt/gluster/data/external_private_supp/Choongwon2016]$for i in `ls -lrt | awk '{ print $9 }' `; do echo $i; zcat $i | wc; done
+Tibetan.Hb.assoc.txt.gz
+3507569 35075690 310256521
+Tibetan.Sat.assoc.txt.gz
+3507569 35075690 310251610
+Tibetan.Pulse.assoc.txt.gz
+3508047 35080470 310310851
+Tibetan.OxHb.assoc.txt.gz
+3507569 35075690 310250169
+Tibetan.dHb.assoc.txt.gz
+3507569 35075690 310269602
+Tibetan.GWAS.tar.gz
+1762621 9600204 434421760
+~~~
 
 
 
