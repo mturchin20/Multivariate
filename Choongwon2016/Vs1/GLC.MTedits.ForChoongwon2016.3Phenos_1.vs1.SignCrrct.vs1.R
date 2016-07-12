@@ -54,8 +54,10 @@ collapse = function(x,nsigmaa){return(apply(matrix(x,ncol=nsigmaa),1,sum))}
 gl.glhits = gl[gl$annot==1,] # subset of GWAS SNPs
 #Expecting way more than this...need to specifically do something to forcefully insert top SNPs?
 #~~~
-> dim(gl.glhits)
-[1]  1 18
+> gl.glhits
+ [1] snp     chr     pos     maf     p_Hb    n_Hb    p_Sat   n_Sat   p_Pulse
+[10] n_Pulse annot   Z.Hb    Z.Sat   Z.Pulse mvstat  mvp     unip    nmin   
+<0 rows> (or 0-length row.names)
 #~~~
 lbf.glhits = as.matrix(lbf.bigmat[,gl$annot==1])
 ebprior.glhits = em.priorprobs(lbf.glhits,lbf$prior,100)
@@ -67,21 +69,6 @@ ebprior.glhits.collapse =collapse(ebprior.glhits,length(sigmaa))
 ebprior.glhits.collapse2 =collapse(ebprior.glhits2,length(sigmaa))
 ebprior.glhits.collapse3 =collapse(ebprior.glhits3,length(sigmaa))
 ebprior.glhits.collapse4 =collapse(ebprior.glhits4,length(sigmaa))
-
-~~~
-> order(ebprior.glhits.collapse,decreasing=TRUE)
- [1] 23  5 22  4 24  6 14 13 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
-[26] 26 27
-> order(ebprior.glhits.collapse2,decreasing=TRUE)
- [1] 23  5 22  4 24  6 14 13 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
-[26] 26 27
-> order(ebprior.glhits.collapse3,decreasing=TRUE)
- [1] 23  5 22  4 24  6 14 13 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
-[26] 26 27
-> order(ebprior.glhits.collapse4,decreasing=TRUE)
- [1] 23  5 22  4 24  6 14 13 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
-[26] 26 27
-~~~
 
 pp.glhits = posteriorprob(lbf.glhits,ebprior.glhits) #posterior prob on models for gl hits
 pp.glhits.collapse =  apply(pp.glhits,2,collapse, nsigmaa=length(sigmaa))
@@ -181,10 +168,7 @@ min(lbf.av.origprior.glhits)
 #[1] 4.346141
 #> min(lbf.av.origprior.glhits)
 #[1] 3.006386
-> min(lbf.av.glhits)
-[1] 4.990048
-> min(lbf.av.origprior.glhits)
-[1] 3.568456
+
 #~~~
 
 
@@ -194,8 +178,8 @@ gl$lbfav = lbf.av.all
 #gl = gl[o,]
 
 #lbf.av.all.flatprior = lbf.av(lbf.bigmat, rep(lbf$prior,nsigma))
-lbf.av.all.flatprior = lbf.av(lbf.bigmat, normalize(rep(c(0,lbf$prior[-1]),nsigma))) 
-gl$lbfavflat = lbf.av.all.flatprior
+lbf.av.all.unifprior = lbf.av(lbf.bigmat, normalize(rep(c(0,lbf$prior[-1]),nsigma))) 
+gl$lbfavunif = lbf.av.all.unifprior
 
 
 
@@ -418,7 +402,7 @@ lbf.gl.prior <- MeanAcrossSigmaas.wPriorAvg(lbf.bigmat, matrix(normalize(rep(c(0
 lbf.gl.prior.format <- cbind(lbf$gamma, log10(apply(10^lbf.gl.prior, 1, sum)), lbf.gl.prior)
 
 sub = gl
-l=indephits(sub$lbfavflat,sub$chr,sub$pos)
+l=indephits(sub$lbfavunif,sub$chr,sub$pos)
 sub=sub[l==1,]
 
 lbf.sub <- MeanAcrossSigmaas(lbf.bigmat[,l==1], 27, 14)
@@ -463,6 +447,9 @@ write.table(t(rbind(names(lbf.sub.format.ChoongownWrite), apply(lbf.sub.format.C
 write.table(t(rbind(names(lbf.sub.prior.format.ChoongownWrite), apply(lbf.sub.prior.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) }))), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup1.Pruned.logBFs.unifpriors.txt", row.names=FALSE, col.names=as.character(c("rsID", row.names(lbf.sub.prior.format.ChoongownWrite))), quote=FALSE)
 
 
+
+
+#write head thing here for sub formatted 'just example of output with lbfflatorigstuff'
 
 
 
@@ -557,6 +544,28 @@ write.table(t(rbind(names(lbf.sub.prior.format.ChoongownWrite), apply(lbf.sub.pr
 [1]   27 1484
 > dim(lbf.sub.prior.format.ChoongownWrite)
 [1]  27 196
+> head(sub[order(sub$lbfavunif, decreasing=TRUE),])
+             snp chr       pos   maf         p_Hb n_Hb         p_Sat n_Sat
+1045   rs6539167  12 105172975 0.375 1.497669e-06  908 -9.073437e-04   908
+775  rs372272284   2  46584859 0.248 2.952695e-07  914  9.929316e-02   914
+724    rs2897724  21  21674336 0.382 1.383738e-06  907  9.569834e-01   907
+1097    rs688874  11 130084507 0.358 2.929710e-06  915 -6.531881e-01   915
+711   rs28666472  18  66176774 0.397 4.021709e-01  887  9.851052e-01   887
+744   rs34055428   4 125978367 0.101 9.983088e-01  909  1.281524e-06   909
+          p_Pulse n_Pulse annot         Z.Hb       Z.Sat     Z.Pulse   mvstat
+1045 0.9413777000     907     0 -4.811546472  3.31778477 -0.07353838 32.32984
+775  0.7307703000     913     0  5.126441656  1.64829008  0.34410104 30.41378
+724  0.1511684000     906     0 -4.827332767 -0.05393946 -1.43541666 24.78446
+1097 0.2674815000     914     0  4.675687118 -0.44933765  1.10888105 22.48053
+711  0.0000040975     886     0  0.837750401  0.01866895  4.60637458 21.77198
+744  0.3946114000     908     0 -0.002119606 -4.84259799 -0.85128438 25.37145
+          mvp     unip nmin lbfavunif
+1045 6.350735 5.824584  907  3.736339
+775  5.947159 6.529781  913  3.568456
+724  4.766279 5.858946  906  2.821698
+1097 4.285573 5.533175  914  2.497416
+711  4.138112 5.387481  886  2.436257
+744  4.889024 5.892273  908  2.424619
 ~~~
 
 

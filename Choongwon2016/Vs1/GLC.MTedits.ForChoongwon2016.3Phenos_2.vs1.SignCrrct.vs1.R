@@ -1,46 +1,49 @@
 set.seed(100)
 source("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/test.funcs.R")
 source("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/GLCfuncs.R")
-VYY = as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_1.RSS0.vs1.SignCrrct.vs1.txt",header=T,sep=","))
-gl = read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_1.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz", header=T)
+VYY = as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.RSS0.vs1.SignCrrct.vs1.txt",header=T,sep=","))
+gl = read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz", header=T)
 #gl3 <- gl[!is.na(gl[,ncol(gl)-1]) & !is.infinite(gl[,ncol(gl)-1]) & !is.na(gl$maf) & gl$maf > 0,]
 gl <- gl[!is.na(gl$maf) & gl$maf > 0,]
 
-Z = cbind(gl$Z.Sat,gl$Z.Hb,gl$Z.Pulse)
+Z = cbind(gl$Z.dHb,gl$Z.OxHb,gl$Z.Pulse)
 
 #~~~
 > dim(gl)
-[1] 1484   17
+[1] 3736   17
 > gl <- gl[!is.na(gl$maf) & gl$maf > 0,]
-> 
 > dim(gl)
-[1] 1484   17
+[1] 3736   17
+> VYY
+          Z.dHb       Z.OxHb     Z.Pulse
+[1,]  1.0000000 -0.380453596 0.117220010
+[2,] -0.3804536  1.000000000 0.008529997
+[3,]  0.1172200  0.008529997 1.000000000
 > head(gl)
-> head(gl)
-         snp chr       pos   maf         p_Hb n_Hb         p_Sat n_Sat
-1 rs10042098   5 176143265 0.342 4.324555e-01  912 -9.952110e-01   912
-2 rs10069542   5 176143314 0.342 4.324555e-01  912 -9.952110e-01   912
-3  rs1008264   7  25618485 0.192 7.521300e-01  919  2.877942e-01   919
-4 rs10086302   8 113467607 0.486 1.760304e-05  891  8.806490e-01   891
-5 rs10086401   8  91572818 0.240 7.862087e-01  901  2.314939e-05   901
-6 rs10086462   8  91558089 0.240 8.203675e-01  891  8.043717e-05   891
-        p_Pulse n_Pulse annot       Z.Hb        Z.Sat    Z.Pulse   mvstat
-1  3.635102e-05     911     0 -0.7849967  0.006002157 -4.1295271 17.51117
-2  3.635102e-05     911     0 -0.7849967  0.006002157 -4.1295271 17.51117
-3 -8.035984e-05     918     0  0.3158320  1.062972991 -3.9433244 16.38799
-4  8.787754e-01     891     0 -4.2933082 -0.150146543 -0.1525218 18.65599
-5 -3.524451e-01     900     0 -0.2712371 -4.232124789  0.9298571 18.52878
-6 -2.268448e-01     890     0 -0.2270723 -3.943093819  1.2085265 16.51506
-       mvp     unip
-1 3.255945 4.439483
-2 3.255945 4.439483
-3 3.024988 4.094961
-4 3.492103 4.754412
-5 3.465827 4.635460
-6 3.051077 4.094543
+         snp chr       pos   maf       p_OxHb n_OxHb         p_dHb n_dHb
+1 rs10006686   4 177993314 0.213 7.461186e-05    915 -0.6300364000   915
+2 rs10007496   4  17406405 0.255 2.964302e-03    920  0.0258232700   920
+3 rs10009224   4 133257015 0.330 2.163151e-01    889  0.0002333501   889
+4 rs10011618   4 177999800 0.211 9.727020e-05    916 -0.5423901000   916
+5 rs10012073   4 147015936 0.130 1.818857e-01    921  0.0003085042   921
+6 rs10012313   4  17405513 0.256 3.289038e-03    921  0.0267067900   921
+     p_Pulse n_Pulse annot    Z.OxHb      Z.dHb    Z.Pulse   mvstat      mvp
+1 0.35177540     914     0  3.961079 -0.4816756  0.9311511 17.49612 3.252847
+2 0.72615460     919     0 -2.971416 -2.2288593 -0.3502453 22.04681 4.195284
+3 0.02956022     888     0 -1.236386 -3.6798730 -2.1759337 24.21073 4.646410
+4 0.37561710     915     0  3.897302 -0.6092027  0.8860008 16.62290 3.073227
+5 0.03942898     920     0 -1.334971 -3.6080524 -2.0596817 23.78433 4.557389
+6 0.73987210     920     0 -2.939348 -2.2157768 -0.3320227 21.66394 4.115643
+      unip
+1 4.127192
+2 2.528078
+3 3.631992
+4 4.012020
+5 3.510739
+6 2.482931
 ~~~
 
-n = cbind(gl$n_Sat, gl$n_Hb, gl$n_Pulse)
+n = cbind(gl$n_dHb, gl$n_OxHb, gl$n_Pulse)
 n = apply(n,1,min)
 gl$nmin=n
 sigmaa=c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15)
@@ -70,16 +73,16 @@ ebprior.glhits.collapse4 =collapse(ebprior.glhits4,length(sigmaa))
 
 ~~~
 > order(ebprior.glhits.collapse,decreasing=TRUE)
- [1] 23  5 22  4 24  6 14 13 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
+ [1] 22  4 13 23  5 14  6 24 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
 [26] 26 27
 > order(ebprior.glhits.collapse2,decreasing=TRUE)
- [1] 23  5 22  4 24  6 14 13 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
+ [1] 22  4 13 23  5 14 24  6 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
 [26] 26 27
 > order(ebprior.glhits.collapse3,decreasing=TRUE)
- [1] 23  5 22  4 24  6 14 13 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
+ [1] 22  4 13 23  5 14  6 24 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
 [26] 26 27
 > order(ebprior.glhits.collapse4,decreasing=TRUE)
- [1] 23  5 22  4 24  6 14 13 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
+ [1] 22  4 13 23  5 14 24  6 15  1  2  3  7  8  9 10 11 12 16 17 18 19 20 21 25
 [26] 26 27
 ~~~
 
@@ -94,7 +97,7 @@ cumsum(sort(ebprior.glhits.collapse,decreasing=TRUE))
 lbf$gamma[order(ebprior.glhits.collapse,decreasing=TRUE),]
 modelmatrix = cbind(lbf$gamma,ebprior.glhits.collapse)[order(ebprior.glhits.collapse,decreasing=TRUE),]
 modelmatrix = data.frame(cbind(modelmatrix,cumsum(modelmatrix[,4])))
-colnames(modelmatrix)= c("Sat","Hb","Pulse","p","cump")
+colnames(modelmatrix)= c("dHb","OxHb","Pulse","p","cump")
 
 allassoc=(apply((modelmatrix[,1:3]>0),1,sum)==3) #vector of which represent situations in which all 3 phenotypes are associated
 allbut1assoc=(apply((modelmatrix[,1:3]>0),1,sum)==2) #vector of which represent situations in which 2 phenotypes are associated
@@ -104,35 +107,35 @@ sum(modelmatrix[allbut1assoc,4]) #0.03937951
 
 #~~~
 > sum(modelmatrix[allassoc,4]) #0.9574025
-[1] 0.8467565
+[1] 4.266743e-47
 > sum(modelmatrix[allbut1assoc,4]) #0.03937951
-[1] 0.1532435
+[1] 0.9279949
 #~~~
 
-#look at weight on each of Pulse, Hb, Sat being unassociated
+#look at weight on each of Pulse, OxHb, dHb being unassociated
 sum(modelmatrix[allbut1assoc & modelmatrix[,3]==0,4]) 
 sum(modelmatrix[allbut1assoc & modelmatrix[,2]==0,4]) 
 sum(modelmatrix[allbut1assoc & modelmatrix[,1]==0,4]) 
-# 0.07841946, 0, 0.7579819 
+# 2.327247e-48, 0, 0.9279949 
 
 #~~~
 > sum(modelmatrix[allbut1assoc & modelmatrix[,3]==0,4])
-[1] 0.1532408
+[1] 2.327247e-48
 > sum(modelmatrix[allbut1assoc & modelmatrix[,2]==0,4])
 [1] 0
 > sum(modelmatrix[allbut1assoc & modelmatrix[,1]==0,4])
-[1] 2.693174e-06
+[1] 0.9279949
 #~~~
 
 #compute for each SNP which class it is most likely assigned to
-#(all assoc, or notPulse, or notHb or notSat)
+#(all assoc, or notPulse, or notOxHb or notdHb)
 ppmatrix = cbind(pp.glhits.collapse)[order(ebprior.glhits.collapse,decreasing=TRUE),]
 pp.classmatrix = rbind(colSums(matrix(ppmatrix)[allassoc,]),colSums(matrix(ppmatrix)[allbut1assoc & modelmatrix[,3]==0,]),colSums(matrix(ppmatrix)[allbut1assoc & modelmatrix[,2]==0,]),colSums(matrix(ppmatrix)[allbut1assoc & modelmatrix[,1]==0,]))
 bestclass= apply(pp.classmatrix, 2,which.max)
 #gg=gl.glhits$gene
 gg=gl.glhits$snp
 #Best class is '1' for all SNPs?
-write.table(cbind(as.character(gg[bestclass !=1]),bestclass[bestclass!=1],round(apply(pp.classmatrix,2,max)[bestclass!=1],2)),"Choongwon2016.3Phenos_1.gl.bestmodel.vs2.SignCrrct.vs1.txt",quote=F,sep=" & ",row.names=F)
+write.table(cbind(as.character(gg[bestclass !=1]),bestclass[bestclass!=1],round(apply(pp.classmatrix,2,max)[bestclass!=1],2)),"Choongwon2016.3Phenos_2.gl.bestmodel.vs2.SignCrrct.vs1.txt",quote=F,sep=" & ",row.names=F)
 
 #~~~
 
@@ -182,9 +185,9 @@ min(lbf.av.origprior.glhits)
 #> min(lbf.av.origprior.glhits)
 #[1] 3.006386
 > min(lbf.av.glhits)
-[1] 4.990048
+[1] 7.15689
 > min(lbf.av.origprior.glhits)
-[1] 3.568456
+[1] 5.446706
 #~~~
 
 
@@ -194,8 +197,8 @@ gl$lbfav = lbf.av.all
 #gl = gl[o,]
 
 #lbf.av.all.flatprior = lbf.av(lbf.bigmat, rep(lbf$prior,nsigma))
-lbf.av.all.flatprior = lbf.av(lbf.bigmat, normalize(rep(c(0,lbf$prior[-1]),nsigma))) 
-gl$lbfavflat = lbf.av.all.flatprior
+lbf.av.all.unifprior = lbf.av(lbf.bigmat, normalize(rep(c(0,lbf$prior[-1]),nsigma))) 
+gl$lbfavunif = lbf.av.all.unifprior
 
 
 
@@ -258,18 +261,18 @@ lbf.sub.prior.format <- cbind(lbf$gamma, log10(apply(10^lbf.sub.prior, 1, sum)),
 gl[l==1,1]
 
 sub = gl
-l=indephits(sub$lbfavflat,sub$chr,sub$pos)
+l=indephits(sub$lbfavunif,sub$chr,sub$pos)
 sub=sub[l==1,]
 #lbf.newhits= lbf.bigmat
 #lbf.newhits= lbf.newhits[,l==1]
-newhits.flat = sub[sub$annot==0 & sub$lbfavflat>3.006386 & sub$nmin>100,c(1:4,11:14,19:20)]
+newhits.unif = sub[sub$annot==0 & sub$lbfavunif>3.006386 & sub$nmin>100,c(1:4,11:14,19:20)]
 
 #lbf.newhits.sigmaaMean <- MeanAcrossSigmaas(lbf.newhits, 81, 14)
 #lbf.newhits.sigmaaMean.plusGammaDescrips <- cbind(lbf$gamma, lbf.newhits.sigmaaMean)
 
-names(lbf.gl.prior.format) <- c("Sat", "Hb", "Pulse", "lbfTotal_perModel", as.character(gl[,1]))
+names(lbf.gl.prior.format) <- c("dHb", "OxHb", "Pulse", "lbfTotal_perModel", as.character(gl[,1]))
 blah <- as.data.frame(lbf.gl.prior.format)
-names(blah) <- c("Sat", "Hb", "Pulse", "lbfTotal", as.character(gl[,1]))
+names(blah) <- c("dHb", "OxHb", "Pulse", "lbfTotal", as.character(gl[,1]))
 row.names(blah) <- apply(blah[,1:3], 1, function(x) { return(paste(x, collapse="_"))})
 blah <- rbind(blah, log10(apply(10^blah, 2, sum)))
 row.names(blah) <- c(row.names(blah), "lbfTotal_perSNP")
@@ -282,133 +285,18 @@ write.table(lbf.gl.prior.format, "ouasdouhasd")
 write.table(blah, "ouasdouhasd", row.names=FALSE, quote=FALSE)
 
 ~~~
-> sub[order(sub$lbfavflat, decreasing=TRUE),][1:10,]
-             snp chr       pos   maf         p_Hb n_Hb         p_Sat n_Sat
-1045   rs6539167  12 105172975 0.375 1.497669e-06  908 -9.073437e-04   908
-775  rs372272284   2  46584859 0.248 2.952695e-07  914  9.929316e-02   914
-724    rs2897724  21  21674336 0.382 1.383738e-06  907  9.569834e-01   907
-1097    rs688874  11 130084507 0.358 2.929710e-06  915 -6.531881e-01   915
-711   rs28666472  18  66176774 0.397 4.021709e-01  887  9.851052e-01   887
-744   rs34055428   4 125978367 0.101 9.983088e-01  909  1.281524e-06   909
-758   rs35179589   5  13069765 0.437 8.087318e-01  885 -4.738930e-06   885
-515    rs1840812  19  28774567 0.314 1.754192e-01  914 -5.077551e-06   914
-622    rs2404529   2 127936624 0.484 8.060646e-01  921 -1.309655e-01   921
-1160   rs7275795  21  40663670 0.326 7.639523e-01  889 -1.194650e-05   889
-           p_Pulse n_Pulse annot         Z.Hb       Z.Sat     Z.Pulse   mvstat
-1045  9.413777e-01     907     0 -4.811546472  3.31778477 -0.07353838 32.32984
-775   7.307703e-01     913     1  5.126441656  1.64829008  0.34410104 30.41378
-724   1.511684e-01     906     0 -4.827332767 -0.05393946 -1.43541666 24.78446
-1097  2.674815e-01     914     0  4.675687118 -0.44933765  1.10888105 22.48053
-711   4.097500e-06     886     0  0.837750401  0.01866895  4.60637458 21.77198
-744   3.946114e-01     908     0 -0.002119606 -4.84259799 -0.85128438 25.37145
-758   7.491955e-01     884     0 -0.242062416  4.57602541 -0.31970034 20.97023
-515   4.687430e-01     913     0  1.354994843 -4.56155774  0.72452579 21.90038
-622  -2.178049e-05     920     0 -0.245506081  1.51030546  4.24581025 22.04049
-1160 -2.633668e-01     888     0  0.300294799 -4.37856192 -1.11846886 21.67488
-          mvp     unip nmin      lbfav lbfavflat
-1045 6.350735 5.824584  907  4.8012799  3.736339
-775  5.947159 6.529781  913  4.9497605  3.568456
-724  4.766279 5.858946  906  4.0813368  2.821698
-1097 4.285573 5.533175  914  3.7213755  2.497416
-711  4.138112 5.387481  886 -0.4498697  2.436257
-744  4.889024 5.892273  908  2.8495889  2.424619
-758  3.971487 5.324320  884  2.5084894  2.379899
-515  4.164819 5.294346  913  2.6634983  2.272652
-622  4.193971 4.661932  920 -0.5018111  2.265494
-1160 4.117917 4.922759  888  2.2620380  2.252230
+> sub[order(sub$lbfavunif, decreasing=TRUE),][1:10,]
 > sub[order(sub$lbfav, decreasing=TRUE),][1:10,]
-             snp chr       pos   maf         p_Hb n_Hb         p_Sat n_Sat
-775  rs372272284   2  46584859 0.248 2.952695e-07  914  0.0992931600   914
-1045   rs6539167  12 105172975 0.375 1.497669e-06  908 -0.0009073437   908
-724    rs2897724  21  21674336 0.382 1.383738e-06  907  0.9569834000   907
-1097    rs688874  11 130084507 0.358 2.929710e-06  915 -0.6531881000   915
-1051   rs6567111  18  57323790 0.177 6.872462e-06  921 -0.8580935000   921
-893    rs4944119  11  76428055 0.383 1.104393e-05  911  0.8528308000   911
-989   rs60685370   5 171910564 0.179 7.527685e-06  903 -0.0356554600   903
-624     rs240569  11  64733678 0.169 8.070854e-06  919 -0.7224649000   919
-1270    rs768095   8 113450779 0.485 1.590864e-05  893 -0.9667614000   893
-503   rs17245616   5  34997038 0.166 9.575504e-05  911 -0.0008820181   911
-         p_Pulse n_Pulse annot      Z.Hb       Z.Sat      Z.Pulse   mvstat
-775   0.73077030     913     1  5.126442  1.64829008  0.344101041 30.41378
-1045  0.94137770     907     0 -4.811546  3.31778477 -0.073538385 32.32984
-724   0.15116840     906     0 -4.827333 -0.05393946 -1.435416665 24.78446
-1097  0.26748150     914     0  4.675687 -0.44933765  1.108881049 22.48053
-1051 -0.98346720     920     0 -4.497601  0.17880159  0.020722275 20.35319
-893  -0.58876310     910     0  4.395655  0.18550775 -0.540629326 20.22017
-989  -0.99379840     902     0  4.478195 -2.10083492 -0.007772631 23.47723
-624   0.06335743     918     0 -4.463296  0.35516645 -1.856674834 22.33860
-1270  0.81449620     893     0 -4.315716  0.04167046 -0.234629643 18.70042
-503   0.32145070     910     0  3.901104 -3.32568417  0.991481134 24.70901
-          mvp     unip nmin    lbfav lbfavflat
-775  5.947159 6.529781  913 4.949761  3.568456
-1045 6.350735 5.824584  907 4.801280  3.736339
-724  4.766279 5.858946  906 4.081337  2.821698
-1097 4.285573 5.533175  914 3.721376  2.497416
-1051 3.843432 5.162888  920 3.316069  2.043388
-893  3.815849 4.956876  910 3.301370  2.189904
-989  4.493312 5.123339  902 3.269011  2.144649
-624  4.256019 5.093081  918 3.217221  2.019685
-1270 3.501283 4.798367  893 3.133022  1.997087
-503  4.750511 4.018838  910 3.121285  2.057169
 > VYY
-           Z.Sat        Z.Hb     Z.Pulse
-[1,]  1.00000000 -0.07230977 -0.10345962
-[2,] -0.07230977  1.00000000  0.06952607
-[3,] -0.10345962  0.06952607  1.00000000
 > apply(10^lbf.gl.prior, 2, normalize)[1:10,1:10]
-              [,1]         [,2]         [,3]         [,4]        [,5]
- [1,] 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.000000000
- [2,] 0.0015347725 0.0015347725 0.0031866404 0.3823175889 0.001116057
- [3,] 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.000000000
- [4,] 0.0011869729 0.0011869729 0.0042946639 0.0007763802 0.349312872
- [5,] 0.0005835984 0.0005835984 0.0016641515 0.0822858707 0.081531122
- [6,] 0.0002986758 0.0002986758 0.0010749804 0.0001880807 0.080670387
- [7,] 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.000000000
- [8,] 0.0003866812 0.0003866812 0.0007974443 0.0886939911 0.000270248
- [9,] 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.000000000
-[10,] 0.3682141630 0.3682141630 0.3093336457 0.0007967158 0.001366796
-              [,6]         [,7]         [,8]         [,9]        [,10]
- [1,] 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
- [2,] 0.0024930609 0.0012126885 0.0024680383 0.3656340984 0.3823175889
- [3,] 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
- [4,] 0.3183861503 0.2219259158 0.0034676634 0.0018712516 0.0007763802
- [5,] 0.0767860659 0.0525248948 0.0013868273 0.0828386603 0.0822858707
- [6,] 0.0753379510 0.0584063609 0.0008889474 0.0004721977 0.0001880807
- [7,] 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
- [8,] 0.0006093872 0.0003099755 0.0006296020 0.0934159994 0.0886939911
- [9,] 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
-[10,] 0.0035317634 0.0036531469 0.3247848345 0.0020363324 0.0007967158
 > apply(apply(10^lbf.gl.prior, 2, normalize), 2, sum)[1:10]
- [1] 1 1 1 1 1 1 1 1 1 1
 > lbf.gl.prior.format.ChoongownWrite.Posterior[1:10,1:10]
-        rs10042098   rs10069542    rs1008264   rs10086302  rs10086401
-0_0_0 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.000000000
-1_0_0 0.0015347725 0.0015347725 0.0031866404 0.3823175889 0.001116057
-2_0_0 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.000000000
-0_1_0 0.0011869729 0.0011869729 0.0042946639 0.0007763802 0.349312872
-1_1_0 0.0005835984 0.0005835984 0.0016641515 0.0822858707 0.081531122
-2_1_0 0.0002986758 0.0002986758 0.0010749804 0.0001880807 0.080670387
-0_2_0 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.000000000
-1_2_0 0.0003866812 0.0003866812 0.0007974443 0.0886939911 0.000270248
-2_2_0 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.000000000
-0_0_1 0.3682141630 0.3682141630 0.3093336457 0.0007967158 0.001366796
-        rs10086462   rs10086940   rs10088178   rs10089136   rs10089402
-0_0_0 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
-1_0_0 0.0024930609 0.0012126885 0.0024680383 0.3656340984 0.3823175889
-2_0_0 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
-0_1_0 0.3183861503 0.2219259158 0.0034676634 0.0018712516 0.0007763802
-1_1_0 0.0767860659 0.0525248948 0.0013868273 0.0828386603 0.0822858707
-2_1_0 0.0753379510 0.0584063609 0.0008889474 0.0004721977 0.0001880807
-0_2_0 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
-1_2_0 0.0006093872 0.0003099755 0.0006296020 0.0934159994 0.0886939911
-2_2_0 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
-0_0_1 0.0035317634 0.0036531469 0.3247848345 0.0020363324 0.0007967158
 ~~~
 
 
 
 
-newhits.flat = sub[sub$annot==0 & sub$lbfavflat>3.006386 & sub$nmin>100,c(1:4,11:14,19:20)]
+newhits.unif = sub[sub$annot==0 & sub$lbfavnif>3.006386 & sub$nmin>100,c(1:4,11:14,19:20)]
 
 lbf.gl <- MeanAcrossSigmaas(lbf.bigmat, 27, 14)
 #lbf.gl.format <- cbind(lbf$gamma, log10(apply(10^lbf.gl, 1, sum)), lbf.gl)[order(log10(apply(10^lbf.gl, 1, sum))),]
@@ -418,7 +306,7 @@ lbf.gl.prior <- MeanAcrossSigmaas.wPriorAvg(lbf.bigmat, matrix(normalize(rep(c(0
 lbf.gl.prior.format <- cbind(lbf$gamma, log10(apply(10^lbf.gl.prior, 1, sum)), lbf.gl.prior)
 
 sub = gl
-l=indephits(sub$lbfavflat,sub$chr,sub$pos)
+l=indephits(sub$lbfavunif,sub$chr,sub$pos)
 sub=sub[l==1,]
 
 lbf.sub <- MeanAcrossSigmaas(lbf.bigmat[,l==1], 27, 14)
@@ -429,38 +317,38 @@ lbf.sub.prior <- MeanAcrossSigmaas.wPriorAvg(lbf.bigmat[,l==1], matrix(normalize
 lbf.sub.prior.format <- cbind(lbf$gamma, log10(apply(10^lbf.sub.prior, 1, sum)), lbf.sub.prior)
 
 #blah <- as.data.frame(lbf.gl.prior.format)
-#names(blah) <- c("Sat", "Hb", "Pulse", "lbfTotal", as.character(gl[,1]))
+#names(blah) <- c("dHb", "OxHb", "Pulse", "lbfTotal", as.character(gl[,1]))
 #row.names(blah) <- apply(blah[,1:3], 1, function(x) { return(paste(x, collapse="_"))})
 
 lbf.gl.format.ChoongownWrite <- as.data.frame(lbf.gl.format)
-names(lbf.gl.format.ChoongownWrite) <- c("Sat", "Hb", "Pulse", "lbfTotal", as.character(gl[,1]))
+names(lbf.gl.format.ChoongownWrite) <- c("dHb", "OxHb", "Pulse", "lbfTotal", as.character(gl[,1]))
 row.names(lbf.gl.format.ChoongownWrite) <- apply(lbf.gl.format.ChoongownWrite[,1:3], 1, function(x) { return(paste(x, collapse="_"))})
 lbf.gl.format.ChoongownWrite <- lbf.gl.format.ChoongownWrite[,5:ncol(lbf.gl.format.ChoongownWrite)]
 lbf.gl.prior.format.ChoongownWrite <- as.data.frame(lbf.gl.prior.format)
-names(lbf.gl.prior.format.ChoongownWrite) <- c("Sat", "Hb", "Pulse", "lbfTotal", as.character(gl[,1]))
+names(lbf.gl.prior.format.ChoongownWrite) <- c("dHb", "OxHb", "Pulse", "lbfTotal", as.character(gl[,1]))
 row.names(lbf.gl.prior.format.ChoongownWrite) <- apply(lbf.gl.prior.format.ChoongownWrite[,1:3], 1, function(x) { return(paste(x, collapse="_"))})
 lbf.gl.prior.format.ChoongownWrite <- lbf.gl.prior.format.ChoongownWrite[,5:ncol(lbf.gl.prior.format.ChoongownWrite)]
 lbf.gl.prior.format.ChoongownWrite.Posterior <- apply(10^lbf.gl.prior.format.ChoongownWrite, 2, normalize)
 
 lbf.sub.format.ChoongownWrite <- as.data.frame(lbf.sub.format)
-names(lbf.sub.format.ChoongownWrite) <- c("Sat", "Hb", "Pulse", "lbfTotal", as.character(sub[,1]))
+names(lbf.sub.format.ChoongownWrite) <- c("dHb", "OxHb", "Pulse", "lbfTotal", as.character(sub[,1]))
 row.names(lbf.sub.format.ChoongownWrite) <- apply(lbf.sub.format.ChoongownWrite[,1:3], 1, function(x) { return(paste(x, collapse="_"))})
 lbf.sub.format.ChoongownWrite <- lbf.sub.format.ChoongownWrite[,5:ncol(lbf.sub.format.ChoongownWrite)]
 lbf.sub.prior.format.ChoongownWrite <- as.data.frame(lbf.sub.prior.format)
-names(lbf.sub.prior.format.ChoongownWrite) <- c("Sat", "Hb", "Pulse", "lbfTotal", as.character(sub[,1]))
+names(lbf.sub.prior.format.ChoongownWrite) <- c("dHb", "OxHb", "Pulse", "lbfTotal", as.character(sub[,1]))
 row.names(lbf.sub.prior.format.ChoongownWrite) <- apply(lbf.sub.prior.format.ChoongownWrite[,1:3], 1, function(x) { return(paste(x, collapse="_"))})
 lbf.sub.prior.format.ChoongownWrite <- lbf.sub.prior.format.ChoongownWrite[,5:ncol(lbf.sub.prior.format.ChoongownWrite)]
 lbf.sub.prior.format.ChoongownWrite.Posterior <- apply(10^lbf.sub.prior.format.ChoongownWrite, 2, normalize)
 
 
 
-#write.table(t(lbf.gl.format.ChoongownWrite), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup1.logBFs.txt", row.names=TRUE, quote=FALSE)
-#write.table(t(apply(lbf.gl.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) })), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup1.NotPruned.logBFs.txt", row.names=TRUE, col.names=as.character(c("rsID", row.names(lbf.gl.format.ChoongownWrite))), quote=FALSE)
-#write.table(t(apply(lbf.gl.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) })), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup1.NotPruned.logBFs.txt", row.names=TRUE, col.names=NA, quote=FALSE)
-write.table(t(rbind(names(lbf.gl.format.ChoongownWrite), apply(lbf.gl.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) }))), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup1.NotPruned.logBFs.txt", row.names=FALSE, col.names=as.character(c("rsID", row.names(lbf.gl.format.ChoongownWrite))), quote=FALSE)
-write.table(t(rbind(names(lbf.gl.prior.format.ChoongownWrite), apply(lbf.gl.prior.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) }))), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup1.NotPruned.logBFs.unifpriors.txt", row.names=FALSE, col.names=as.character(c("rsID", row.names(lbf.gl.prior.format.ChoongownWrite))), quote=FALSE)
-write.table(t(rbind(names(lbf.sub.format.ChoongownWrite), apply(lbf.sub.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) }))), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup1.Pruned.logBFs.txt", row.names=FALSE, col.names=as.character(c("rsID", row.names(lbf.sub.format.ChoongownWrite))), quote=FALSE)
-write.table(t(rbind(names(lbf.sub.prior.format.ChoongownWrite), apply(lbf.sub.prior.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) }))), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup1.Pruned.logBFs.unifpriors.txt", row.names=FALSE, col.names=as.character(c("rsID", row.names(lbf.sub.prior.format.ChoongownWrite))), quote=FALSE)
+#write.table(t(lbf.gl.format.ChoongownWrite), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup2.logBFs.txt", row.names=TRUE, quote=FALSE)
+#write.table(t(apply(lbf.gl.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) })), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup2.NotPruned.logBFs.txt", row.names=TRUE, col.names=as.character(c("rsID", row.names(lbf.gl.format.ChoongownWrite))), quote=FALSE)
+#write.table(t(apply(lbf.gl.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) })), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup2.NotPruned.logBFs.txt", row.names=TRUE, col.names=NA, quote=FALSE)
+write.table(t(rbind(names(lbf.gl.format.ChoongownWrite), apply(lbf.gl.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) }))), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup2.NotPruned.logBFs.txt", row.names=FALSE, col.names=as.character(c("rsID", row.names(lbf.gl.format.ChoongownWrite))), quote=FALSE)
+write.table(t(rbind(names(lbf.gl.prior.format.ChoongownWrite), apply(lbf.gl.prior.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) }))), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup2.NotPruned.logBFs.unifpriors.txt", row.names=FALSE, col.names=as.character(c("rsID", row.names(lbf.gl.prior.format.ChoongownWrite))), quote=FALSE)
+write.table(t(rbind(names(lbf.sub.format.ChoongownWrite), apply(lbf.sub.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) }))), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup2.Pruned.logBFs.txt", row.names=FALSE, col.names=as.character(c("rsID", row.names(lbf.sub.format.ChoongownWrite))), quote=FALSE)
+write.table(t(rbind(names(lbf.sub.prior.format.ChoongownWrite), apply(lbf.sub.prior.format.ChoongownWrite, c(1,2), function(x) { if (!is.finite(x)) { x <- 0; }; return(x) }))), "/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.PhenoGroup2.Pruned.logBFs.unifpriors.txt", row.names=FALSE, col.names=as.character(c("rsID", row.names(lbf.sub.prior.format.ChoongownWrite))), quote=FALSE)
 
 
 
@@ -471,7 +359,7 @@ write.table(t(rbind(names(lbf.sub.prior.format.ChoongownWrite), apply(lbf.sub.pr
 
 ~~~
 > blah[1:10,1:10]
-      Sat Hb Pulse lbfTotal rs10042098 rs10069542  rs1008264 rs10086302
+      dHb OxHb Pulse lbfTotal rs10042098 rs10069542  rs1008264 rs10086302
 0_0_0   0  0     0     -Inf       -Inf       -Inf       -Inf       -Inf
 2_0_0   2  0     0     -Inf       -Inf       -Inf       -Inf       -Inf
 0_2_0   0  2     0     -Inf       -Inf       -Inf       -Inf       -Inf
@@ -557,76 +445,108 @@ write.table(t(rbind(names(lbf.sub.prior.format.ChoongownWrite), apply(lbf.sub.pr
 [1]   27 1484
 > dim(lbf.sub.prior.format.ChoongownWrite)
 [1]  27 196
+> head(subunif[order(subunif$lbfavunif, decreasing=TRUE),])
+             snp chr       pos   maf       p_OxHb n_OxHb         p_dHb n_dHb
+2653   rs6539167  12 105172975 0.375 4.925449e-03    908  9.752924e-06   908
+2012 rs372272284   2  46584859 0.248 5.713546e-09    914 -8.825847e-01   914
+1159   rs1499702   6  66628474 0.394 1.202528e-02    920  4.052976e-05   920
+1391   rs1938121   6  66626824 0.394 1.202528e-02    920  4.052976e-05   920
+1392   rs1938122   6  66626689 0.394 1.202528e-02    920  4.052976e-05   920
+3549   rs9363491   6  66625418 0.394 1.202528e-02    920  4.052976e-05   920
+       p_Pulse n_Pulse annot    Z.OxHb      Z.dHb     Z.Pulse   mvstat      mvp
+2653 0.9413777     907     0 -2.811869 -4.4225800 -0.07353838 43.71141 8.759960
+2012 0.7307703     913     1  5.824933 -0.1476935  0.34410104 38.93231 7.746195
+1159 0.6366713     919     0  2.511402  4.1044388  0.47235797 36.31259 7.191709
+1391 0.6366713     919     0  2.511402  4.1044388  0.47235797 36.31259 7.191709
+1392 0.6366713     919     0  2.511402  4.1044388  0.47235797 36.31259 7.191709
+3549 0.6366713     919     0  2.511402  4.1044388  0.47235797 36.31259 7.191709
+         unip nmin    lbfav lbfavunif
+2653 5.010865  907 4.297146  5.927270
+2012 8.243094  913 7.156890  5.446706
+1159 4.392226  919 3.418779  4.559091
+1391 4.392226  919 3.418779  4.559091
+1392 4.392226  919 3.418779  4.559091
+3549 4.392226  919 3.418779  4.559091
+> head(subtrain[order(subtrain$lbfav, decreasing=TRUE),])
+             snp chr       pos   maf       p_OxHb n_OxHb       p_dHb n_dHb
+2012 rs372272284   2  46584859 0.248 5.713546e-09    914 -0.88258470   914
+1871   rs2897724  21  21674336 0.382 2.795057e-06    907  0.17461770   907
+2784    rs688874  11 130084507 0.358 2.638686e-05    915  0.06055327   915
+2293   rs4944119  11  76428055 0.383 1.008179e-05    911  0.26821750   911
+3203    rs768095   8 113450779 0.485 1.678790e-05    893  0.21505100   893
+2665   rs6567111  18  57323790 0.177 2.288221e-05    921  0.09592008   921
+        p_Pulse n_Pulse annot    Z.OxHb      Z.dHb     Z.Pulse   mvstat
+2012  0.7307703     913     1  5.824933 -0.1476935  0.34410104 38.93231
+1871  0.1511684     906     0 -4.685333 -1.3575148 -1.43541666 34.40536
+2784  0.2674815     914     0  4.202598  1.8767434  1.10888105 32.13269
+2293 -0.5887631     910     0  4.415412  1.1071768 -0.54062933 29.53693
+3203  0.8144962     893     0 -4.303819 -1.2397956 -0.23462964 28.24590
+2665 -0.9834672     920     0 -4.234734 -1.6649633  0.02072227 30.75540
+          mvp     unip nmin    lbfav lbfavunif
+2012 7.746195 8.243094  913 7.156890  5.446706
+1871 6.788661 5.553609  906 5.822011  4.307006
+2784 6.309176 4.578612  914 5.141330  3.812437
+2293 5.762720 4.996462  910 4.965660  3.592176
+3203 5.491469 4.775004  893 4.832804  3.411828
+2665 6.019061 4.640502  920 4.829406  3.424386
 ~~~
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 
 > min(lbf.av.glhits)
-[1] 4.990048
+[1] 7.15689 
 > min(lbf.av.origprior.glhits)
-[1] 3.568456    
-
+[1] 5.446706    
 
 
 sub = gl
-l=indephits(sub$lbfavflat,sub$chr,sub$pos)
-sub=sub[l==1,]
+lunif=indephits(sub$lbfavunif,sub$chr,sub$pos)
+subunif=sub[lunif==1,]
 #lbf.newhits= lbf.bigmat
 #lbf.newhits= lbf.newhits[,l==1]
-newhits.flat = sub[sub$annot==0 & sub$lbfavflat>3.568456 & sub$nmin>100,c(1:4,11:14,19:20)]
+newhits.unif = subunif[subunif$annot==0 & subunif$lbfavunif>5.446706 & subunif$nmin>100,c(1:4,11:14,19:20)]
 
 ~~~
-> dim(sub)
-[1] 197  20
-> newhits.flat
-           snp chr       pos   maf annot      Z.Hb    Z.Sat     Z.Pulse
-1045 rs6539167  12 105172975 0.375     0 -4.811546 3.317785 -0.07353838
-        lbfav lbfavflat
-1045 5.391825  3.736339
+> dim(subunif)
+[1] 443  20
+> dim(subtrain)
+[1] 417  20
+> newhits.unif
+           snp chr       pos   maf annot    Z.OxHb    Z.dHb     Z.Pulse
+2653 rs6539167  12 105172975 0.375     0 -2.811869 -4.42258 -0.07353838
+        lbfav lbfavunif
+2653 4.297146   5.92727
+> newhits
+ [1] snp       chr       pos       maf       annot     Z.OxHb    Z.dHb    
+ [8] Z.Pulse   lbfav     lbfavunif
+<0 rows> (or 0-length row.names)
 ~~~
-
-
 
 #sub = gl[gl$nmin>50000,]
 sub = gl
-l=indephits(sub$lbfav,sub$chr,sub$pos)
-sub=sub[l==1,]
+ltrain=indephits(sub$lbfav,sub$chr,sub$pos)
+subtrain=sub[ltrain==1,]
 #newhits = sub[sub$annot==0 & sub$lbfav>4.3 & sub$nmin>50000,c(1:4,20:23,28)]
 #newhits = sub[sub$annot==0 & sub$lbfav>4.346141 & sub$nmin>100,c(1:3,7,18:20,25)]
-newhits = sub[sub$annot==0 & sub$lbfav>4.990048 & sub$nmin>100,c(1:4,11:14,19:20)]
+newhits = subtrain[subtrain$annot==0 & subtrain$lbfav>7.15689 & subtrain$nmin>100,c(1:4,11:14,19:20)]
+
+
+
+
+
+
+
+
+
+
+
 
 #> newhits
-#           snp chr       pos   maf annot      Z.Hb    Z.Sat     Z.Pulse   lbfav
+#           snp chr       pos   maf annot      Z.OxHb    Z.dHb     Z.Pulse   lbfav
 #1045 rs6539167  12 105172975 0.375     0 -4.811546 3.317785 -0.07353838 4.80128
 > newhits
-           snp chr       pos   maf annot      Z.Hb    Z.Sat     Z.Pulse
+           snp chr       pos   maf annot      Z.OxHb    Z.dHb     Z.Pulse
 1045 rs6539167  12 105172975 0.375     0 -4.811546 3.317785 -0.07353838
         lbfav lbfavflat
 1045 5.391825  3.736339
@@ -659,7 +579,7 @@ pp.newhits = posteriorprob(lbf.newhits,ebprior.glhits) #posterior prob on models
 pp.newhits.collapse =  apply(pp.newhits,2,collapse, nsigmaa=length(sigmaa))
 
 #compute for each SNP which class it is most likely assigned to
-#(all assoc, or notPulse, or notHb or notSat)
+#(all assoc, or notPulse, or notOxHb or notdHb)
 ppmatrix.newhits = cbind(pp.newhits.collapse)[order(ebprior.glhits.collapse,decreasing=TRUE),]
 pp.newhits.classmatrix = rbind(colSums(ppmatrix.newhits[allassoc,]),colSums(ppmatrix.newhits[allbut1assoc & modelmatrix[,3]==0,]),colSums(ppmatrix.newhits[allbut1assoc & modelmatrix[,2]==0,]),colSums(ppmatrix.newhits[allbut1assoc & modelmatrix[,1]==0,]))
 bestclass= apply(pp.newhits.classmatrix, 2,which.max)
@@ -729,8 +649,8 @@ dev.off()
 pdf("plots.chr1lbfav.vs2.pdf")
 plot(gl$pos[gl$chr==1],gl$lbfav[gl$chr==1],ylim=c(0,10),xlim=c(27102620-10^5,27102620+10^5))
 dev.off()
-write.table(file="Choongwon2016.3Phenos_1.newtophits.vs1.SignCrrct.vs1.txt",cbind(sub[sub$lbfav>4.346141 & sub$nmin>100 & sub$annot==0,c(1:4,11)],round(sub[sub$lbfav>4.346141 & sub$nmin>100 & sub$annot==0,c(12:14,19)],digits=4)),quote=FALSE,sep= " ", row.names=FALSE)
-#write.table(file="Choongwon2016.3Phenos_1.newtophits.vs1.SignCrrct.vs1.txt",cbind(sub[sub$lbfav>5 & sub$nmin>100 & sub$annot==0,c(1:4,11)],round(sub[sub$lbfav>5 & sub$nmin>100 & sub$annot==0,c(12:14,19)],digits=4)),quote=FALSE,sep= " ", row.names=FALSE)
+write.table(file="Choongwon2016.3Phenos_2.newtophits.vs1.SignCrrct.vs1.txt",cbind(sub[sub$lbfav>4.346141 & sub$nmin>100 & sub$annot==0,c(1:4,11)],round(sub[sub$lbfav>4.346141 & sub$nmin>100 & sub$annot==0,c(12:14,19)],digits=4)),quote=FALSE,sep= " ", row.names=FALSE)
+#write.table(file="Choongwon2016.3Phenos_2.newtophits.vs1.SignCrrct.vs1.txt",cbind(sub[sub$lbfav>5 & sub$nmin>100 & sub$annot==0,c(1:4,11)],round(sub[sub$lbfav>5 & sub$nmin>100 & sub$annot==0,c(12:14,19)],digits=4)),quote=FALSE,sep= " ", row.names=FALSE)
 
 #newhits = sub[sub$annot==0 & sub$lbfav>3.323736 & sub$nmin>100,c(1:3,7,18:20,25)]
 
