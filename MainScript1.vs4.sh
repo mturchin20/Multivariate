@@ -8579,11 +8579,22 @@ zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.*.assoc.txt.g
 > 
 [  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.*.assoc.txt.gz | awk '{ if ($10 < .00000005) { print $0 } } ' | R -q -e "Data1 <- read.table(file('stdin'), header=F); Data1[which.min(as.numeric(as.character(Data1[,10]))),];" | grep -v V | grep -v \> | perl -ane 'print join("\t", @F[1..$#F]), "\t";' | perl -lane 'print join("\t", @F);'
 2       rs372272284:46584859:A:G        46584859        914     A       G       0.248   0.3860167       0.06603758      5.713546e-09
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1]$for i in `ls -lrt /mnt/gluster/data/external_private_supp/Choongwon2016/. | grep Tibetan.*.assoc.txt.gz | awk '{ print $9 }'`; do echo $i; zcat /mnt/gluster/data/external_private_supp/Choongwon2016/$i | grep rs372272284 ; done
+Tibetan.Hb.assoc.txt.gz
+2 rs372272284:46584859:A:G 46584859 914 A G 0.248 3.825358e-01 7.466053e-02 2.952695e-07
+Tibetan.Sat.assoc.txt.gz
+2 rs372272284:46584859:A:G 46584859 914 A G 0.248 3.463506e-01 2.106146e-01 9.929316e-02
+Tibetan.Pulse.assoc.txt.gz
+2 rs372272284:46584859:A:G 46584859 913 A G 0.248 1.997644e-01 5.883982e-01 7.307703e-01
+Tibetan.OxHb.assoc.txt.gz
+2 rs372272284:46584859:A:G 46584859 914 A G 0.248 3.860167e-01 6.603758e-02 5.713546e-09
+Tibetan.dHb.assoc.txt.gz
+2 rs372272284:46584859:A:G 46584859 914 A G 0.248 -5.136918e-03 3.332381e-02 8.825847e-01
 ~~~
 
 
 #python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/Choongwon2016/Tibetan.AllPhenos.assoc.SNPslt5eneg8.MarkerChrBP.txt --file2 /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz 
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/Choongwon2016/Tibetan.AllPhenos.assoc.SNPslt5eneg8.MarkerChrBP.GreedyPruned.txt --file2 /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz 
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/Choongwon2016/Tibetan.AllPhenos.assoc.SNPslt5eneg8.MarkerChrBP.GreedyPruned.txt --file2 /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.txt.gz | perl -lane '$F[10] = 0; print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz 
 #python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/Choongwon2016/Tibetan.AllPhenos.assoc.SNPslt5eneg8.MarkerChrBP.txt --file2 /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_2.assoc.IncAllele.MatchedToHb.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_2.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz 
 python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/Choongwon2016/Tibetan.AllPhenos.assoc.SNPslt5eneg8.MarkerChrBP.GreedyPruned.txt --file2 /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_2.assoc.IncAllele.MatchedToHb.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_2.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz 
 
@@ -8599,6 +8610,8 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon20
 #3501882 0
 #      8 1
 #   1754 2
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[10];' | sort | uniq -c
+3503644 0
 [  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
 3501909 0
       1 1
@@ -8607,6 +8620,10 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon20
 #3492418 0
 #      8 1
 #   1754 2
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_2.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[10];' | sort | uniq -c
+3492445 0
+      1 1
+   1734 2
 [  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_2.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
 3492445 0
       1 1
@@ -8620,7 +8637,7 @@ LC_ALL=C
 export LC_ALL LANG
 
 join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 2.2 2.3 2.4 2.5 2.6 2.7 <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_1.dtlesslesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_1.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
-join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 2.2 2.3 2.4 2.5 2.6 2.7 <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.dtlesslesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
+join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 2.2 2.3 2.4 2.5 2.6 2.7 <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.3Pheno_2.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.dtlesslesssignif.vs1.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
 
 LANG=${LANG2}
 LC_ALL=${LC_ALL2}
@@ -8638,15 +8655,13 @@ export LC_ALL LANG
 ~~~
 
 zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_1.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | grep -v NA4 | cat <(echo "snp chr pos raf p_Hb n_Hb p_Sat n_Sat p_Pulse n_Pulse annot Z.Hb Z.Sat Z.Pulse mvstat mvp unip") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_1.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz 
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | grep -v NA4 | cat <(echo "snp chr pos raf p_Hb n_Hb p_Sat n_Sat p_Pulse n_Pulse annot Z.Hb Z.Sat Z.Pulse mvstat mvp unip") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz 
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | grep -v NA4 | cat <(echo "snp chr pos raf p_OxHb n_OxHb p_dHb n_dHb p_Pulse n_Pulse annot Z.OxHb Z.dHb Z.Pulse mvstat mvp unip") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz 
 
 zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_1.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[11] = $F[11] * -1; $F[12] = $F[12] * -1; $F[13] = $F[13] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_1.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz 
 zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[11] = $F[11] * -1; $F[12] = $F[12] * -1; $F[13] = $F[13] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/Choongwon2016.3Phenos_2.dtlesslesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz 
 
 cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GEFOS2015/Vs1/GLC.MTedits.ForGEFOS2015.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/GLC.MTedits.ForChoongwon2016.3Phenos_1.vs1.SignCrrct.vs1.R 
 cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/GLC.MTedits.ForChoongwon2016.3Phenos_1.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/GLC.MTedits.ForChoongwon2016.3Phenos_2.vs1.SignCrrct.vs1.R
-
-
 
 ~~~
 [  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1]$for i in `ls -lrt | tail -n 4 | awk '{ print $9 }'`; do echo $i ; cat $i | perl -lane 'print $#F;' | sort | uniq -c; done
