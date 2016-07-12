@@ -881,21 +881,169 @@ cex
 #20160616
 #Followup analyses as suggested after NHS meeting in prep for committee meeting
 
+#jpeg("GlobalLipids2013.vs3.ForCSHLPoster.NHSSlides.SDvsMax.jpg", width=2000, height=2000, res=300)
+#jpeg("GlobalLipids2013.vs3.ForCSHLPoster.NHSSlides.MedianvsMax.jpg", width=4000, height=2000, res=300)
+#jpeg("GlobalLipids2013.vs3.ForCSHLPoster.NHSSlides.MedianvsSD.jpg", width=4000, height=2000, res=300)
+#jpeg("GlobalLipids2013.vs3.ForCSHLPoster.NHSSlides.ScaledSDvsMax.jpg", width=2250, height=2250, res=300)
+#jpeg("GlobalLipids2013.vs3.ForCSHLPoster.NHSSlides.ScaledSDvsLBF.jpg", width=2000, height=2000, res=300)
+#jpeg("GlobalLipids2013.vs3.ForCSHLPoster.NHSSlides.MaxZvsZSqrSum.jpg", width=4000, height=2000, res=300)
+jpeg("GlobalLipids2013.vs3.ForCSHLPoster.NHSSlides.ZScorePatterns.1.jpg", width=4000, height=2000, res=300)
+
+#par(xpd=FALSE, mar=c(6,6,6,6), oma=c(2,2,2,2))
+par(mfrow=c(1,2), mar=c(4,5,5,4), oma=c(2.25,2.25,2.25,2.25))
+
+#plot(c(apply(prevhits[,5:8], 1, median), apply(newhits[,5:8], 1, median), apply(failhits[,5:8], 1, median)), c(apply(prevhits[,5:8], 1, max), apply(newhits[,5:8], 1, max), apply(failhits[,5:8], 1, max)), main="Median vs Max Z-Scores of Old and New Hits", xlab="Median of Z-scores", ylab="Max of Z-scores^2", col=c(rep("BLUE", dim(prevhits)[1]), rep("RED", dim(newhits)[1]), rep("GREY", dim(failhits)[1])))
+##plot(c(apply(prevhits[,5:8]^2, 1, median), apply(newhits[,5:8]^2, 1, median), apply(failhits[,5:8]^2, 1, median)), c(apply(prevhits[,5:8]^2, 1, max), apply(newhits[,5:8]^2, 1, max), apply(failhits[,5:8]^2, 1, max)), main="Median vs Max Z-Scores of Old and New Hits", xlab="Median of Z-scores", ylab="Max of Z-scores^2", col=c(rep("BLUE", dim(prevhits)[1]), rep("RED", dim(newhits)[1]), rep("GREY", dim(failhits)[1])))
+plot(c(apply(prevhits[,5:8], 1, median), apply(newhits[,5:8], 1, median), apply(failhits[,5:8], 1, median)), c(apply(prevhits[,5:8], 1, sd), apply(newhits[,5:8], 1, sd), apply(failhits[,5:8], 1, sd)), main="Median vs SD Z-Scores of Old and New Hits", xlab="Median of Zscores", ylab="SD of Zscores", col=c(rep("BLUE", dim(prevhits)[1]), rep("RED", dim(newhits)[1]), rep("GREY", dim(failhits)[1])))
+
+abline(a=0, b=1)
+#legend(.075,38.25, c("Previous", "New", "Failed"), col=c("BLUE", "RED", "GREY"), pch=c(16,16,16))
+##legend(.075,1450, c("Previous", "New", "Failed"), col=c("BLUE", "RED", "GREY"), pch=c(16,16,16))
+legend(1,17, c("Previous", "New", "Failed"), col=c("BLUE", "RED", "GREY"), pch=c(16,16,16))
+
+#legend(.075,100, c("Previous", "New", "Failed"), col=c("BLUE", "RED", "GREY"), pch=c(16,16,16))
+
+plot(c(apply(prevhits[,5:8]^2, 1, max), apply(newhits[,5:8]^2, 1, max), apply(failhits[,5:8]^2, 1, max)), c(apply(prevhits[,5:8]^2, 1, sum), apply(newhits[,5:8]^2, 1, sum), apply(failhits[,5:8]^2, 1, sum)), main="Max Z-Score^2 vs Sum(Z-Scores^2) of Old and New Hits", xlab="Max Z-Score^2", ylab="Sum(Z-Scores^2)", col=c(rep("BLUE", dim(prevhits)[1]), rep("RED", dim(newhits)[1]), rep("GREY", dim(failhits)[1])), xlim=c(0,500), ylim=c(0,500))
+
+abline(a=0, b=1)
+legend(1,500, c("Previous", "New", "Failed"), col=c("BLUE", "RED", "GREY"), pch=c(16,16,16))
+
+dev.off()
+
+#plot(c(apply(prevhits[,5:8], 1, max), apply(newhits[,5:8], 1, max), apply(failhits[,5:8], 1, max)), c(apply(prevhits[,5:8], 1, function(x) { y <- sum(x^2); return(y); }), apply(newhits[,5:8], 1, function(x) { y <- sum(x^2); return(y); }), apply(failhits[,5:8], 1, function(x) { y <- sum(x^2); return(y); })), main="Max Z-Score vs Sum(Z-Scores^2) of Old and New Hits", xlab="Max Z-Score", ylab="Sum(Z-Scores^2)", col=c(rep("BLUE", dim(prevhits)[1]), rep("RED", dim(newhits)[1]), rep("GREY", dim(failhits)[1])))
+#c(apply(prevhits[,5:8], 1, max), apply(newhits[,5:8], 1, max), apply(failhits[,5:8], 1, max)), c(apply(prevhits[,5:8], 1, function(x) { y <- sum(x^2); return(y); }), apply(newhits[,5:8], 1, function(x) { y <- sum(x^2); return(y); }), apply(failhits[,5:8], 1, function(x) { y <- sum(x^2); return(y); }))
+
+
+
 
 heatmap(prevhits[,5:8])
 heatmap(newhhits[,])
 heatmap(failhits[,])
 
+library(ggplot2)
+library(reshape2)
+
+> head(melt(newhits[,c(1,5:8)]))
+Using snp as id variables
+         snp variable     value
+1  rs9856765     Z.tg 4.1247113
+2  rs7033354     Z.tg 5.0490124
+3  rs4808802     Z.tg 2.0931026
+4  rs2201637     Z.tg 0.7151765
+5  rs9646133     Z.tg 0.3523177
+6 rs10733608     Z.tg 0.4417087
+
+newhits.scaled <- newhits
+#newhits.scaled[,5:8] <- apply(newhits[,5:8], 2, function(x) { x <- ((x - mean(x))/sd(x)); return(x);})
+newhits.scaled[,5:8] <- sqrt(newhits.scaled[,5:8])
+prevhits.scaled <- prevhits
+#prevhits.scaled[,5:8] <- apply(prevhits[,5:8], 2, function(x) { x <- ((x - mean(x))/sd(x)); return(x);})
+prevhits.scaled[,5:8] <- sqrt(prevhits.scaled[,5:8])
+failhits.scaled <- failhits
+#failhits.scaled[,5:8] <- apply(failhits[,5:8], 2, function(x) { x <- ((x - mean(x))/sd(x)); return(x);})
+failhits.scaled[,5:8] <- sqrt(failhits.scaled[,5:8])
+
+#20160620 NOTE -- Is ordering happening correctly in heatplots through ggplot2? Answer -- no, was able to correctly get this using the factors() command and specifying 'levels' on the name column (eg the 'snp' column)
+#20160620 NOTE -- Try 'magnitude of Z scores' vs. 'Z score SD' per snp, instead of like mean vs sd? maybe don't need to scale Zscores either?
+
+
+
 jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160616CommitteeMeetingSlides.jpg", width=4500, height=4500, res=300)
 par(mfrow=c(2,2))
 
 #image(as.matrix(prevhits[,5:8]))
-image(t(as.matrix(apply(prevhits[,5:8], 2, function(x) { x <- ((x - mean(x))/sd(x)); return(x);}))))
+#image(t(as.matrix(apply(prevhits[,5:8], 2, function(x) { x <- ((x - mean(x))/sd(x)); return(x);}))))
+
+#p <- ggplot(melt(newhits[,c(1,5:8)]), aes(variable, Name)) + geom_tile(aes(fill = rescale), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#p <- ggplot(melt(newhits[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#p
+
+#p1 <- ggplot(melt(c(newhits[,1], apply(newhits[,5:8], 2, function(x) { x <- ((x - mean(x))/sd(x)); return(x);}))), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#p1 <- ggplot(melt(newhits[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#p2 <- ggplot(melt(prevhits[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#p3 <- ggplot(melt(failhits[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+
+#p1 <- ggplot(melt(newhits.scaled[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#p2 <- ggplot(melt(prevhits.scaled[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#p3 <- ggplot(melt(failhits.scaled[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+
+#multiplot(p1,p2,p3, cols=2)
+
+#p4 <- ggplot(rbind(melt(newhits[,c(1,5:8)]), melt(prevhits[,c(1,5:8)]), melt(failhits[,c(1,5:8)])), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#p4
+
+newhitsfailhits2 <- rbind(newhits[,c(1,5:8)], failhits[,c(1,5:8)])
+newhitsfailhits2[,1] <- factor(newhitsfailhits2$snp, levels=newhitsfailhits2$snp)
+#p5 <- ggplot(rbind(melt(newhits[,c(1,5:8)]), melt(failhits[,c(1,5:8)])), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+p5 <- ggplot(melt(newhitsfailhits2), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+
+prevhits2 <- prevhits
+prevhits2[,1] <- factor(prevhits2$snp, levels=prevhits2$snp)
+p6 <- ggplot(melt(prevhits2[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+
+multiplot(p5, p6, cols=2)
 
 dev.off()
 
+#Using this for helping with ordering factor levels and then axes in ggplot2 -- http://rstudio-pubs-static.s3.amazonaws.com/7433_4537ea5073dc4162950abb715f513469.html
+~~~
+What we would like is for R to respect the order in data.frame. For that to happen, we need to change the order of factor levels by specifying the order explicitly.
+
+x$name <- factor(x$name, levels = x$name[order(x$val)])
+x$name  # notice the changed order of factor levels
+##  [1] j f s q g b o c t v
+## Levels: j f s q g b o c t v
+~~~
+
+> head(factor(prevhits2$snp, levels=prevhits2$snp))    
+[1] rs12678919  rs2814982   rs267733    rs112302432 rs38855     rs12145743 
+148 Levels: rs12678919 rs2814982 rs267733 rs112302432 rs38855 ... rs4883201
+> head(prevhits2)
+            snp chr       pos    maf        Z.tg      Z.tc      Z.ldl     Z.hdl
+30   rs12678919   8  19844222 0.1214 30.13247762 0.3382166 0.66742610 26.049025
+32    rs2814982   6  34546560 0.1069  0.07677819 7.8654408 4.66007121  6.777468
+86     rs267733   1 150958836 0.1372  0.50181167 4.1215694 5.83794057  2.912629
+133 rs112302432  11 122522375 0.3971  0.98627130 7.6274730 4.70513341  7.724833
+146     rs38855   7 116358044 0.4736  5.60281359 0.8966607 0.03334433  3.914851
+204  rs12145743   1 156700651 0.3311  3.45245992 0.4337087 0.95792615  5.629914
+         lbfav     lbfall     lbfuni
+30  311.954181 310.873814 194.759406
+32   19.629950  18.968960  11.460277
+86    6.332992   5.712974   5.545234
+133  21.971054  20.751113  11.141896
+146   6.655898   5.821216   4.956769
+204   6.166636   5.403217   5.024735
+> head(prevhits)
+            snp chr       pos    maf        Z.tg      Z.tc      Z.ldl     Z.hdl
+30   rs12678919   8  19844222 0.1214 30.13247762 0.3382166 0.66742610 26.049025
+32    rs2814982   6  34546560 0.1069  0.07677819 7.8654408 4.66007121  6.777468
+86     rs267733   1 150958836 0.1372  0.50181167 4.1215694 5.83794057  2.912629
+133 rs112302432  11 122522375 0.3971  0.98627130 7.6274730 4.70513341  7.724833
+146     rs38855   7 116358044 0.4736  5.60281359 0.8966607 0.03334433  3.914851
+204  rs12145743   1 156700651 0.3311  3.45245992 0.4337087 0.95792615  5.629914
+         lbfav     lbfall     lbfuni
+30  311.954181 310.873814 194.759406
+32   19.629950  18.968960  11.460277
+86    6.332992   5.712974   5.545234
+133  21.971054  20.751113  11.141896
+146   6.655898   5.821216   4.956769
+204   6.166636   5.403217   5.024735
+> str(prevhits$snp)
+ Factor w/ 12412 levels ".","rs1000237",..: 2324 5664 5463 1213 7062 1912 10422 940 11649 7578 ...
+> str(prevhits2$snp)
+ Factor w/ 148 levels "rs12678919","rs2814982",..: 1 2 3 4 5 6 7 8 9 10 ...
+> 
 
 
+#Using some instruction from to get this going https://learnr.wordpress.com/2010/01/26/ggplot2-quick-heatmap-plotting/
+
+nba <- read.csv("http://datasets.flowingdata.com/ppg2008.csv")
+
+(p <- ggplot(nba.m, aes(variable, Name)) + geom_tile(aes(fill = rescale),
++     colour = "white") + scale_fill_gradient(low = "white",
++     high = "steelblue"))
+
+#Also instruction from http://www.r-bloggers.com/making-faceted-heatmaps-with-ggplot2/ & http://www.sthda.com/english/wiki/ggplot2-quick-correlation-matrix-heatmap-r-software-and-data-visualization
 
 function(lbf,prior){
   max = apply(lbf,2,max) #remove the max, and store it, to prevent overflow
@@ -910,6 +1058,120 @@ SumAcrossSigmaAs <- function(lbf) {
 	lbf <- lbf - apply(lbf,1,max)
 	return(log10(apply(10^lbf,1,sum))+max)
 }
+
+#This one goes across the 14 sigmaa rows per gamma to take the mean, producing a single per gamma value across each SNP -- final matrix of 81 x 74 (gammas x SNPs)
+SumAcrossSigmaas <- function(lbf, ngamma, nsigmaa) {
+	lbfSummedOverSigmas <- matrix(0, ncol=ncol(lbf), nrow=ngamma)
+	for (i in 1:ngamma) {
+		coords <- seq.int(from=i, by=ngamma, length.out=nsigmaa)
+		max <- apply(lbf[coords,], 2, max)
+		lbf[coords,] <- lbf[coords,] - matrix(max, nrow=nrow(lbf[coords,]), ncol=ncol(lbf[coords,]), byrow=TRUE)
+		lbfSummedOverSigmas[i,] <- log10(apply(10^lbf[coords,], 2, mean)) + max
+	}
+	return(lbfSummedOverSigmas)
+}
+
+#> seq.int(from = 1, by=81, length.out=14)
+# [1]    1   82  163  244  325  406  487  568  649  730  811  892  973 1054
+
+lbf.newhits.sigmaaSummed <- SumAcrossSigmaas(lbf.newhits, 81, 14)
+
+~~~
+> lbf.newhits.sigmaaSummed[1:10,1:10]
+            [,1]       [,2]       [,3]       [,4]       [,5]       [,6]
+ [1,]  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000
+ [2,] -0.4985372 -0.7479119  1.6704317  0.9840384 -0.7039087  1.4227931
+ [3,]  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000
+ [4,]  2.0604055  3.3725269 -0.2549978 -0.6458205 -0.7771200 -0.7915785
+ [5,]  1.4765889  2.7157599  1.6526154  0.4095825 -1.1821608  0.7630164
+ [6,]  2.1074359  3.4474594 -0.1075334 -0.6451407 -0.7779362 -0.8020916
+ [7,]  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000
+ [8,] -0.4647309 -0.6806185  1.8308582  0.9848334 -0.7047282  1.4114874
+ [9,]  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000
+[10,]  0.4040058  1.6127298 -0.1636623  6.9076186  1.1739856  3.0823826
+             [,7]       [,8]       [,9]      [,10]
+ [1,]  0.00000000  0.0000000  0.0000000  0.0000000
+ [2,]  0.49900783  0.2511199 -0.7371188 -0.3824719
+ [3,]  0.00000000  0.0000000  0.0000000  0.0000000
+ [4,] -0.59252506  1.8954736  3.1152497  0.2262892
+ [5,]  0.06227067  2.3852964  2.3702582  0.1351876
+ [6,] -0.55858467  2.1188133  3.0678157  0.3169248
+ [7,]  0.00000000  0.0000000  0.0000000  0.0000000
+ [8,]  0.53734036  0.4482755 -0.7798915 -0.2940802
+ [9,]  0.00000000  0.0000000  0.0000000  0.0000000
+[10,]  8.63418911 -0.4656451  2.7672998  4.1302198
+> lbf.newhits[1:10,1:10]
+             [,1]       [,2]      [,3]       [,4]       [,5]       [,6]
+ [1,]  0.00000000  0.0000000 0.0000000  0.0000000  0.0000000  0.0000000
+ [2,] -0.06239581 -0.2054690 1.3998616  0.7789211 -0.1721040  1.4388885
+ [3,]  0.00000000  0.0000000 0.0000000  0.0000000  0.0000000  0.0000000
+ [4,]  0.78655888  2.7811878 0.1395590 -0.1369551 -0.2281943 -0.2393310
+ [5,]  0.73816247  2.6278260 1.6404102  0.6423843 -0.4009249  1.1912586
+ [6,]  0.80055828  2.8332950 0.2405485 -0.1365368 -0.2288209 -0.2476299
+ [7,]  0.00000000  0.0000000 0.0000000  0.0000000  0.0000000  0.0000000
+ [8,] -0.04839641 -0.1533618 1.5008511  0.7793394 -0.1727306  1.4305896
+ [9,]  0.00000000  0.0000000 0.0000000  0.0000000  0.0000000  0.0000000
+[10,]  0.27034055  1.5423346 0.2022209  3.7038087  1.2056429  2.6393274
+             [,7]        [,8]       [,9]      [,10]
+ [1,]  0.00000000  0.00000000  0.0000000 0.00000000
+ [2,]  0.50949999  0.22297123 -0.1968946 0.07449664
+ [3,]  0.00000000  0.00000000  0.0000000 0.00000000
+ [4,] -0.10471023  0.75162491  2.6214978 0.53092980
+ [5,]  0.42517743  1.04254360  2.3912464 0.67244251
+ [6,] -0.08432256  0.81957236  2.5881409 0.59794588
+ [7,]  0.00000000  0.00000000  0.0000000 0.00000000
+ [8,]  0.52988766  0.29091869 -0.2302514 0.14151272
+ [9,]  0.00000000  0.00000000  0.0000000 0.00000000
+[10,]  4.44364255 -0.04847934  2.3763526 3.29155781
+> log10(mean(10^lbf.newhits[seq.int(2,by=81,length.out=14),1]))
+[1] -0.4985372
+> log10(mean(10^lbf.newhits[seq.int(2,by=81,length.out=14),4]))
+[1] 0.9840384
+> log10(mean(10^lbf.newhits[seq.int(4,by=81,length.out=14),3]))
+[1] -0.2549978
+> log10(mean(10^lbf.newhits[seq.int(6,by=81,length.out=14),8]))
+[1] 2.118813
+~~~
+
+#lbf.newhits.sigmaaSummed[1:10,1:10]
+lbf.newhits.sigmaaSummed.plusGammaDescrips <- cbind(lbf$gamma, lbf.newhits.sigmaaSummed)
+
+~~~
+> dim(lbf.newhits.sigmaaSummed)
+[1] 81 74
+> dim(lbf.newhits.sigmaaSummed.plusGammaDescrips)
+[1] 81 78
+> lbf.newhits.sigmaaSummed.plusGammaDescrips[1:10,1:10]
+      [,1] [,2] [,3] [,4]       [,5]       [,6]       [,7]       [,8]
+ [1,]    0    0    0    0  0.0000000  0.0000000  0.0000000  0.0000000
+ [2,]    1    0    0    0 -0.4985372 -0.7479119  1.6704317  0.9840384
+ [3,]    2    0    0    0  0.0000000  0.0000000  0.0000000  0.0000000
+ [4,]    0    1    0    0  2.0604055  3.3725269 -0.2549978 -0.6458205
+ [5,]    1    1    0    0  1.4765889  2.7157599  1.6526154  0.4095825
+ [6,]    2    1    0    0  2.1074359  3.4474594 -0.1075334 -0.6451407
+ [7,]    0    2    0    0  0.0000000  0.0000000  0.0000000  0.0000000
+ [8,]    1    2    0    0 -0.4647309 -0.6806185  1.8308582  0.9848334
+ [9,]    2    2    0    0  0.0000000  0.0000000  0.0000000  0.0000000
+[10,]    0    0    1    0  0.4040058  1.6127298 -0.1636623  6.9076186
+            [,9]      [,10]
+ [1,]  0.0000000  0.0000000
+ [2,] -0.7039087  1.4227931
+ [3,]  0.0000000  0.0000000
+ [4,] -0.7771200 -0.7915785
+ [5,] -1.1821608  0.7630164
+ [6,] -0.7779362 -0.8020916
+ [7,]  0.0000000  0.0000000
+ [8,] -0.7047282  1.4114874
+ [9,]  0.0000000  0.0000000
+[10,]  1.1739856  3.0823826
+~~~
+
+
+
+
+
+
+
 
 lbf.bigmat.summed <- SumAcrossSigmaAs(lbf.bigmat)
 
@@ -997,13 +1259,277 @@ cbind(lbf$gamma, SumAcrossSigmaAs(matrix(lbf.glhits.summed, nrow=81, byrow=TRUE)
 
 plot things? using these condensed gamma dataframe/matrices created
 
+> as.matrix(table(c(1,2,3,3,3,3,8)))     
+  [,1]
+1    1
+2    1
+3    4
+8    1
+> matrix(table(c(1,2,3,3,3,3,8)))    
+     [,1]
+[1,]    1
+[2,]    1
+[3,]    4
+[4,]    1
+> matrix(table(cbind(lbf$gamma, SumAcrossSigmaAs(matrix(lbf.newhits.summed, nrow=81, byrow=TRUE)))[order( SumAcrossSigmaAs(matrix(lbf.newhits.summed, nrow=81, byrow=TRUE)), decreasing=TRUE),][3,1:4]))
+     [,1]
+[1,]    1
+[2,]    1
+[3,]    2
+> matrix(table(cbind(lbf$gamma, SumAcrossSigmaAs(matrix(lbf.newhits.summed, nrow=81, byrow=TRUE)))[order( SumAcrossSigmaAs(matrix(lbf.newhits.summed, nrow=81, byrow=TRUE)), decreasing=TRUE),][3,1:4]))[2,]
+[1] 1
+
+can test whether > 1 1 or whether >0 0 & >0 1 (so either 2+ phenos directly associated or at least 1 pheno direct and 1 pheno unassoc)
+
+maybe get gamma, then BF value for every gamma per SNP as the remaining columns so gamma x (gamma descriptions) + (SNPs)
+
+CountGammaValues <- function(x) { count0 <- 0; count1 <- 0; count2 <- 0; for (j in 1:length(x)) { if (x[j] == 0) { count0 <- count0 + 1; }; if (x[j] == 1) { count1 <- count1 + 1; }; if (x[j] == 2) { count2 <- count2 + 1;}; }; return(c(count0, count1, count2));}
+UniBFs <- lbf.newhits.sigmaaSummed.plusGammaDescrips[t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 1 & t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,1] == 0,]
+
+#UniBFs <- lbf.newhits.sigmaaSummed.plusGammaDescrips[apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues)[2] == 1 & apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues)[1] == 0,]
+#UniBFs <- lbf.newhits.sigmaaSummed.plusGammaDescrips[apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, function(x) { gammaCounts <- matrix(table(x)); return(gammaCounts);})[2,] == 1 & apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, function(x) { gammaCounts <- matrix(table(x)); return(gammaCounts);})[1,] == 0,]
+#apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, matrix(table
+#matrix(table(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4])
+#apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, function(x) { gammaCounts <- matrix(table(x)); if(})
+#apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, function(x) { count0 <- 0; count1 <- 0; count2 <- 0; for (j in length(x)) { if (x[j] == 0) { count0 <- count0 + 1; } if (
+
+lbf.newhits.sigmaaSummed.plusGammaDescrips <- cbind(lbf$gamma, lbf.newhits.sigmaaSummed)
+
+~~~
+> lbf.newhits.sigmaaSummed.plusGammaDescrips[t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 1 & t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,1] == 0,1:10]
+     [,1] [,2] [,3] [,4]      [,5]     [,6]        [,7]       [,8]       [,9]
+[1,]    2    2    2    1 2.6553953 3.854749 2.806187096 -0.4414603  4.2526855
+[2,]    2    2    1    2 0.7762212 2.344259 0.001959564  7.0998290  1.2204512
+[3,]    2    1    2    2 2.6103833 4.322580 0.075863077 -0.5617751 -0.7552975
+[4,]    1    2    2    2 1.0948640 1.767300 5.391312265  1.1336374  1.7787935
+          [,10]
+[1,]  0.1984251
+[2,]  3.1958814
+[3,] -0.7656662
+[4,]  2.5578910
+> UniBFs[,1:10]                                                                                                                                                                                                                     [,1] [,2] [,3] [,4]      [,5]     [,6]        [,7]       [,8]       [,9]
+[1,]    2    2    2    1 2.6553953 3.854749 2.806187096 -0.4414603  4.2526855
+[2,]    2    2    1    2 0.7762212 2.344259 0.001959564  7.0998290  1.2204512
+[3,]    2    1    2    2 2.6103833 4.322580 0.075863077 -0.5617751 -0.7552975
+[4,]    1    2    2    2 1.0948640 1.767300 5.391312265  1.1336374  1.7787935
+          [,10]
+[1,]  0.1984251
+[2,]  3.1958814
+[3,] -0.7656662
+[4,]  2.5578910
+> UniBFs.max <- apply(UniBFs[,5:ncol(UniBFs)], 2, max)
+> UniBFs.max[1:5]
+[1] 2.655395 4.322580 5.391312 7.099829 4.252686
+~~~
+
+make these one column, then another colum nof 'multiBFs' point right next to it, with SNPs going from best to worst on x axis? So like bar plots?....unless do 'max uniBF'/'mean uniBF' vs 'max multiBF'/'mean multiBF'
+max might work?
+
+UniBFs.max <- apply(UniBFs[,5:ncol(UniBFs)], 2, max)
+
+MultiBFs <- lbf.newhits.sigmaaSummed.plusGammaDescrips[t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] > 1 | ( t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 1 & t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,1] > 0),] 
+MultiBFs.max <- apply(MultiBFs[,5:ncol(MultiBFs)], 2, max)
+AllBFs <- lbf.newhits.sigmaaSummed.plusGammaDescrips[t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 4,]
+
+~~~
+> AllBFs[1:10]
+ [1] 1.000000 1.000000 1.000000 1.000000 5.113600 9.238360 4.767202 6.887086
+ [9] 4.339257 4.501904
+~~~
+
+jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160616CommitteeMeetingSlides.pt2.jpg", width=4500, height=4500, res=300)
+par(mfrow=c(2,2), mar=c(6,5,4,2))
+
+plot(UniBFs.max, AllBFs[5:length(AllBFs)], main="Global Lipids 2013 -- Max Uni BF vs. All Dir. Assoc. BF per SNP", xlab="Max Univariate BF", ylab="All Directly Associated BF", cex=1.5, cex.main=1.5, cex.axis=1.5, cex.lab=1.5)
+abline(0,1, col="BLACK")
+plot(UniBFs.max, MultiBFs.max, main="Global Lipids 2013 -- Max Uni BF vs. Max Multi BF per SNP", xlab="Max Univariate BF", ylab="Max Multivariate BF", cex=1.5, cex.main=1.5, cex.axis=1.5, cex.lab=1.5)
+abline(0,1, col="BLACK")
+
+dev.off()
+
+length(UniBFs.max[UniBFs.max<AllBFs[5:length(AllBFs)]]))
+length(UniBFs.max[UniBFs.max>AllBFs[5:length(AllBFs)]]))
+mean(AllBFs[5:length(AllBFs)]-UniBFs.max)
+sd(AllBFs[5:length(AllBFs)]-UniBFs.max)
+quantile(AllBFs[5:length(AllBFs)]-UniBFs.max))
+length(UniBFs.max[UniBFs.max<MultiBFs.max])
+length(UniBFs.max[UniBFs.max>MultiBFs.max])
+mean(MultiBFs.max-UniBFs.max)
+sd(MultiBFs.max-UniBFs.max)
+quantile(MultiBFs.max-UniBFs.max)
+
+~~~
+> dim(UniBFs)
+[1]  4 78
+> dim(MultiBFs)
+[1] 61 78
+> UniBFs[1:4,1:10]
+     [,1] [,2] [,3] [,4]      [,5]     [,6]        [,7]       [,8]       [,9]
+[1,]    2    2    2    1 2.6553953 3.854749 2.806187096 -0.4414603  4.2526855
+[2,]    2    2    1    2 0.7762212 2.344259 0.001959564  7.0998290  1.2204512
+[3,]    2    1    2    2 2.6103833 4.322580 0.075863077 -0.5617751 -0.7552975
+[4,]    1    2    2    2 1.0948640 1.767300 5.391312265  1.1336374  1.7787935
+          [,10]
+[1,]  0.1984251
+[2,]  3.1958814
+[3,] -0.7656662
+[4,]  2.5578910
+> MultiBFs[1:10, 1:10]
+      [,1] [,2] [,3] [,4]        [,5]       [,6]       [,7]       [,8]
+ [1,]    1    0    0    0 -0.49853723 -0.7479119  1.6704317  0.9840384
+ [2,]    0    1    0    0  2.06040548  3.3725269 -0.2549978 -0.6458205
+ [3,]    1    1    0    0  1.47658885  2.7157599  1.6526154  0.4095825
+ [4,]    2    1    0    0  2.10743589  3.4474594 -0.1075334 -0.6451407
+ [5,]    1    2    0    0 -0.46473094 -0.6806185  1.8308582  0.9848334
+ [6,]    0    0    1    0  0.40400580  1.6127298 -0.1636623  6.9076186
+ [7,]    1    0    1    0 -0.03124305  0.9918906  1.6197962  7.9771158
+ [8,]    2    0    1    0  0.40726236  1.6198135 -0.1395295  6.9887155
+ [9,]    0    1    1    0  2.87151443  5.7714267 -0.1106603  6.0784607
+[10,]    1    1    1    0  2.35570074  5.2069785  1.8537962  7.3003083
+            [,9]      [,10]
+ [1,] -0.7039087  1.4227931
+ [2,] -0.7771200 -0.7915785
+ [3,] -1.1821608  0.7630164
+ [4,] -0.7779362 -0.8020916
+ [5,] -0.7047282  1.4114874
+ [6,]  1.1739856  3.0823826
+ [7,]  0.6222711  4.6719598
+ [8,]  1.1825122  3.1465792
+ [9,]  0.5495304  2.3307203
+[10,]  0.1766363  4.0430914
+> length(UniBFs.max[UniBFs.max<AllBFs[5:length(AllBFs)]])
+[1] 58
+> length(UniBFs.max[UniBFs.max>AllBFs[5:length(AllBFs)]])
+[1] 16
+> mean(AllBFs[5:length(AllBFs)]-UniBFs.max)
+[1] 1.313435
+> sd(AllBFs[5:length(AllBFs)]-UniBFs.max)
+[1] 1.984381
+> quantile(AllBFs[5:length(AllBFs)]-UniBFs.max)
+        0%        25%        50%        75%       100% 
+-1.2001790  0.1034445  1.1556181  1.9989596 13.9240445 
+> 
+> length(UniBFs.max)
+[1] 74
+> length(MultiBFs.max)
+[1] 74
+> length(UniBFs.max[UniBFs.max<MultiBFs.max])
+[1] 73
+> length(UniBFs.max[UniBFs.max>MultiBFs.max])
+[1] 1
+> mean(MultiBFs.max-UniBFs.max)
+[1] 2.248883
+> sd(MultiBFs.max-UniBFs.max)
+[1] 1.941596
+> quantile(MultiBFs.max-UniBFs.max)
+         0%         25%         50%         75%        100% 
+-0.06908667  1.20463960  2.15051860  2.95323661 15.12879173 
+~~~
+
+#MultiBFs <- lbf.newhits.sigmaaSummed.plusGammaDescrips[t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] > 1 | ( t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 1 & t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,1] > 0),] 
+
+#test <- lbf.newhits.sigmaaSummed.plusGammaDescrips[(t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 1 & t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,1] == 0) | t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 3,]
+
+~~~
+> (t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 1 & t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,1] == 0)
+ [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[25] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[37] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[49] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+[61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE
+[73] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE
+> c(t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 1 & t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,1] == 0)
+ [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[25] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[37] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[49] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+[61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE
+[73] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE
+> t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 3
+ [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[13] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[25] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+[37] FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE
+[49] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+[73] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+> (t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 1 & t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,1] == 0) | t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 3
+ [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[13] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[25] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+[37] FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE
+[49] FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+[61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE
+[73] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE
+> (t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 1 & t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,1] == 0) & t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 3
+ [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[25] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[37] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[49] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[73] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+~~~
 
 
 
 
 
+
+
+
+
+UniBFs <- lbf.newhits.sigmaaSummed.plusGammaDescrips[t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,2] == 1 & t(apply(lbf.newhits.sigmaaSummed.plusGammaDescrips[,1:4], 1, CountGammaValues))[,1] == 0,]
 
 also something with gamma
 
+#From http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
+# Multiple plot function
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+
+  numPlots = length(plots)
+
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                    ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+
+ if (numPlots==1) {
+    print(plots[[1]])
+
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
 
 
