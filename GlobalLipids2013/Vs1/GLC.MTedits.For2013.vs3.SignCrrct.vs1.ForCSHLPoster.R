@@ -5,9 +5,20 @@ VYY = as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Mu
 gl = read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz", header=T)
 #gl3 <- gl[!is.na(gl[,ncol(gl)-1]) & !is.infinite(gl[,ncol(gl)-1]) & !is.na(gl$maf) & gl$maf > 0,]
 gl <- gl[!is.na(gl$maf) & gl$maf > 0,]
-Z = cbind(gl$Z.tc,gl$Z.tg,gl$Z.hdl,gl$Z.ldl)
+#Z = cbind(gl$Z.tc,gl$Z.tg,gl$Z.hdl,gl$Z.ldl)
+Z = cbind(gl$Z.ldl, gl$Z.hdl, gl$Z.tc, gl$Z.tg)
 
-n = cbind(gl$n_TC, gl$n_TG, gl$n_HDL, gl$n_LDL)
+#> VYY
+#           Z.LDL       Z.HDL       Z.TC       Z.TG
+#[1,]  1.00000000 -0.05101127 0.83617727  0.1446093
+#[2,] -0.05101127  1.00000000 0.09840344 -0.2298445
+#[3,]  0.83617727  0.09840344 1.00000000  0.3389824
+#[4,]  0.14460929 -0.22984452 0.33898241  1.0000000
+
+
+
+#n = cbind(gl$n_TC, gl$n_TG, gl$n_HDL, gl$n_LDL)
+n = cbind(gl$n_LDL, gl$n_HDL, gl$n_TC, gl$n_TG)
 n = apply(n,1,min)
 gl$nmin=n
 sigmaa=c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15)
@@ -53,6 +64,12 @@ sum(modelmatrix[allbut1assoc,5]) #0.05885692
 #[1] 0.3659239
 #> sum(modelmatrix[allbut1assoc,5]) #0.05885692
 #[1] 0.3117781
+ 
+#> sum(modelmatrix[allassoc,5]) #0.9300127
+#[1] 0.6147474
+#> sum(modelmatrix[allbut1assoc,5]) #0.05885692
+#[1] 0.2430032
+
 
 #look at weight on each of LDL, HDL, TG, TC being unassociated
 sum(modelmatrix[allbut1assoc & modelmatrix[,4]==0,5]) 
@@ -69,6 +86,15 @@ sum(modelmatrix[allbut1assoc & modelmatrix[,1]==0,5])
 #[1] 0.09731063
 #> sum(modelmatrix[allbut1assoc & modelmatrix[,1]==0,5])
 #[1] 0.02785675
+
+#> sum(modelmatrix[allbut1assoc & modelmatrix[,4]==0,5])
+#[1] 0.09227745
+#> sum(modelmatrix[allbut1assoc & modelmatrix[,3]==0,5])
+#[1] 0.0587368
+#> sum(modelmatrix[allbut1assoc & modelmatrix[,2]==0,5])
+#[1] 0.06043325
+#> sum(modelmatrix[allbut1assoc & modelmatrix[,1]==0,5])
+#[1] 0.03155571
 
 
 #compute for each SNP which class it is most likely assigned to
@@ -131,6 +157,8 @@ dev.off()
 min(lbf.av.glhits)
 #[1] 4.608818
 #[1] 7.312795
+[1] 3.989499
+
 
 
 lbf.av.all = lbf.av(lbf.bigmat,ebprior.glhits)
@@ -144,7 +172,12 @@ l=indephits(sub$lbfav,sub$chr,sub$pos)
 sub=sub[l==1,]
 #newhits = sub[sub$annot==0 & sub$lbfav>4.3 & sub$nmin>50000,c(1:4,20:23,28)]
 #newhits = sub[sub$annot==0 & sub$lbfav>4.608818 & sub$nmin>50000,c(4,2:3,7,22:25,30)]
-newhits = sub[sub$annot==0 & sub$lbfav>7.312795 & sub$nmin>50000,c(4,2:3,7,22:25,30)]
+newhits = sub[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,c(4,2:3,7,22:25,30)]
+
+~~~
+> dim(newhits)
+[1] 92  9
+~~~
 
 #~~~
 #> l=indephits(sub$lbfav,sub$chr,sub$pos)
@@ -162,7 +195,7 @@ newhits = sub[sub$annot==0 & sub$lbfav>7.312795 & sub$nmin>50000,c(4,2:3,7,22:25
 #extract lbfs for all the new hits
 lbf.newhits= lbf.bigmat[,gl$nmin>50000]
 lbf.newhits= lbf.newhits[,l==1]
-lbf.newhits= lbf.newhits[,sub$annot==0 & sub$lbfav>7.312795 & sub$nmin>50000]
+lbf.newhits= lbf.newhits[,sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000]
 pp.newhits = posteriorprob(lbf.newhits,ebprior.glhits) #posterior prob on models for new hits
 pp.newhits.collapse =  apply(pp.newhits,2,collapse, nsigmaa=length(sigmaa))
 
@@ -281,13 +314,13 @@ for(i in 1:22){
  if(sum(sub$chr==i)>0){
 plot(10^{-6}*gl$pos[gl$chr==i],gl$lbfav[gl$chr==i],ylim=c(0,100),main=paste("Chromosome ", i),xlab="position (Mb)",ylab="log10(BFav)",col=2-(gl$nmin[gl$chr==i]>50000))
 abline(v=10^{-6}*gl$pos[gl$chr==i & gl$annot==1],col=2)
-abline(v=10^{-6}*sub$pos[sub$annot==0 & sub$chr==i & sub$lbfav>7.312795],col=3)
+abline(v=10^{-6}*sub$pos[sub$annot==0 & sub$chr==i & sub$lbfav>3.989499],col=3)
 }
 }
 dev.off()
 
 #try to plot all hits to see relationships?
-tophits =  sub[sub$lbfav>7.312795 & sub$nmin>50000,]
+tophits =  sub[sub$lbfav>3.989499 & sub$nmin>50000,]
 betahat = tophits[,c(8,11,14,17)]
 betahat.scaled = betahat/apply(betahat,1,sd)
 betahat.scaled.pr = prcomp(betahat.scaled,center=F)
@@ -319,11 +352,11 @@ pdf("plots.chr1lbfav.vs2.pdf")
 plot(gl$pos[gl$chr==1],gl$lbfav[gl$chr==1],ylim=c(0,10),xlim=c(27102620-10^5,27102620+10^5))
 dev.off()
 
-write.table(file="GlobalLipids2013.newtophits.vs3.SignCrrct.vs1.txt",cbind(sub[sub$lbfav>7.312795 & sub$nmin>50000 & sub$annot==0,c(4,2:3,7)],round(sub[sub$lbfav>7.312795 & sub$nmin>50000 & sub$annot==0,c(22:25,30)],digits=1)),quote=FALSE,sep= " ", row.names=FALSE)
+write.table(file="GlobalLipids2013.newtophits.vs3.SignCrrct.vs1.txt",cbind(sub[sub$lbfav>3.989499 & sub$nmin>50000 & sub$annot==0,c(4,2:3,7)],round(sub[sub$lbfav>3.989499 & sub$nmin>50000 & sub$annot==0,c(22:25,30)],digits=1)),quote=FALSE,sep= " ", row.names=FALSE)
 
 c(4,2:3,7,22:25,30)
 
-#newhits = gl[gl$annot==0 & gl$lbfav>7.312795 & gl$nmin>50000,c(4,2:3,30)]
+#newhits = gl[gl$annot==0 & gl$lbfav>3.989499 & gl$nmin>50000,c(4,2:3,30)]
 #write.table(file="newhits.vs2.wr",newhits,quote=FALSE,row.names=FALSE)
 
 #             snp chr       pos   maf   Z.tg   Z.tc  Z.ldl  Z.hdl    lbfav
@@ -489,7 +522,7 @@ c(4,2:3,7,22:25,30)
 #lbf.glhits = lbf.bigmat[,gl$annot==1]
 #
 #
-##newhits = sub[sub$annot==0 & sub$lbfav>7.312795 & sub$nmin>50000,c(4,2:3,7,22:25,30)]
+##newhits = sub[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,c(4,2:3,7,22:25,30)]
 #
 #
 #lbf.uni.allhits = lbf.uni(lbf.bigmat, lbf$gamma)
@@ -726,8 +759,8 @@ lbfav    lbfall    lbfuni
 
 #20160630 -- New additions for NHS/committee meeting misc
 
-#newhits = sub[sub$annot==0 & sub$lbfav>7.312795 & sub$nmin>50000,c(4,2:3,7,22:25,30)]
-failhits = sub[sub$annot==0 & sub$lbfav<=7.312795 & sub$nmin>50000,c(4,2:3,7,22:25,30)]
+#newhits = sub[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,c(4,2:3,7,22:25,30)]
+failhits = sub[sub$annot==0 & sub$lbfav<=3.989499 & sub$nmin>50000,c(4,2:3,7,22:25,30)]
 prevhits = gl.glhits[,c(2:4,7,22:25)] 
 
 
@@ -917,17 +950,43 @@ lbf.bigmat.phenoMarginals.MeanAcrossSigmaas.Normalized <- apply(lbf.bigmat.pheno
 colnames(lbf.bigmat.phenoMarginals.MeanAcrossSigmaas.Normalized) <- gl$snp
 row.names(lbf.bigmat.phenoMarginals.MeanAcrossSigmaas.Normalized) <- c("TC", "TG", "HDL", "LDL")
 
+
+
+
+
 #lbf.bigmat.pp <- posteriorprob(
 #sub = gl[gl$nmin>50000,]
 #l=indephits(sub$lbfav,sub$chr,sub$pos)
 #sub=sub[l==1,]
 
-
 sub.pp <- posteriorprob(lbf.bigmat[,l==1],ebprior.glhits)
 sub.pp.marginals <- marginal.postprobs(sub.pp, lbf$gamma, length(sigmaa))
-sub.pp.marginals.DirAssoc <- sub.pp.marginals[[2]]
-colnames(sub.pp.marginals.DirAssoc) <- sub$snp
-rownames(sub.pp.marginals.DirAssoc) <- c("TC", "TG", "HDL", "LDL")
+#sub.pp.marginals.DirAssoc <- sub.pp.marginals[[2]]
+sub.pp.marginals.DirAssoc <- t(sub.pp.marginals[[2]])
+#colnames(sub.pp.marginals.DirAssoc) <- sub$snp
+#sub.pp.marginals.DirAssoc <- rbind(as.character(sub$snp), sub.pp.marginals.DirAssoc)
+sub.pp.marginals.DirAssoc <- data.frame(cbind(as.character(sub$snp), sub.pp.marginals.DirAssoc))
+sub.pp.marginals.DirAssoc[,2] <- as.numeric(as.character(sub.pp.marginals.DirAssoc[,2]))
+sub.pp.marginals.DirAssoc[,3] <- as.numeric(as.character(sub.pp.marginals.DirAssoc[,3]))
+sub.pp.marginals.DirAssoc[,4] <- as.numeric(as.character(sub.pp.marginals.DirAssoc[,4]))
+sub.pp.marginals.DirAssoc[,5] <- as.numeric(as.character(sub.pp.marginals.DirAssoc[,5]))
+#rownames(sub.pp.marginals.DirAssoc) <- c("TC", "TG", "HDL", "LDL")
+#rownames(sub.pp.marginals.DirAssoc) <- c("LDL", "HDL", "TC", "TG")
+#rownames(sub.pp.marginals.DirAssoc) <- c("snp", "LDL", "HDL", "TC", "TG")
+colnames(sub.pp.marginals.DirAssoc) <- c("snp", "LDL", "HDL", "TC", "TG")
+sub.pp.marginals.DirAssoc$snp <- factor(sub.pp.marginals.DirAssoc$snp, levels=sub[order(sub$lbfav, decreasing=TRUE),][,4])
+
+
+newhits$snp <- factor(newhits$snp, levels=newhits[order(newhits$lbfav, decreasing=TRUE),][,1]) 
+
+sub.pp.marginals.DirAssoc.newhits <- sub.pp.marginals.DirAssoc[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,]
+
+
+#newhitsfailhits2[,1] <- factor(newhitsfailhits2$snp, levels=sub[order(sub$lbfav, decreasing=TRUE),][,4])
+#
+#> VYY
+#           Z.LDL       Z.HDL       Z.TC       Z.TG
+#Z = cbind(gl$Z.ldl, gl$Z.hdl, gl$Z.tc, gl$Z.tg)
 
 ~~~
 > head(lbf$gamma == 0)
@@ -946,73 +1005,21 @@ rownames(sub.pp.marginals.DirAssoc) <- c("TC", "TG", "HDL", "LDL")
 [4,] TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
 ~~~
 
-sub.pp.marginals[[2]][,
+#melt(t(sub.pp.marginals.DirAssoc[1:4,1:5]))
+#ggplot(t(sub.pp.marginals.DirAssoc[1:4,1:5])) 
+#ggplot(melt(prevhits2[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
 
 
+jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.vs1.jpg", width=2000, height=4000, res=300)
 
-lbf.glhits = lbf.bigmat[,gl$annot==1]
+#ggplot(melt(sub.pp.marginals.DirAssoc), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#ggplot(melt(newhits[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+ggplot(melt(sub.pp.marginals.DirAssoc.newhits), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
 
-pp.newhits = posteriorprob(lbf.newhits,ebprior.glhits) #posterior prob on models for new hits
-pp.newhits.collapse =  apply(pp.newhits,2,collapse, nsigmaa=length(sigmaa))
-
-pp.glhits = posteriorprob(lbf.glhits,ebprior.glhits) #posterior prob on models for gl hits
-pp.glhits.collapse =  apply(pp.glhits,2,collapse, nsigmaa=length(sigmaa))
-  
-# this returns a list with elements  pU pD and pI
-marginal.glhits = marginal.postprobs(pp.glhits, lbf$gamma,length(sigmaa))
-
-
-
-
-
-
-
-
-
-
-
-Z = cbind(gl$Z.tc,gl$Z.tg,gl$Z.hdl,gl$Z.ldl)
-
-MeanAcrossSigmaas <- function(lbf, ngamma, nsigmaa) {
-        lbfMeanOverSigmas <- matrix(0, ncol=ncol(lbf), nrow=ngamma)
-        for (i in 1:ngamma) {
-                coords <- seq.int(from=i, by=ngamma, length.out=nsigmaa)
-
-
-
+dev.off()
 
 
 #Get marginals per alphasigma level first then combine across sigmas
-
-#This one goes across the 14 sigmaa rows per gamma to take the mean, producing a single per gamma value across each SNP -- final matrix of 81 x 84 (gammas x SNPs)
-
-lbf.gl <- MeanAcrossSigmaas(lbf.bigmat, 81, 14) 
-lbf.gl.format <- cbind(lbf$gamma, log10(apply(10^lbf.gl, 1, sum)), lbf.gl)[order(log10(apply(10^lbf.gl, 1, sum))),]
-lbf.gl.prior <- MeanAcrossSigmaas.wPriorAvg(lbf.bigmat, matrix(normalize(rep(c(0,lbf$prior[-1]),nsigma)), nrow = nrow(lbf.bigmat), ncol=ncol(lbf.bigmat), byrow=FALSE), 81, 14) 
-lbf.gl.prior.format <- cbind(lbf$gamma, log10(apply(10^lbf.gl.prior, 1, sum)), lbf.gl.prior)[order(log10(apply(10^lbf.gl.prior, 1, sum))),]
-
-lbf.sub <- MeanAcrossSigmaas(lbf.bigmat[,l==1], 81, 14)
-lbf.sub.format <- cbind(lbf$gamma, log10(apply(10^lbf.sub, 1, sum)), lbf.sub)[order(log10(apply(10^lbf.sub, 1, sum))),]
-lbf.sub.prior <- MeanAcrossSigmaas.wPriorAvg(lbf.bigmat[,l==1], matrix(normalize(rep(c(0,lbf$prior[-1]),nsigma)), nrow = nrow(lbf.bigmat[,l==1]), ncol=ncol(lbf.bigmat[,l==1]), byrow=FALSE), 81, 14) 
-lbf.sub.prior.format <- cbind(lbf$gamma, log10(apply(10^lbf.sub.prior, 1, sum)), lbf.sub.prior)[order(log10(apply(10^lbf.sub.prior, 1, sum))),]
-
-
-
-jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160616CommitteeMeetingSlides.jpg", width=4500, height=4500, res=300)
-par(mfrow=c(2,2))
-
-newhitsfailhits2 <- rbind(newhits[,c(1,5:8)], failhits[,c(1,5:8)])
-newhitsfailhits2[,1] <- factor(newhitsfailhits2$snp, levels=newhitsfailhits2$snp)
-#p5 <- ggplot(rbind(melt(newhits[,c(1,5:8)]), melt(failhits[,c(1,5:8)])), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
-p5 <- ggplot(melt(newhitsfailhits2), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
-
-prevhits2 <- prevhits
-prevhits2[,1] <- factor(prevhits2$snp, levels=prevhits2$snp)
-p6 <- ggplot(melt(prevhits2[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
-
-multiplot(p5, p6, cols=2)
-
-dev.off()
 
 
 
