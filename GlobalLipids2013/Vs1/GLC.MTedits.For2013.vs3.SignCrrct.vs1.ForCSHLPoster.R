@@ -1,3 +1,5 @@
+library(ggplot2)
+library(reshape2)
 set.seed(100)
 source("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/test.funcs.R")
 source("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/GLCfuncs.R")
@@ -974,12 +976,39 @@ sub.pp.marginals.DirAssoc[,5] <- as.numeric(as.character(sub.pp.marginals.DirAss
 #rownames(sub.pp.marginals.DirAssoc) <- c("LDL", "HDL", "TC", "TG")
 #rownames(sub.pp.marginals.DirAssoc) <- c("snp", "LDL", "HDL", "TC", "TG")
 colnames(sub.pp.marginals.DirAssoc) <- c("snp", "LDL", "HDL", "TC", "TG")
+sub.pp.marginals.DirAssoc <- sub.pp.marginals.DirAssoc[order(sub$lbfav, decreasing=TRUE),]
 sub.pp.marginals.DirAssoc$snp <- factor(sub.pp.marginals.DirAssoc$snp, levels=sub[order(sub$lbfav, decreasing=TRUE),][,4])
-
 
 newhits$snp <- factor(newhits$snp, levels=newhits[order(newhits$lbfav, decreasing=TRUE),][,1]) 
 
-sub.pp.marginals.DirAssoc.newhits <- sub.pp.marginals.DirAssoc[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,]
+sub.pp.marginals.DirAssoc.newhits <- sub.pp.marginals.DirAssoc[sub[order(sub$lbfav, decreasing=TRUE),]$annot==0 & sub[order(sub$lbfav, decreasing=TRUE),]$lbfav>3.989499 & sub[order(sub$lbfav, decreasing=TRUE),]$nmin>50000,]
+sub.pp.marginals.DirAssoc.newhits$snp <- factor(sub.pp.marginals.DirAssoc.newhits$snp, levels=sub[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,][order(sub[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,]$lbfav, decreasing=TRUE),][,4])
+
+sub.pp.marginals.DirAssoc.nonGWASregions <- sub.pp.marginals.DirAssoc[sub[order(sub$lbfav, decreasing=TRUE),]$annot==0,]
+sub.pp.marginals.DirAssoc.nonGWASregions$snp <- factor(sub.pp.marginals.DirAssoc.nonGWASregions$snp, levels=sub[sub$annot==0,][order(sub[sub$annot==0,]$lbfav, decreasing=TRUE),][,4])
+
+#gl.glhits = gl[gl$annot==1,] # subset of SNPs reported in Teslovich 2010 paper
+#marginal.glhits = marginal.postprobs(pp.glhits, lbf$gamma,length(sigmaa))
+#lbf.av.all = lbf.av(lbf.bigmat,ebprior.glhits)
+#gl$lbfav = lbf.av.all
+#
+#lbf.glhits = lbf.bigmat[,gl$annot==1]
+#pp.glhits = posteriorprob(lbf.glhits,ebprior.glhits) #posterior prob on models for gl hits
+#pp.glhits.collapse =  apply(pp.glhits,2,collapse, nsigmaa=length(sigmaa))
+#marginal.glhits = marginal.postprobs(pp.glhits, lbf$gamma,length(sigmaa))
+
+prevhits <- gl[gl$annot==1,]
+prevhits.pp <- posteriorprob(lbf.bigmat[,gl$annot==1],ebprior.glhits)
+prevhits.pp.marginals <- marginal.postprobs(prevhits.pp, lbf$gamma, length(sigmaa))
+prevhits.pp.marginals.DirAssoc <- t(prevhits.pp.marginals[[2]])
+prevhits.pp.marginals.DirAssoc <- data.frame(cbind(as.character(prevhits$snp), prevhits.pp.marginals.DirAssoc))
+prevhits.pp.marginals.DirAssoc[,2] <- as.numeric(as.character(prevhits.pp.marginals.DirAssoc[,2]))
+prevhits.pp.marginals.DirAssoc[,3] <- as.numeric(as.character(prevhits.pp.marginals.DirAssoc[,3]))
+prevhits.pp.marginals.DirAssoc[,4] <- as.numeric(as.character(prevhits.pp.marginals.DirAssoc[,4]))
+prevhits.pp.marginals.DirAssoc[,5] <- as.numeric(as.character(prevhits.pp.marginals.DirAssoc[,5]))
+colnames(prevhits.pp.marginals.DirAssoc) <- c("snp", "LDL", "HDL", "TC", "TG")
+prevhits.pp.marginals.DirAssoc$snp <- factor(prevhits.pp.marginals.DirAssoc$snp, levels=prevhits[order(prevhits$lbfav, decreasing=TRUE),][,4])
+
 
 
 #newhitsfailhits2[,1] <- factor(newhitsfailhits2$snp, levels=sub[order(sub$lbfav, decreasing=TRUE),][,4])
@@ -1003,6 +1032,254 @@ sub.pp.marginals.DirAssoc.newhits <- sub.pp.marginals.DirAssoc[sub$annot==0 & su
 [2,] TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE
 [3,] TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE
 [4,] TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+> str(prevhits.pp.marginals.DirAssoc)
+'data.frame':   148 obs. of  5 variables:
+ $ snp: Factor w/ 148 levels "rs10019888","rs10102164",..: 29 78 75 13 94 24 136 9 143 103 ...
+ $ LDL: num  0.402 1 1 1 0.659 ...
+ $ HDL: num  1 0.516 0.833 0.837 1 ...
+ $ TC : num  0.0455 0.9998 1 1 0.6842 ...
+ $ TG : num  1 1 0.999 1 0.999 ...
+> prevhits.pp.marginals.DirAssoc$snp <- factor(prevhits.pp.marginals.DirAssoc$snp, levels=prevhits[order(prevhits$lbfav, decreasing=TRUE),][,4])
+> 
+> str(prevhits.pp.marginals.DirAssoc)
+'data.frame':   148 obs. of  5 variables:
+ $ snp: Factor w/ 148 levels "rs3764261","rs1532085",..: 6 39 89 38 141 112 106 67 19 85 ...
+ $ LDL: num  0.402 1 1 1 0.659 ...
+ $ HDL: num  1 0.516 0.833 0.837 1 ...
+ $ TC : num  0.0455 0.9998 1 1 0.6842 ...
+ $ TG : num  1 1 0.999 1 0.999 ...
+> prevhits[order(prevhits$lbfav, decreasing=TRUE),][1:5,]
+            posHg18 chr       pos       snp a1 a2     maf beta_LDL se_LDL
+3142 chr16:55550825  16  56993324 rs3764261  c  a 0.29420   0.0528 0.0042
+7853 chr15:56470658  15  58683366 rs1532085  a  g 0.36680   0.0026 0.0037
+9322  chr2:27584444   2  27730940 rs1260326  t  c 0.41290   0.0206 0.0037
+4294 chr1:109619829   1 109818306  rs629301  t  g 0.21240   0.1669 0.0049
+9903 chr19:11063306  19  11202306 rs6511720  g  t 0.09763   0.2209 0.0061
+        n_LDL beta_HDL se_HDL    n_HDL beta_TG  se_TG   n_TG beta_TC  se_TC
+3142 164865.0   0.2412 0.0039 177533.0  0.0395 0.0038 169275  0.0503 0.0040
+7853 171461.0   0.1068 0.0035 185482.0  0.0310 0.0034 176156  0.0545 0.0036
+9322 172995.0   0.0113 0.0035 187062.0  0.1148 0.0034 177765  0.0512 0.0036
+4294 142644.0   0.0334 0.0045 155813.0  0.0012 0.0045 146759  0.1340 0.0047
+9903 170607.9   0.0249 0.0057 184617.2  0.0084 0.0056 175280  0.1851 0.0059
+         n_TC annot gene       Z.tg       Z.tc     Z.ldl      Z.hdl   mvstat
+3142 177497.0     1   NA -38.153405 12.2273740 -11.61497  10.442607 2852.227
+7853 185639.0     1   NA  29.293909  0.4575163  14.37587   8.740637 1266.253
+9322 187251.0     1   NA   3.131865 -5.2514579 -13.61921 -33.038308 1118.931
+4294 155873.0     1   NA  -7.168038 33.1514351  27.83363   0.432745 1189.257
+9903 184763.8     1   NA  -4.000495 34.5878329  30.32462   1.624355 1253.111
+          mvp     unip     nmin     lbfav
+3142 616.1989 317.7773 164865.0 1235.6337
+7853 272.1611 187.9066 171461.0  703.3767
+9322 240.2242 238.6402 172995.0  419.9862
+4294 255.4690 240.2676 142644.0  350.7596
+9903 269.3120 261.4145 170607.9  329.7005
+> sub[order(sub$lbfav, decreasing=TRUE),][1:5,]
+             posHg18 chr       pos       snp a1 a2     maf beta_LDL se_LDL
+7369  chr19:50103919  19  45412079    rs7412  c  t 0.06596   0.5898 0.0101
+11316 chr16:55547091  16  56989590  rs247616  c  t 0.29290   0.0547 0.0041
+10290 chr15:56510771  15  58723479 rs1077834  c  t 0.21110   0.0006 0.0045
+9322   chr2:27584444   2  27730940 rs1260326  t  c 0.41290   0.0206 0.0037
+6800  chr1:109620053   1 109818530  rs646776  t  c 0.21240   0.1602 0.0044
+          n_LDL beta_HDL se_HDL     n_HDL beta_TG  se_TG      n_TG beta_TC
+7369   82533.09   0.0978 0.0097  92158.17  0.1119 0.0093  86163.71  0.3736
+11316 171458.00   0.2430 0.0038 185471.00  0.0393 0.0037 176146.00  0.0499
+10290 170313.99   0.1253 0.0041 184349.04  0.0470 0.0041 175012.96  0.0652
+9322  172995.00   0.0113 0.0035 187062.00  0.1148 0.0034 177765.00  0.0512
+6800  173020.95   0.0340 0.0041 187093.01  0.0034 0.0040 177796.95  0.1272
+       se_TC      n_TC annot gene       Z.tg        Z.tc     Z.ldl       Z.hdl
+7369  0.0096  92046.16     2   NA  -8.925523 -38.1534046  35.98270 -11.1078442
+11316 0.0040 185621.00     2   NA -38.153405  12.7651669 -11.78858  10.4752000
+10290 0.0043 184503.96     2   NA  28.594923   0.2076529  14.43141  10.9786694
+9322  0.0036 187251.00     1   NA   3.131865  -5.2514579 -13.61921 -33.0383084
+6800  0.0042 187287.97     2   NA  -7.903032  35.2710904  29.16920   0.8916137
+         mvstat       mvp     unip      nmin     lbfav
+7369  25597.065 5554.2248 317.7773  82533.09 4933.5851
+11316  2961.166  639.8384 317.7773 171458.00 1277.7186
+10290  1288.083  276.8941 179.1096 170313.99  735.4238
+9322   1118.931  240.2242 238.6402 172995.00  419.9862
+6800   1334.150  286.8821 271.7878 173020.95  402.4187
+> sub[sub$annot==0,][order(sub[sub$annot==0,]$lbfav, decreasing=TRUE),][1:5,]
+             posHg18 chr      pos        snp a1 a2     maf beta_LDL se_LDL
+8902  chr11:47269468  11 47312892 rs10838687  t  g 0.20580   0.0001 0.0045
+9948   chr6:31456344   6 31348365  rs4143332  g  a 0.09103   0.0191 0.0060
+5780  chr19:50709959  19 46018119  rs7255743  g  a 0.02639   0.1647 0.0156
+11103  chr6:30452624   6 30344645  rs3132631  c  t 0.09367   0.0103 0.0061
+8183   chr6:28365356   6 28257377 rs13211507  c  t 0.07520   0.0034 0.0069
+         n_LDL beta_HDL se_HDL    n_HDL beta_TG  se_TG     n_TG beta_TC  se_TC
+8902  163382.0   0.0517 0.0042 177336.0  0.0136 0.0041 167995.0  0.0167 0.0044
+9948  169940.2   0.0262 0.0056 182038.8  0.0464 0.0056 174674.0  0.0443 0.0058
+5780  123958.8   0.0027 0.0146 137200.5  0.0323 0.0138 127634.9  0.1066 0.0150
+11103 161088.4   0.0244 0.0057 173780.5  0.0338 0.0056 165502.5  0.0303 0.0059
+8183  167622.0   0.0272 0.0064 180353.0  0.0229 0.0063 172118.0  0.0197 0.0067
+          n_TC annot gene        Z.tg       Z.tc     Z.ldl     Z.hdl    mvstat
+8902  177467.0     0   NA -11.9551817  0.4565424 -3.961053  2.897708 177.09359
+9948  184164.8     0   NA  -4.4538348 -3.1038812 -7.432953 -8.104553 128.17357
+5780  135895.3     0   NA  -0.6782708 10.4537794  7.135980 -2.624603 129.01266
+11103 173763.6     0   NA  -3.8862611 -1.5280505 -4.781260 -6.020109  72.31703
+8183  180382.0     0   NA   4.3977080 -0.6128130  2.909247  3.718764  54.89740
+           mvp      unip     nmin    lbfav
+8902  36.50333 32.214670 163382.0 67.08808
+9948  26.01904 15.276216 169940.2 61.74188
+5780  26.19846 24.851397 123958.8 37.46776
+11103 14.13339  8.758703 161088.4 34.72637
+8183  10.46676  4.960983 167622.0 30.07076
+> sub[order(sub$lbfav, decreasing=TRUE),][sub$annot==0,][1:5,]
+             posHg18 chr      pos       snp a1 a2     maf beta_LDL se_LDL
+7369  chr19:50103919  19 45412079    rs7412  c  t 0.06596   0.5898 0.0101
+10290 chr15:56510771  15 58723479 rs1077834  c  t 0.21110   0.0006 0.0045
+9322   chr2:27584444   2 27730940 rs1260326  t  c 0.41290   0.0206 0.0037
+9903  chr19:11063306  19 11202306 rs6511720  g  t 0.09763   0.2209 0.0061
+11152  chr1:62906518   1 63133930 rs4587594  g  a 0.31000   0.0493 0.0039
+          n_LDL beta_HDL se_HDL     n_HDL beta_TG  se_TG      n_TG beta_TC
+7369   82533.09   0.0978 0.0097  92158.17  0.1119 0.0093  86163.71  0.3736
+10290 170313.99   0.1253 0.0041 184349.04  0.0470 0.0041 175012.96  0.0652
+9322  172995.00   0.0113 0.0035 187062.00  0.1148 0.0034 177765.00  0.0512
+9903  170607.90   0.0249 0.0057 184617.21  0.0084 0.0056 175280.04  0.1851
+11152 173007.00   0.0147 0.0036 187073.90  0.0694 0.0035 177772.00  0.0754
+       se_TC      n_TC annot gene      Z.tg        Z.tc     Z.ldl      Z.hdl
+7369  0.0096  92046.16     2   NA -8.925523 -38.1534046  35.98270 -11.107844
+10290 0.0043 184503.96     2   NA 28.594923   0.2076529  14.43141  10.978669
+9322  0.0036 187251.00     1   NA  3.131865  -5.2514579 -13.61921 -33.038308
+9903  0.0059 184763.78     1   NA -4.000495  34.5878329  30.32462   1.624355
+11152 0.0037 187260.00     2   NA -3.872782 -11.8730499 -19.06773 -19.202855
+          mvstat       mvp      unip      nmin     lbfav
+7369  25597.0648 5554.2248 317.77728  82533.09 4933.5851
+10290  1288.0829  276.8941 179.10958 170313.99  735.4238
+9322   1118.9309  240.2242 238.64016 172995.00  419.9862
+9903   1253.1114  269.3120 261.41454 170607.90  329.7005
+11152   587.4199  125.0872  81.45556 173007.00  241.0438
+> sub[order(sub$lbfav, decreasing=TRUE),][sub[order(sub$lbfav, decreasing=TRUE),]$annot==0,][1:5,]
+             posHg18 chr      pos        snp a1 a2     maf beta_LDL se_LDL
+8902  chr11:47269468  11 47312892 rs10838687  t  g 0.20580   0.0001 0.0045
+9948   chr6:31456344   6 31348365  rs4143332  g  a 0.09103   0.0191 0.0060
+5780  chr19:50709959  19 46018119  rs7255743  g  a 0.02639   0.1647 0.0156
+11103  chr6:30452624   6 30344645  rs3132631  c  t 0.09367   0.0103 0.0061
+8183   chr6:28365356   6 28257377 rs13211507  c  t 0.07520   0.0034 0.0069
+         n_LDL beta_HDL se_HDL    n_HDL beta_TG  se_TG     n_TG beta_TC  se_TC
+8902  163382.0   0.0517 0.0042 177336.0  0.0136 0.0041 167995.0  0.0167 0.0044
+9948  169940.2   0.0262 0.0056 182038.8  0.0464 0.0056 174674.0  0.0443 0.0058
+5780  123958.8   0.0027 0.0146 137200.5  0.0323 0.0138 127634.9  0.1066 0.0150
+11103 161088.4   0.0244 0.0057 173780.5  0.0338 0.0056 165502.5  0.0303 0.0059
+8183  167622.0   0.0272 0.0064 180353.0  0.0229 0.0063 172118.0  0.0197 0.0067
+          n_TC annot gene        Z.tg       Z.tc     Z.ldl     Z.hdl    mvstat
+8902  177467.0     0   NA -11.9551817  0.4565424 -3.961053  2.897708 177.09359
+9948  184164.8     0   NA  -4.4538348 -3.1038812 -7.432953 -8.104553 128.17357
+5780  135895.3     0   NA  -0.6782708 10.4537794  7.135980 -2.624603 129.01266
+11103 173763.6     0   NA  -3.8862611 -1.5280505 -4.781260 -6.020109  72.31703
+8183  180382.0     0   NA   4.3977080 -0.6128130  2.909247  3.718764  54.89740
+           mvp      unip     nmin    lbfav
+8902  36.50333 32.214670 163382.0 67.08808
+9948  26.01904 15.276216 169940.2 61.74188
+5780  26.19846 24.851397 123958.8 37.46776
+11103 14.13339  8.758703 161088.4 34.72637
+8183  10.46676  4.960983 167622.0 30.07076
+> sub[order(sub$lbfav, decreasing=TRUE),][1:5,]
+             posHg18 chr       pos       snp a1 a2     maf beta_LDL se_LDL
+7369  chr19:50103919  19  45412079    rs7412  c  t 0.06596   0.5898 0.0101
+11316 chr16:55547091  16  56989590  rs247616  c  t 0.29290   0.0547 0.0041
+10290 chr15:56510771  15  58723479 rs1077834  c  t 0.21110   0.0006 0.0045
+9322   chr2:27584444   2  27730940 rs1260326  t  c 0.41290   0.0206 0.0037
+6800  chr1:109620053   1 109818530  rs646776  t  c 0.21240   0.1602 0.0044
+          n_LDL beta_HDL se_HDL     n_HDL beta_TG  se_TG      n_TG beta_TC
+7369   82533.09   0.0978 0.0097  92158.17  0.1119 0.0093  86163.71  0.3736
+11316 171458.00   0.2430 0.0038 185471.00  0.0393 0.0037 176146.00  0.0499
+10290 170313.99   0.1253 0.0041 184349.04  0.0470 0.0041 175012.96  0.0652
+9322  172995.00   0.0113 0.0035 187062.00  0.1148 0.0034 177765.00  0.0512
+6800  173020.95   0.0340 0.0041 187093.01  0.0034 0.0040 177796.95  0.1272
+       se_TC      n_TC annot gene       Z.tg        Z.tc     Z.ldl       Z.hdl
+7369  0.0096  92046.16     2   NA  -8.925523 -38.1534046  35.98270 -11.1078442
+11316 0.0040 185621.00     2   NA -38.153405  12.7651669 -11.78858  10.4752000
+10290 0.0043 184503.96     2   NA  28.594923   0.2076529  14.43141  10.9786694
+9322  0.0036 187251.00     1   NA   3.131865  -5.2514579 -13.61921 -33.0383084
+6800  0.0042 187287.97     2   NA  -7.903032  35.2710904  29.16920   0.8916137
+         mvstat       mvp     unip      nmin     lbfav
+7369  25597.065 5554.2248 317.7773  82533.09 4933.5851
+11316  2961.166  639.8384 317.7773 171458.00 1277.7186
+10290  1288.083  276.8941 179.1096 170313.99  735.4238
+9322   1118.931  240.2242 238.6402 172995.00  419.9862
+6800   1334.150  286.8821 271.7878 173020.95  402.4187
+> sub.pp.marginals.DirAssoc[1:5,]
+        snp       LDL       HDL        TC        TG
+1 rs1905053 0.9959086 0.1609070 0.1684652 0.9999986
+2 rs2814982 1.0000000 0.5156295 0.9997797 1.0000000
+3  rs400058 0.8840995 0.8560100 0.9763497 0.9999967
+4 rs4234589 0.9981705 0.9123257 0.8459061 0.9999713
+5   rs38855 0.6588561 0.9999940 0.6842426 0.9990371
+> str(sub.pp.marginals.DirAssoc)
+'data.frame':   260 obs. of  5 variables:
+ $ snp: Factor w/ 260 levels "rs10019888","rs1004712",..: 101 138 161 167 158 46 181 159 234 50 ...
+ $ LDL: num  0.996 1 0.884 0.998 0.659 ...
+ $ HDL: num  0.161 0.516 0.856 0.912 1 ...
+ $ TC : num  0.168 1 0.976 0.846 0.684 ...
+ $ TG : num  1 1 1 1 0.999 ...
+> sub.pp.marginals.DirAssoc[1:5,]
+          snp LDL        HDL         TC        TG
+165    rs7412   1 1.00000000 1.00000000 1.0000000
+252  rs247616   1 1.00000000 1.00000000 1.0000000
+231 rs1077834   1 1.00000000 0.07162226 1.0000000
+211 rs1260326   1 1.00000000 0.99998974 0.9999927
+149  rs646776   1 0.08622262 1.00000000 1.0000000
+> sub.pp.marginals.DirAssoc$snp <- factor(sub.pp.marginals.DirAssoc$snp, levels=sub[order(sub$lbfav, decreasing=TRUE),][,4])
+> str(sub.pp.marginals.DirAssoc)
+'data.frame':   260 obs. of  5 variables:
+ $ snp: Factor w/ 260 levels "rs7412","rs247616",..: 1 2 3 4 5 6 7 8 9 10 ...
+ $ LDL: num  1 1 1 1 1 ...
+ $ HDL: num  1 1 1 1 0.0862 ...
+ $ TC : num  1 1 0.0716 1 1 ...
+ $ TG : num  1 1 1 1 1 ...
+> str(sub.pp.marginals.DirAssoc.nonGWASregions)
+'data.frame':   106 obs. of  5 variables:
+ $ snp: Factor w/ 260 levels "rs7412","rs247616",..: 101 85 97 210 161 252 132 184 253 65 ...
+ $ LDL: num  0.996 0.884 0.998 1 0.833 ...
+ $ HDL: num  0.161 0.856 0.912 0.981 0.655 ...
+ $ TC : num  0.168 0.976 0.846 0.995 0.765 ...
+ $ TG : num  1 1 1 0.989 1 ...
+> sub.pp.marginals.DirAssoc.nonGWASregions <- sub.pp.marginals.DirAssoc[sub$annot==0,]
+> sub.pp.marginals.DirAssoc.nonGWASregions$snp <- factor(sub.pp.marginals.DirAssoc.nonGWASregions$snp, levels=sub[sub$annot==0,][order(sub[sub$annot==0,]$lbfav, decreasing=TRUE),][,4]) 
+> str(sub.pp.marginals.DirAssoc.nonGWASregions)
+'data.frame':   106 obs. of  5 variables:
+ $ snp: Factor w/ 106 levels "rs10838687","rs4143332",..: NA NA NA NA NA NA NA NA NA NA ...
+ $ LDL: num  1 1 1 1 1 ...
+ $ HDL: num  1 1 1 0.152 1 ...
+ $ TC : num  1 0.0716 1 1 1 ...
+ $ TG : num  1 1 1 1 1 ...
+> head(sub.pp.marginals.DirAssoc.nonGWASregions)
+     snp LDL       HDL         TC        TG
+165 <NA>   1 1.0000000 1.00000000 1.0000000
+231 <NA>   1 1.0000000 0.07162226 1.0000000
+211 <NA>   1 1.0000000 0.99998974 0.9999927
+221 <NA>   1 0.1519397 1.00000000 1.0000000
+248 <NA>   1 1.0000000 1.00000000 0.9999837
+176 <NA>   1 1.0000000 0.65299897 1.0000000
+> sub.pp.marginals.DirAssoc.nonGWASregions <- sub.pp.marginals.DirAssoc[sub[order(sub$lbfav, decreasing=TRUE),]$annot==0,]
+> sub.pp.marginals.DirAssoc.nonGWASregions$snp <- factor(sub.pp.marginals.DirAssoc.nonGWASregions$snp, levels=sub[sub$annot==0,][order(sub[sub$annot==0,]$lbfav, decreasing=TRUE),][,4])
+> head(sub.pp.marginals.DirAssoc.nonGWASregions)
+           snp       LDL       HDL        TC        TG
+206 rs10838687 0.9998738 0.7160358 0.2597294 1.0000000
+222  rs4143332 1.0000000 1.0000000 0.9752928 0.9999925
+129  rs7255743 1.0000000 0.8667669 1.0000000 0.9999454
+247  rs3132631 0.9999916 0.9999997 0.6598628 0.9998294
+186 rs13211507 0.9949236 0.9889688 0.4327028 0.9999861
+230  rs1473886 1.0000000 0.9999616 0.9998611 0.9999929
+> str(sub.pp.marginals.DirAssoc.nonGWASregions)
+'data.frame':   106 obs. of  5 variables:
+ $ snp: Factor w/ 106 levels "rs10838687","rs4143332",..: 1 2 3 4 5 6 7 8 9 10 ...
+ $ LDL: num  1 1 1 1 0.995 ...
+ $ HDL: num  0.716 1 0.867 1 0.989 ...
+ $ TC : num  0.26 0.975 1 0.66 0.433 ...
+ $ TG : num  1 1 1 1 1 ...
+> sub.pp.marginals.DirAssoc[sub.pp.marginals.DirAssoc$snp=="rs3770818",]
+          snp       LDL       HDL        TC        TG
+257 rs3770818 0.9723532 0.9100756 0.9491748 0.9257847
+> sub[sub$snp=="rs3770818",]
+            posHg18 chr      pos       snp a1 a2   maf beta_LDL se_LDL n_LDL
+11446 chr2:36623001   2 36769497 rs3770818  t  g 0.281   0.0207 0.0059 89888
+      beta_HDL se_HDL n_HDL beta_TG  se_TG  n_TG beta_TC  se_TC  n_TC annot
+11446   0.0175 0.0054 94311  0.0087 0.0052 91013  0.0218 0.0057 94595     0
+      gene      Z.tg      Z.tc     Z.ldl   Z.hdl   mvstat      mvp     unip
+11446   NA -2.883246 -4.282506 -4.437381 1.64529 33.94603 6.116666 5.040672
+       nmin    lbfav
+11446 89888 2.641615
 ~~~
 
 #melt(t(sub.pp.marginals.DirAssoc[1:4,1:5]))
@@ -1010,7 +1287,8 @@ sub.pp.marginals.DirAssoc.newhits <- sub.pp.marginals.DirAssoc[sub$annot==0 & su
 #ggplot(melt(prevhits2[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
 
 
-jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.vs1.jpg", width=2000, height=4000, res=300)
+#jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.vs1.jpg", width=2000, height=4000, res=300)
+jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.MarginalHeatplots.NewHits.vs1.jpg", width=2000, height=4000, res=300)
 
 #ggplot(melt(sub.pp.marginals.DirAssoc), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
 #ggplot(melt(newhits[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
@@ -1018,6 +1296,23 @@ ggplot(melt(sub.pp.marginals.DirAssoc.newhits), aes(variable, snp, value)) + geo
 
 dev.off()
 
+jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.MarginalHeatplots.PrevHits.vs1.jpg", width=2000, height=4000, res=300)
+
+ggplot(melt(prevhits.pp.marginals.DirAssoc), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+
+dev.off()
+
+jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.MarginalHeatplots.MargSNPs.vs1.jpg", width=2000, height=4000, res=300)
+
+ggplot(melt(sub.pp.marginals.DirAssoc), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+
+dev.off()
+
+jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.MarginalHeatplots.MargSNPs.nonGWASregions.vs1.jpg", width=2000, height=4000, res=300)
+
+ggplot(melt(sub.pp.marginals.DirAssoc.nonGWASregions), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+
+dev.off()
 
 #Get marginals per alphasigma level first then combine across sigmas
 
