@@ -961,6 +961,11 @@ row.names(lbf.bigmat.phenoMarginals.MeanAcrossSigmaas.Normalized) <- c("TC", "TG
 #l=indephits(sub$lbfav,sub$chr,sub$pos)
 #sub=sub[l==1,]
 
+#20160831 NOTE -- Kept thinking ggplot2 wasn't getting the order right with the factor & level settings, but found out ggplot2 orders thing going from the bottom left up; so things were correct I just needed to reverse all my factor orders in order to get the visual I was looking for
+#20160901 NOTE -- Found out about scale_y_reverse(), so going to keep the 'decreasing=TRUE' statements in the order calls, but then use graph + scale_y_reverse() to fix it visually since I normally think/associate the actual data matrices as being in decreasing=TRUE sort orders
+#20160901 NOTE -- Then I found out this scale_y_reverse() function doesn't really work when the axes are strings/characters vs. numerical values, so back to original approach of using no 'decreasing=TRUE' calls
+#20160901 NOTE -- Also found out that factor level order can be different from the order of the actual matrix, and ggplot2/heatmap/melt will follow order of levels regardless. This happened a bit by accident but as it turns out can keep 'decreasing=TRUE' for matrix but remove it for factor levels, though that could also possibly be less than preferred (probably not expected/intuitive if use matrix for anything after that other than the plot...)
+
 sub.pp <- posteriorprob(lbf.bigmat[,l==1],ebprior.glhits)
 sub.pp.marginals <- marginal.postprobs(sub.pp, lbf$gamma, length(sigmaa))
 #sub.pp.marginals.DirAssoc <- sub.pp.marginals[[2]]
@@ -977,15 +982,15 @@ sub.pp.marginals.DirAssoc[,5] <- as.numeric(as.character(sub.pp.marginals.DirAss
 #rownames(sub.pp.marginals.DirAssoc) <- c("snp", "LDL", "HDL", "TC", "TG")
 colnames(sub.pp.marginals.DirAssoc) <- c("snp", "LDL", "HDL", "TC", "TG")
 sub.pp.marginals.DirAssoc <- sub.pp.marginals.DirAssoc[order(sub$lbfav, decreasing=TRUE),]
-sub.pp.marginals.DirAssoc$snp <- factor(sub.pp.marginals.DirAssoc$snp, levels=sub[order(sub$lbfav, decreasing=TRUE),][,4])
+sub.pp.marginals.DirAssoc$snp <- factor(sub.pp.marginals.DirAssoc$snp, levels=sub[order(sub$lbfav),][,4])
 
-newhits$snp <- factor(newhits$snp, levels=newhits[order(newhits$lbfav, decreasing=TRUE),][,1]) 
+#newhits$snp <- factor(newhits$snp, levels=newhits[order(newhits$lbfav),][,1]) 
 
 sub.pp.marginals.DirAssoc.newhits <- sub.pp.marginals.DirAssoc[sub[order(sub$lbfav, decreasing=TRUE),]$annot==0 & sub[order(sub$lbfav, decreasing=TRUE),]$lbfav>3.989499 & sub[order(sub$lbfav, decreasing=TRUE),]$nmin>50000,]
-sub.pp.marginals.DirAssoc.newhits$snp <- factor(sub.pp.marginals.DirAssoc.newhits$snp, levels=sub[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,][order(sub[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,]$lbfav, decreasing=TRUE),][,4])
+sub.pp.marginals.DirAssoc.newhits$snp <- factor(sub.pp.marginals.DirAssoc.newhits$snp, levels=sub[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,][order(sub[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,]$lbfav),][,4])
 
 sub.pp.marginals.DirAssoc.nonGWASregions <- sub.pp.marginals.DirAssoc[sub[order(sub$lbfav, decreasing=TRUE),]$annot==0,]
-sub.pp.marginals.DirAssoc.nonGWASregions$snp <- factor(sub.pp.marginals.DirAssoc.nonGWASregions$snp, levels=sub[sub$annot==0,][order(sub[sub$annot==0,]$lbfav, decreasing=TRUE),][,4])
+sub.pp.marginals.DirAssoc.nonGWASregions$snp <- factor(sub.pp.marginals.DirAssoc.nonGWASregions$snp, levels=sub[sub$annot==0,][order(sub[sub$annot==0,]$lbfav),][,4])
 
 #gl.glhits = gl[gl$annot==1,] # subset of SNPs reported in Teslovich 2010 paper
 #marginal.glhits = marginal.postprobs(pp.glhits, lbf$gamma,length(sigmaa))
@@ -1007,7 +1012,7 @@ prevhits.pp.marginals.DirAssoc[,3] <- as.numeric(as.character(prevhits.pp.margin
 prevhits.pp.marginals.DirAssoc[,4] <- as.numeric(as.character(prevhits.pp.marginals.DirAssoc[,4]))
 prevhits.pp.marginals.DirAssoc[,5] <- as.numeric(as.character(prevhits.pp.marginals.DirAssoc[,5]))
 colnames(prevhits.pp.marginals.DirAssoc) <- c("snp", "LDL", "HDL", "TC", "TG")
-prevhits.pp.marginals.DirAssoc$snp <- factor(prevhits.pp.marginals.DirAssoc$snp, levels=prevhits[order(prevhits$lbfav, decreasing=TRUE),][,4])
+prevhits.pp.marginals.DirAssoc$snp <- factor(prevhits.pp.marginals.DirAssoc$snp, levels=prevhits[order(prevhits$lbfav),][,4])
 
 
 
@@ -1281,6 +1286,42 @@ prevhits.pp.marginals.DirAssoc$snp <- factor(prevhits.pp.marginals.DirAssoc$snp,
        nmin    lbfav
 11446 89888 2.641615
 ~~~
+
+#20160901 from http://www.sthda.com/english/wiki/ggplot2-rotate-a-graph-reverse-and-flip-the-plot 
+~~~
+Horizontal plot : coord_flip()
+
+Box plot :
+library(ggplot2)
+# Basic box plot
+bp <- ggplot(PlantGrowth, aes(x=group, y=weight))+
+  geom_boxplot()
+bp
+# Horizontal box plot
+bp + coord_flip()
+.
+.
+.
+everse y axis
+
+The function scale_y_reverse() can be used as follow :
+
+# Basic histogram
+hp
+# Y axis reversed
+hp + scale_y_reverse()
+~~~
+
+
+
+
+
+
+
+
+
+
+
 
 #melt(t(sub.pp.marginals.DirAssoc[1:4,1:5]))
 #ggplot(t(sub.pp.marginals.DirAssoc[1:4,1:5])) 
