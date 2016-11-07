@@ -39,6 +39,7 @@ ICBP2011
 HaemgenRBC2012
 Choongwon2015
 Choongwon2016
+Stein2016
 
 
 
@@ -2856,18 +2857,236 @@ python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrgani
 
 
 
-
-
-
-
-
-
 #20151007
 #CSHL Poster work
 
 cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/GLC.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1/GLC.MTedits.ForGlobalLipids2010.vs0.ForCSHLPoster.R 
 
 
+
+#20161009
+#Applying bmass while still in development via devtools
+
+cd /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass
+
+git fetch --all
+
+git reset --hard origin/master
+
+#While in R, can load a package using an absolute path via devtools like so:
+~~~
+library("devtools")
+devtools::load_all("/Users/mturchin20/Documents/Work/LabMisc/StephensLab/bmass")
+~~~
+
+#ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N")
+
+#zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'my $direction; if ($F[4] > 0) { $direction = "+"; } elsif ($F[4] < 0) { $direction = "-"; } else { $direction = "NA"; } print $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $direction, "\t", $F[5], "\t", $F[3];' | grep -v Allele1 | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | perl -lane 'if (gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.bmass.formatted.tbl.gz 
+#zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'my $direction; if ($F[4] > 0) { $direction = "+"; } elsif ($F[4] < 0) { $direction = "-"; } else { $direction = "NA"; } print $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $direction, "\t", $F[5], "\t", $F[3];' | grep -v Allele1 | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.bmass.formatted.tbl.gz 
+#zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'my $direction; if ($F[4] > 0) { $direction = "+"; } elsif ($F[4] < 0) { $direction = "-"; } else { $direction = "NA"; } print $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $direction, "\t", $F[5], "\t", $F[3];' | grep -v Allele1 | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.bmass.formatted.tbl.gz 
+#zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'my $direction; if ($F[4] > 0) { $direction = "+"; } elsif ($F[4] < 0) { $direction = "-"; } else { $direction = "NA"; } print $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $direction, "\t", $F[5], "\t", $F[3];' | grep -v Allele1 | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.bmass.formatted.tbl.gz 
+zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz
+zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz
+zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz
+zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz
+
+#join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'my $switch = "Same"; if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } $switch = "Switch"; } print join("\t", @F[2..$#F]), "\t", $switch;' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.wSwitchTag.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+
+zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz 
+zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
+zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
+zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
+
+~~~
+[  mturchin20@spudling96  ~]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 100003553
+10      100003553       0.12    t       c       +       0.8488  99900
+[  mturchin20@spudling96  ~]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 100003553
+10      100003553       0.88    c       t       +       0.2675  95454
+[  mturchin20@spudling96  ~]$join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | sort) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | sort) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | grep 100003553
+10      100003553       0.12    t       c       -       0.2675  95454
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.wSwitchTag.tbl.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
+1245182 Same
+1379176 Switch
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.wSwitchTag.tbl.gz | grep Switch | head -n 15000 | tail -n 1
+1       153074559       0.432   a       g       -       0.6879  95443   Switch
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.wSwitchTag.tbl.gz | grep Switch | head -n 150000 | tail -n 1
+2       181018761       0.892   c       t       -       0.3692  95446   Switch
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.wSwitchTag.tbl.gz | grep Switch | head -n 1500000 | tail -n 1
+22      49564000        0.442   a       g       -       0.6262  69309   Switch
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.wSwitchTag.tbl.gz | grep Switch | head -n 760000 | tail -n 1
+8       97585747        0.958   t       a       -       0.7256  95454   Switch
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.wSwitchTag.tbl.gz | grep Switch | head -n 1000000 | tail -n 1
+12      28635908        0.925   c       t       -       0.08854 95446   Switch
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 153074559
+1       153074559       0.432   a       g       +       0.005438        99888
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 181018761
+2       181018761       0.892   c       t       +       0.6379  99892
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 49564000
+22      49564000        0.442   a       g       +       0.4254  73432
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 97585747
+8       97585747        0.958   t       a       +       0.646   99900
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 28635908
+12      28635908        0.925   c       t       +       0.07426 99892
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 153074559
+1       153074559       0.568   g       a       +       0.6879  95443
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 181018761
+2       181018761       0.108   t       c       +       0.3692  95446
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 49564000 
+22      49564000        0.558   g       a       +       0.6262  69309
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 97585747
+8       97585747        0.042   a       t       +       0.7256  95454
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 28635908
+12      28635908        0.075   t       c       +       0.08854 95446
+~~~
+
+
+
+
+R -q -e "library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass"); 
+HDL <- read.table("/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz", header=T);
+LDL <- read.table("/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
+TG <- read.table("/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
+TC <- read.table("/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
+GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt", header=F);
+names(GWASsnps) <- c("Chr", "BP")
+#bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+#print(bmassOutput1);" > shana1.txt
+DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 1; bmassSeedValue=150;
+ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+
+
+#bmassOutput1 <- bmass(c("bmass_TestData1", "bmass_TestData2"), GWASsnps=bmass_TestSigSNPs, NminThreshold = 2000, bmassSeedValue=NULL)
+
+
+#CommandLine:
+~~~
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | perl -lane 'print $F[5];' | sort | uniq -c
+1379112 -
+1245114 +
+    131 0
+      1 Direction
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz | perl -lane 'print $F[5];' | sort | uniq -c
+1379112 -
+1245114 +
+      1 Direction
+
+zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
+~~~
+#R console:
+~~~
+> library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+Loading bmass
+> HDL <- read.table("/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz", header=T);
+> LDL <- read.table("/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz", header=T);
+> TG <- read.table("/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz", header=T);
+> TC <- read.table("/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz", header=T);
+> GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.txt", header=F);
+names(GWASsnps) <- c("Chr", "BP")
+> bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+Error in CheckIndividualDataSources(DataSources, GWASsnps, ExpectedColumnNames,  :
+  2016-10-07 13:28:27 -- the following data sources have entries other than + and - in the Direction column. Please fix and rerun bmass: HDL LDL TG TC
+> bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+Error in if (GWASsnps1[snpIndex, ]$Chr == as.numeric(as.character(MergedDataSource1["Chr"]))) { :
+
+        bmassOutput <- list()
+        bmassOutput$MergedDataSources <- NULL
+        if (!is.null(MergedDataSources)) {
+                bmassOutput$MergedDataSources <- MergedDataSources
+        }
+        bmassOutput$ZScoresCorMatrix <- NULL
+        bmassOutput$MarginalSNPs <- list()
+        bmassOutput$Models <- NULL
+        bmassOutput$ModelPriors <- NULL
+        bmassOutput$PreviousSNPs <- list()
+        bmassOutput$NewSNPs <- list()
+        bmassOutput$GWASlogBFMinThreshold <- NULL
+        #LogFile <- c()
+        bmassOutput$LogFile <- c()
+
+        bmassOutput$LogFile <- rbind(bmassOutput$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
+
+        #20160823 CHECK_0: Prob -- list of Matthew functions specifically to double-check, go through, go over
+        #       collapse
+        #       em.priorprobs
+
+        #Loading and checking data
+        #~~~~~~
+
+        bmassOutput$LogFile <- CheckIndividualDataSources(DataSources, GWASsnps, ExpectedColumnNames, SigmaAlphas, bmassOutput$MergedDataSources, ProvidedPriors, UseFlatPriors, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, NminThreshold, bmassSeedValue, bmassOutput$LogFile)
+
+        if (!is.null(MergedDataSources)) {
+                bmassOutput$LogFile <- rbind(bmassOutput$LogFile, paste(format(Sys.time()), " -- MergedDataSources was provided, skipping merging data step.", sep=""))
+        }
+        else {
+                bmassOutput[c("MergedDataSources", "LogFile")] <- MergeDataSources(DataSources, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
+        }
+
+        bmassOutput[c("MergedDataSources", "LogFile")] <- AnnotateMergedDataWithGWASSNPs(bmassOutput$MergedDataSources, GWASsnps, GWASsnps_AnnotateWindow, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
+
+        bmassOutput[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")] <- ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, bmassOutput$LogFile)[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")]
+
+~~~
+
+
+
+
+
+#20161102
+#Scrap/Misc related to getting DAVID/RDAVIDWebServices to work
+
+#https://bioconductor.org/packages/release/bioc/html/RDAVIDWebService.html & from `browseVignettes("RDAVIDWebService")` (http://127.0.0.1:15191/library/RDAVIDWebService/doc/RDavidWS-vignette.pdf)
+~~~
+> david<-DAVIDWebService(email="mturchin20@uchicago.edu", url="https://david.ncifcrf.gov/webservice/services/DAVIDWebService.DAVIDWebServiceHttpSoap12Endpoint/")
+>  data(demoList1)
+> result<-addList(david, demoList1, idType="AFFYMETRIX_3PRIME_IVT_ID", listName="demoList1", listType="Gene")
+> termCluster<-getClusterReport(david, type="Term")
+> summary(termCluster)
+   Cluster Enrichment Members
+1        1  5.3760826       9
+2        2  3.4798417       4
+3        3  2.1212619       9
+4        4  1.5909857       5
+5        5  1.3927257       6
+6        6  1.3880614      11
+7        7  1.1177393       4
+8        8  1.0543396       5
+9        9  0.8970393      13
+10      10  0.6050857       6
+11      11  0.3995537      13
+12      12  0.3453586      25
+13      13  0.1870551      12
+> members(termCluster)[[2]]
+DAVID Result object
+Result type:  FunctionalAnnotationChart 
+          Category                                      Term Count       X.
+1 GOTERM_BP_DIRECT     GO:0050832~defense response to fungus     5 3.448276
+2 GOTERM_BP_DIRECT GO:0019731~antibacterial humoral response     5 3.448276
+3      UP_KEYWORDS                                Antibiotic     6 4.137931
+4      UP_KEYWORDS                             Antimicrobial     6 4.137931
+        PValue
+1 0.0000557092
+2 0.0004239358
+3 0.0005382324
+4 0.0009471880
+                                                                           Genes
+1           679_AT, 31793_AT, 33284_AT, 31506_S_AT, 37105_AT, 34623_AT, 34546_AT
+2                   38604_AT, 31793_AT, 31506_S_AT, 34623_AT, 33979_AT, 34546_AT
+3 33963_AT, 679_AT, 31793_AT, 31506_S_AT, 37105_AT, 34623_AT, 33979_AT, 34546_AT
+4 33963_AT, 679_AT, 31793_AT, 31506_S_AT, 37105_AT, 34623_AT, 33979_AT, 34546_AT
+  List.Total Pop.Hits Pop.Total Fold.Enrichment Bonferroni  Benjamini
+1        133       27     16787       23.373712 0.05828839 0.05828839
+2        133       45     16787       14.024227 0.36688275 0.20431334
+3        140       98     20568        8.994752 0.13482501 0.02047652
+4        140      111     20568        7.941313 0.22501711 0.03136197
+         FDR
+1 0.08882436
+2 0.67407811
+3 0.70496204
+4 1.23752805
+~~~
 
 
 
@@ -9064,6 +9283,159 @@ Hi. The issue seems to be in polarizing Z-scores based on Z-score in Hb. Here I 
                            Sincerely, Choongwon
 ~~~
 
+#20161007 NOTE -- Going back to beginning here to investigate personally some of the correlation patterns between matching Hb to OxHb or dHb. Exploring the original 'MAF-based' orientations, the 'Increasing-Allele' based orientations, and the 'Increasing-Allele to Random Half Flipped' orientations. Mostly just going to be comparing the scatterplots of OxHb vs. dHb in all three of these scenarios to make sure I'm replicating what Choongwon originally saw, and that I am correcting it with the new 'Random Half Flipped' mechanism. Also, this new mechanism should roughly match the lack of correlation structure seen in the original 'MAF-based' orientations too.
+
+zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.Hb.assoc.txt.gz | perl -lane 'if ($F[7] < 0) { $F[9] = -1 * $F[9]; } print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.Hb.assoc.pValDirection.txt.gz
+join <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.Hb.assoc.txt.gz | awk '{ print $1 "_" $3 "\t" $5 }' | sort ) <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.OxHb.assoc.txt.gz | perl -lane 'if ($F[7] < 0) { $F[9] = -1 * $F[9]; } print join("\t", @F);' | perl -lane 'my $rsID = ((split(/:/, $F[1]))[0]); my $ChrBP = $F[0] . "_" . $F[2]; splice(@F, 0, 0, ($ChrBP, $rsID)); print join("\t", @F);' | sort) | perl -lane 'if ($F[1] ne $F[7]) { $F[12] = $F[12] * -1; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.OxHb.assoc.MatchedToHb.txt.gz
+join <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.Hb.assoc.txt.gz | awk '{ print $1 "_" $3 "\t" $5 }' | sort ) <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.dHb.assoc.txt.gz | perl -lane 'if ($F[7] < 0) { $F[9] = -1 * $F[9]; } print join("\t", @F);' | perl -lane 'my $rsID = ((split(/:/, $F[1]))[0]); my $ChrBP = $F[0] . "_" . $F[2]; splice(@F, 0, 0, ($ChrBP, $rsID)); print join("\t", @F);' | sort) | perl -lane 'if ($F[1] ne $F[7]) { $F[12] = $F[12] * -1; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.dHb.assoc.MatchedToHb.txt.gz
+
+join <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.Hb.assoc.txt.gz | perl -lane 'print $F[0], "_", $F[2], "\t", $F[$#F];' | sort -k 1,1) <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.Hb.assoc.IncAllele.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | \
+join - <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.Hb.assoc.IncAllele.RanHalfFlip.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | \
+join - <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.OxHb.assoc.MatchedToHb.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | \
+join - <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.OxHb.assoc.IncAllele.MatchedToHb.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | \
+join - <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.OxHb.assoc.IncAllele.MatchedToHbRanFlip.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | \
+join - <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.dHb.assoc.MatchedToHb.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | \
+join - <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.dHb.assoc.IncAllele.MatchedToHb.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | \
+join - <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.dHb.assoc.IncAllele.MatchedToHbRanFlip.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | grep -v p | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.txt.gz
+
+#zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.txt.gz | perl -lane 'print join("\t", @F[1..$#F]);' | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.NoChrBPColumn.txt.gz
+
+#zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.txt.gz | R -q -e "Data1 <- read.table(file('stdin'), header=F); Data1[,1:ncol(Data1)] <- apply(Data1[,1:ncol(Data1)], 2,  as.numeric); Data1[,1:ncol(Data1)] <- apply(Data1[,1:ncol(Data1)], 2, function(x) { val1 <- qnorm(log(abs(x)/2), lower.tail=FALSE, log.p=TRUE); if (x < 0) { val1 <- val1 * -1 }; return(val1) });
+#zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.txt.gz | perl -lane 'print join("\t", @F[1..$#F]);' | R -q -e "Data1 <- read.table(file('stdin'), header=F); Data1 <- apply(Data1, c(1,2), function(x) { val1 <- qnorm(log(abs(x)/2), lower.tail=FALSE, log.p=TRUE); if (x < 0) { val1 <- val1 * -1 }; return(val1) });
+zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.txt.gz | R -q -e "Data1 <- read.table(file('stdin'), header=F, row.name=1); Data1 <- apply(Data1, c(1,2), function(x) { val1 <- qnorm(log(abs(x)/2), lower.tail=FALSE, log.p=TRUE); if (x < 0) { val1 <- val1 * -1 }; return(val1) });
+#jpeg("/mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.Scatterplots.jpeg", height=2000, width=6000, res=300);
+jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.Scatterplots.jpeg", height=2000, width=6000, res=300);
+par(mfrow=c(1,3))
+set.seed(10)
+PlotPoints1 <- round(runif(500000, 1, nrow(Data1)))
+plot(Data1[PlotPoints1,4], Data1[PlotPoints1,7], main="MAF-based", xlab="OxHb", ylab="dHb");
+PlotPoints2 <- round(runif(500000, 1, nrow(Data1)))
+plot(Data1[PlotPoints2,5], Data1[PlotPoints2,8], main="Increasing Allele", xlab="OxHb", ylab="dHb");
+PlotPoints3 <- round(runif(500000, 1, nrow(Data1)))
+plot(Data1[PlotPoints3,6], Data1[PlotPoints3,9], main="Increasing Allele Random Flipped", xlab="OxHb", ylab="dHb");
+dev.off();"
+
+#mv /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.Scatterplots.jpeg /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.Scatterplots.jpeg 
+
+~~~
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$join <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.Hb.assoc.txt.gz | awk '{ print $1 "_" $3 "\t" $5 }' | sort ) <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.OxHb.assoc.txt.gz | perl -lane 'my $rsID = ((split(/:/, $F[1]))[0]); my $ChrBP = $F[0] . "_" . $F[2]; splice(@F, 0, 0, ($ChrBP, $rsID)); print join("\t", @F);' | sort) | head -n 10
+10_100000625 G rs7899632 10 rs7899632:100000625:A:G 100000625 916 G A 0.422 -9.054680e-02 5.861791e-02 1.225915e-01
+10_100000645 C rs61875309 10 rs61875309:100000645:A:C 100000645 916 C A 0.060 -4.178077e-02 1.236722e-01 7.340205e-01
+10_100002399 A rs8181398 10 rs8181398:100002399:A:G 100002399 918 A G 0.055 -1.050833e-01 1.258591e-01 3.953881e-01
+10_100003242 G rs12258651 10 rs12258651:100003242:T:G 100003242 917 G T 0.121 1.121788e-01 8.792173e-02 1.980327e-01
+10_100003785 C rs1359508 10 rs1359508:100003785:T:C 100003785 919 C T 0.462 1.111696e-01 5.854501e-02 5.650671e-02
+10_100004360 A rs1048754 10 rs1048754:100004360:G:A 100004360 916 A G 0.060 -4.178077e-02 1.236722e-01 7.340205e-01
+10_100004441 C rs1048757 10 rs1048757:100004441:G:C 100004441 918 C G 0.481 -8.418530e-02 5.802239e-02 1.462914e-01
+10_100004906 A rs3750595 10 rs3750595:100004906:C:A 100004906 919 A C 0.421 -7.352649e-02 5.857845e-02 2.093331e-01
+10_100004996 A rs2025625 10 rs2025625:100004996:G:A 100004996 920 A G 0.462 1.111024e-01 5.854637e-02 5.665728e-02
+10_10000514 C rs6602382 10 rs6602382:10000514:T:C 10000514 912 C T 0.468 5.076305e-03 5.830746e-02 9.520841e-01
+[  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$join <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.Hb.assoc.txt.gz | awk '{ print $1 "_" $3 "\t" $5 }' | sort ) <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.OxHb.assoc.txt.gz | perl -lane 'my $rsID = ((split(/:/, $F[1]))[0]); my $ChrBP = $F[0] . "_" . $F[2]; splice(@F, 0, 0, ($ChrBP, $rsID)); print join("\t", @F);' | sort) | perl -lane 'if ($F[1] eq $F[7]) { print "1"; } else { print "0"; }' | sort | uniq -c
+3507376 1
+[  mturchin20@bigmem03  ~]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.txt.gz | head -n 10
+10_100000625 8.392270e-02 8.392270e-02 8.392270e-02 1.225915e-01 1.225915e-01 1.225915e-01 3.937060e-01 3.937060e-01 3.937060e-01
+10_100000645 6.688200e-01 6.688200e-01 -0.66882 7.340205e-01 7.340205e-01 -0.7340205 7.739307e-01 7.739307e-01 -0.7739307
+10_100002399 1.520838e-01 1.520838e-01 1.520838e-01 3.953881e-01 3.953881e-01 3.953881e-01 2.350974e-01 2.350974e-01 2.350974e-01
+10_100003242 2.859697e-01 2.859697e-01 2.859697e-01 1.980327e-01 1.980327e-01 1.980327e-01 8.898429e-01 -0.8898429 -0.8898429
+10_100003785 2.138390e-02 2.138390e-02 2.138390e-02 5.650671e-02 5.650671e-02 5.650671e-02 2.063892e-01 2.063892e-01 2.063892e-01
+10_100004360 6.688200e-01 6.688200e-01 -0.66882 7.340205e-01 7.340205e-01 -0.7340205 7.739307e-01 7.739307e-01 -0.7739307
+10_100004441 1.063654e-01 1.063654e-01 -0.1063654 1.462914e-01 1.462914e-01 -0.1462914 4.393436e-01 4.393436e-01 -0.4393436
+10_100004906 1.542384e-01 1.542384e-01 -0.1542384 2.093331e-01 2.093331e-01 -0.2093331 4.516756e-01 4.516756e-01 -0.4516756
+10_100004996 2.131738e-02 2.131738e-02 -0.02131738 5.665728e-02 5.665728e-02 -0.05665728 2.052724e-01 2.052724e-01 -0.2052724
+10_10000514 7.314249e-01 7.314249e-01 7.314249e-01 9.520841e-01 9.520841e-01 9.520841e-01 3.154640e-01 3.154640e-01 3.154640e-01
+[  mturchin20@bigmem03  ~]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.txt.gz | perl -lane 'print join("\t", @F[1..$#F]);' | head -n 100000 | R -q -e "Data1 <- read.table(file('stdin'), header=F); Data1 <- apply(Data1, c(1,2), function(x) { val1 <- qnorm(log(abs(x)/2), lower.tail=FALSE, log.p=TRUE); if (x < 0) { val1 <- val1 * -1 }; return(val1) }); head(Data1);"
+> Data1 <- read.table(file('stdin'), header=F); Data1 <- apply(Data1, c(1,2), function(x) { val1 <- qnorm(log(abs(x)/2), lower.tail=FALSE, log.p=TRUE); if (x < 0) { val1 <- val1 * -1 }; return(val1) }); head(Data1);                    V1        V2         V3        V4        V5         V6        V7                                                                                                                                                   [1,] 1.7283656 1.7283656  1.7283656 1.5439869 1.5439869  1.5439869 0.8529158                                                                                                                                                   [2,] 0.4277681 0.4277681 -0.4277681 0.3397823 0.3397823 -0.3397823 0.2872372                                                                                                                                                   [3,] 1.4322098 1.4322098  1.4322098 0.8498867 0.8498867  0.8498867 1.1873302
+[4,] 1.0670047 1.0670047  1.0670047 1.2871767 1.2871767  1.2871767 0.1385030
+[5,] 2.3011368 2.3011368  2.3011368 1.9071072 1.9071072  1.9071072 1.2635567
+[6,] 0.4277681 0.4277681 -0.4277681 0.3397823 0.3397823 -0.3397823 0.2872372
+             V8         V9
+[1,]  0.8529158  0.8529158
+[2,]  0.2872372 -0.2872372
+[3,]  1.1873302  1.1873302
+[4,] -0.1385030 -0.1385030
+[5,]  1.2635567  1.2635567
+[6,]  0.2872372 -0.2872372
+> 
+> 
+[  mturchin20@bigmem03  ~]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.txt.gz | perl -lane 'print join("\t", @F[1..$#F]);' | head -n 1000000 | R -q -e "Data1 <- read.table(file('stdin'), header=F); Data1 <- apply(Data1, c(1,2), function(x) { val1 <- qnorm(log(abs(x)/2), lower.tail=FALSE, log.p=TRUE); if (x < 0) { val1 <- val1 * -1 }; return(val1) }); head(Data1);"
+> Data1 <- read.table(file('stdin'), header=F); Data1 <- apply(Data1, c(1,2), function(x) { val1 <- qnorm(log(abs(x)/2), lower.tail=FALSE, log.p=TRUE); if (x < 0) { val1 <- val1 * -1 }; return(val1) }); head(Data1);
+            V1        V2         V3        V4        V5         V6        V7
+[1,] 1.7283656 1.7283656  1.7283656 1.5439869 1.5439869  1.5439869 0.8529158
+[2,] 0.4277681 0.4277681 -0.4277681 0.3397823 0.3397823 -0.3397823 0.2872372
+[3,] 1.4322098 1.4322098  1.4322098 0.8498867 0.8498867  0.8498867 1.1873302
+[4,] 1.0670047 1.0670047  1.0670047 1.2871767 1.2871767  1.2871767 0.1385030
+[5,] 2.3011368 2.3011368  2.3011368 1.9071072 1.9071072  1.9071072 1.2635567
+[6,] 0.4277681 0.4277681 -0.4277681 0.3397823 0.3397823 -0.3397823 0.2872372
+             V8         V9
+[1,]  0.8529158  0.8529158
+[2,]  0.2872372 -0.2872372
+[3,]  1.1873302  1.1873302
+[4,] -0.1385030 -0.1385030
+[5,]  1.2635567  1.2635567
+[6,]  0.2872372 -0.2872372
+> 
+> 
+[  mturchin20@bigmem03  ~]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.NoChrBPColumn.txt.gz | tail -n 10
+4.014963e-01    4.014963e-01    4.014963e-01    3.142654e-01    3.142654e-01    3.142654e-01    7.215345e-01    -0.7215345      -0.7215345
+9.531434e-02    9.531434e-02    -0.09531434 6.603336e-02        6.603336e-02    -0.06603336     6.927679e-01    -0.6927679      6.927679e-01
+4.014963e-01    4.014963e-01    4.014963e-01    3.142654e-01    3.142654e-01    3.142654e-01    7.215345e-01    -0.7215345      -0.7215345
+4.014963e-01    4.014963e-01    -0.4014963  3.142654e-01        3.142654e-01    -0.3142654      7.215345e-01    -0.7215345      7.215345e-01
+1.618138e-01    1.618138e-01    -0.1618138  1.493852e-01        1.493852e-01    -0.1493852      8.000341e-01    -0.8000341      8.000341e-01
+8.619916e-02    8.619916e-02    8.619916e-02    6.009375e-02    6.009375e-02    6.009375e-02    7.120184e-01    -0.7120184      -0.7120184
+3.136036e-01    3.136036e-01    3.136036e-01    2.687388e-01    2.687388e-01    2.687388e-01    8.699397e-01    -0.8699397      -0.8699397
+4.938913e-01    4.938913e-01    -0.4938913  4.905977e-01        4.905977e-01    -0.4905977      8.442644e-01    -0.8442644      8.442644e-01
+2.633681e-01    2.633681e-01    -0.2633681  4.108792e-01        4.108792e-01    -0.4108792      6.538327e-01    6.538327e-01    -0.6538327
+p       p       p       p       p       p   p   p       p
+[  mturchin20@bigmem03  ~]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.NoChrBPColumn.txt.gz | grep -v p | tail -n 10
+2.633681e-01    2.633681e-01    2.633681e-01    4.108792e-01    4.108792e-01    4.108792e-01    6.538327e-01    6.538327e-01    6.538327e-01
+4.014963e-01    4.014963e-01    4.014963e-01    3.142654e-01    3.142654e-01    3.142654e-01    7.215345e-01    -0.7215345      -0.7215345
+9.531434e-02    9.531434e-02    -0.09531434 6.603336e-02        6.603336e-02    -0.06603336     6.927679e-01    -0.6927679      6.927679e-01
+4.014963e-01    4.014963e-01    4.014963e-01    3.142654e-01    3.142654e-01    3.142654e-01    7.215345e-01    -0.7215345      -0.7215345
+4.014963e-01    4.014963e-01    -0.4014963  3.142654e-01        3.142654e-01    -0.3142654      7.215345e-01    -0.7215345      7.215345e-01
+1.618138e-01    1.618138e-01    -0.1618138  1.493852e-01        1.493852e-01    -0.1493852      8.000341e-01    -0.8000341      8.000341e-01
+8.619916e-02    8.619916e-02    8.619916e-02    6.009375e-02    6.009375e-02    6.009375e-02    7.120184e-01    -0.7120184      -0.7120184
+3.136036e-01    3.136036e-01    3.136036e-01    2.687388e-01    2.687388e-01    2.687388e-01    8.699397e-01    -0.8699397      -0.8699397
+4.938913e-01    4.938913e-01    -0.4938913  4.905977e-01        4.905977e-01    -0.4905977      8.442644e-01    -0.8442644      8.442644e-01
+2.633681e-01    2.633681e-01    -0.2633681  4.108792e-01        4.108792e-01    -0.4108792      6.538327e-01    6.538327e-01    -0.6538327
+[  mturchin20@bigmem03  ~]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.NoChrBPColumn.txt.gz | wc
+3507311 31565799 396211829
+[  mturchin20@bigmem03  ~]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.NoChrBPColumn.txt.gz | grep -v p | wc
+3507310 31565790 396211811
+> Data1 <- read.table("/mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.TroubleShooting.Hb_OxHb_dHb.OxHbdHbAntiCorrelation.txt.gz", header=F, row.names=1)
+> head(Data1)
+                    V2        V3         V4         V5         V6          V7
+10_100000625 0.0839227 0.0839227  0.0839227 0.12259150 0.12259150  0.12259150
+10_100000645 0.6688200 0.6688200 -0.6688200 0.73402050 0.73402050 -0.73402050
+10_100002399 0.1520838 0.1520838  0.1520838 0.39538810 0.39538810  0.39538810
+10_100003242 0.2859697 0.2859697  0.2859697 0.19803270 0.19803270  0.19803270
+10_100003785 0.0213839 0.0213839  0.0213839 0.05650671 0.05650671  0.05650671
+10_100004360 0.6688200 0.6688200 -0.6688200 0.73402050 0.73402050 -0.73402050
+                    V8         V9        V10
+10_100000625 0.3937060  0.3937060  0.3937060
+10_100000645 0.7739307  0.7739307 -0.7739307
+10_100002399 0.2350974  0.2350974  0.2350974
+10_100003242 0.8898429 -0.8898429 -0.8898429
+10_100003785 0.2063892  0.2063892  0.2063892
+10_100004360 0.7739307  0.7739307 -0.7739307
+> Data1 <- apply(Data1, c(1,2), function(x) { val1 <- qnorm(log(abs(x)/2), lower.tail=FALSE, log.p=TRUE); if (x < 0) { val1 <- val1 * -1 }; return(val1) });
+> head(Data1)
+                    V2        V3         V4        V5        V6         V7
+10_100000625 1.7283656 1.7283656  1.7283656 1.5439869 1.5439869  1.5439869
+10_100000645 0.4277681 0.4277681 -0.4277681 0.3397823 0.3397823 -0.3397823
+10_100002399 1.4322098 1.4322098  1.4322098 0.8498867 0.8498867  0.8498867
+10_100003242 1.0670047 1.0670047  1.0670047 1.2871767 1.2871767  1.2871767
+10_100003785 2.3011368 2.3011368  2.3011368 1.9071072 1.9071072  1.9071072
+10_100004360 0.4277681 0.4277681 -0.4277681 0.3397823 0.3397823 -0.3397823
+                    V8         V9        V10
+10_100000625 0.8529158  0.8529158  0.8529158
+10_100000645 0.2872372  0.2872372 -0.2872372
+10_100002399 1.1873302  1.1873302  1.1873302
+10_100003242 0.1385030 -0.1385030 -0.1385030
+10_100003785 1.2635567  1.2635567  1.2635567
+10_100004360 0.2872372  0.2872372 -0.2872372
+
+~~~
+
+#20161007 NOTE -- this is where the original 20160811 timeline continues
 mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/
 
 ~~~
@@ -9249,13 +9621,10 @@ zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.asso
 zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_1.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.txt.pre2.gz | perl -lane '($F[2], $F[0]) = ($F[0], $F[2]); $F[2] = ((split(/_/, $F[2]))[1]); print join("\t", @F);' | perl -lane 'splice(@F, 16, 3); splice(@F, 11, 3); splice(@F, 6, 3); print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_1.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.txt.gz
 zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.txt.pre2.gz | perl -lane '($F[2], $F[0]) = ($F[0], $F[2]); $F[2] = ((split(/_/, $F[2]))[1]); print join("\t", @F);'  | perl -lane 'splice(@F, 16, 3); splice(@F, 11, 3); splice(@F, 6, 3); print join("\t", @F);' | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.txt.gz
 
-
-
-
-
+#dfssfs
 
 #20160830 pasued earlier, below is the last few steps, can delete this when come back just to get things up and going again, using this as mostly a bookmark
-/mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.txt.gz
+~~~
 zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.txt.gz | head -n 10
 SNP     CHR     POS     A1frq   p       N       p       N       p       N       p       N
 1-100640636     1       100640636       0.935   4.050135e-01    919     9.520115e-01    919     -0.3297514      918     -0.4731262      978
@@ -9267,30 +9636,28 @@ SNP     CHR     POS     A1frq   p       N       p       N       p       N       
 1-103329034     1       103329034       0.828   -0.7158805      920     3.384520e-02    920     -0.4468977      919     -0.03084187     980
 1-103329036     1       103329036       0.828   7.158805e-01    920     -0.0338452      920     4.468977e-01    919     3.084187e-02    980
 1-103380393     1       103380393       0.945   -0.4198021      897     -0.5920738      897     5.606755e-01    896     1.330349e-01    954
+~~~
 
-
-
-
-
-
-
-
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/Choongwon2016/Tibetan.AllPhenos.assoc.SNPslt5eneg8.MarkerChrBP.vs2.GreedyPruned.LvBrth.txt --file2 /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz
-python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/Choongwon2016/Tibetan.AllPhenos.assoc.SNPslt5eneg8.MarkerChrBP.vs2.GreedyPruned.OxHb_LvBrth.txt --file2 /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHb.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/Choongwon2016/Tibetan.AllPhenos.assoc.SNPslt5eneg8.MarkerChrBP.vs2.GreedyPruned.LvBrth.txt --file2 /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_1.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_1.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.wGWASannot.txt.gz
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Data/Choongwon2016/Tibetan.AllPhenos.assoc.SNPslt5eneg8.MarkerChrBP.vs2.GreedyPruned.OxHb_LvBrth.txt --file2 /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.txt.gz | gzip > /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.wGWASannot.txt.gz
 
 ~
-[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_1.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
 3432579 0
       1 1
    1158 2
-[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2]$zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.wGWASannot.txt.gz | perl -lane 'print $F[$#F];' | sort | uniq -c
 3421434 0
       2 1
    2874 2
 ~
 
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs1/process.MTedits.ForChoongwon2016.3Phenos_1.vs1.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2/process.MTedits.ForChoongwon2016.4Phenos_1.vs2.SignCrrct.vs1.R
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2/process.MTedits.ForChoongwon2016.4Phenos_1.vs2.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2/process.MTedits.ForChoongwon2016.4Phenos_2.vs2.SignCrrct.vs1.R
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2/process.MTedits.ForChoongwon2016.4Phenos_1.vs2.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/process.MTedits.ForChoongwon2016.4Phenos_1.vs3.SignCrrct.HbRanFlip.vs1.R
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2/process.MTedits.ForChoongwon2016.4Phenos_2.vs2.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/process.MTedits.ForChoongwon2016.4Phenos_2.vs3.SignCrrct.HbRanFlip.vs1.R
+
+
+
+
 
 LANG2=${LANG}
 LC_ALL2=${LC_ALL}
@@ -9298,19 +9665,53 @@ LANG=C
 LC_ALL=C
 export LC_ALL LANG
 
-join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 1.12 1.13 2.2 2.3 2.4 2.5 2.6 2.7 2.8 <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_1.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2/Choongwon2016.4Phenos_1.dtlesslesssignif.vs2.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2/Choongwon2016.4Phenos_1.dtlesslesssignif.vs2.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
-join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 1.12 1.13 2.2 2.3 2.4 2.5 2.6 2.7 2.8 <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHb.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2/Choongwon2016.4Phenos_2.dtlesslesssignif.vs2.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2/Choongwon2016.4Phenos_2.dtlesslesssignif.vs2.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
+join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 1.12 1.13 2.2 2.3 2.4 2.5 2.6 2.7 2.8 <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_1.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_1.dtlesslesssignif.vs3.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_1.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
+join -a 2 -1 1 -2 1 -e NA4 -o 0 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 1.12 1.13 2.2 2.3 2.4 2.5 2.6 2.7 2.8 <(zcat /mnt/gluster/data/external_private_supp/Choongwon2016/Tibetan.4Pheno_2.assoc.IncAllele.MatchedToHbRanFlip.formatted.RAF.wGWASannot.txt.gz | sort -g -k 1,1 ) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_2.dtlesslesssignif.vs3.SignCrrct.vs1.txt | perl -F, -lane 'print join("\t", @F);' | sort -g -k 1,1) | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_2.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz
 
 LANG=${LANG2}
 LC_ALL=${LC_ALL2}
 export LC_ALL LANG
 
+~~~
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_1.dtlesslesssignif.vs3.SignCrrct.vs1.txt | wc
+   2134    2134  282570
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_1.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | wc
+   2134   42680  463435
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_2.dtlesslesssignif.vs3.SignCrrct.vs1.txt | wc
+   2256    2256  299000
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_2.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | wc
+   2256   45120  489615
+~~~
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_1.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | grep -v NA4 | cat <(echo "snp chr pos raf p_Hb n_Hb p_Sat n_Sat p_Pulse n_Pulse p_LvBrth n_LvBrth annot Z.Hb Z.Sat Z.Pulse Z.LvBrth mvstat mvp unip") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_1.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.RAF.txt.gz 
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_2.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.RAF.txt.pre1.gz | grep -v NA4 | cat <(echo "snp chr pos raf p_OxHb n_OxHb p_dHb n_dHb p_Pulse n_Pulse p_LvBrth n_LvBrth annot Z.OxHb Z.dHb Z.Pulse Z.LvBrth mvstat mvp unip") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_2.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.RAF.txt.gz 
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_1.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[13] = $F[13] * -1; $F[14] = $F[14] * -1; $F[15] = $F[15] * -1; $F[16] = $F[16] * -1;} print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_1.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.MAF.txt.gz 
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_2.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[13] = $F[13] * -1; $F[14] = $F[14] * -1; $F[15] = $F[15] * -1; $F[16] = $F[16] * -1;} print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.4Phenos_2.dtlesslesssignif.vs3.SignCrrct.vs1.annot.vs1.MAF.txt.gz 
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs2/GLC.MTedits.ForChoongwon2016.4Phenos_1.vs2.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/GLC.MTedits.ForChoongwon2016.RanHalfFlip.4Phenos_1.vs3.SignCrrct.vs1.R
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/GLC.MTedits.ForChoongwon2016.RanHalfFlip.4Phenos_1.vs3.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/GLC.MTedits.ForChoongwon2016.RanHalfFlip.4Phenos_2.vs3.SignCrrct.vs1.R
 
 
 
 
 
 
+
+
+##Stein2016
+##20161106
+
+#Files were copied over to /mnt/lustre/home/mstein3/mvbimbam_files/. by Michelle Stein on 20161105
+
+mkdir /mnt/gluster/data/external_private_supp/Stein2016
+
+mv /mnt/lustre/home/mstein3/mvbimbam_files/* /mnt/gluster/data/external_private_supp/Stein2016/.
+
+#20161106 NOTE_0 -- Prob: Haven't done the below yet, need to ask Michelle to remove her original files from lustre since I don't have permissions to do so myself
+for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/. | awk '{ print $9 }'`; do
+	ln -s /mnt/gluster/data/external_private_supp/Stein2016/$i /mnt/lustre/home/mstein3/mvbimbam_files/$i;
+done
 
 
 
@@ -9358,8 +9759,9 @@ cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.tx
 
 join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | sort) | awk '{ print $1, "\t", $12, "\t", $13 }' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.MarkerChrBP.txt 
 
-
-
+#20161007
+cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.MarkerChrBP.txt | awk '{ print $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.txt
+cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.txt | grep -v NA > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt
 
 
 

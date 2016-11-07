@@ -1313,27 +1313,66 @@ hp + scale_y_reverse()
 ~~~
 
 
+#20160910 from http://stackoverflow.com/questions/25528059/cluster-data-in-heat-map-in-r-ggplot
+~~~
+.
+.
+.
+Is there a way to cluster the plot so that the plot displays the dynamics in the time course. I would like to use the clustering that comes out of:
 
+ hc.cols <- hclust(dist(t(data)))
+.
+.
+.
+up vote
+5
+down vote
+accepted
+You can achieve this by defining the order of Timepoints in a dendrogram after you have applied hclust to your data:
 
+data <- scale(t(data))
+ord <- hclust( dist(data, method = "euclidean"), method = "ward.D" )$order
+ord
+[1]  2  3  1  4  8  5  6 10  7  9
+The only thing you have to do then is transforming your Time-column to a factor where the factor levels are ordered by ord:
 
+pd <- as.data.frame( data )
+pd$Time <- sub("_.*", "", rownames(pd))
+pd.m <- melt( pd, id.vars = "Time", variable.name = "Gene" )
 
+pd.m$Gene <- factor( pd.m$Gene, levels = colnames(data), labels = seq_along( colnames(data) ) )
+pd.m$Time <- factor( pd.m$Time, levels = rownames(data)[ord],  labels = c("0h", "0.25h", "0.5h","1h","2h","3h","6h","12h","24h","48h") )
+The rest is done by ggplot automatically:
 
+ggplot( pd.m, aes(Time, Gene) ) +
+  geom_tile(aes(fill = value)) +
+  scale_fill_gradient2(low=muted("blue"), high=muted("red"))
+.
+.
+.
 
-
-
-
+~~~
 
 #melt(t(sub.pp.marginals.DirAssoc[1:4,1:5]))
 #ggplot(t(sub.pp.marginals.DirAssoc[1:4,1:5])) 
 #ggplot(melt(prevhits2[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
 
 
-#jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.vs1.jpg", width=2000, height=4000, res=300)
-jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.MarginalHeatplots.NewHits.vs1.jpg", width=2000, height=4000, res=300)
+##jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.vs1.jpg", width=2000, height=4000, res=300)
+#jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.MarginalHeatplots.NewHits.vs1.jpg", width=2000, height=4000, res=300)
+jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.MarginalHeatplots.NewHits.vs1.jpg", width=4000, height=2000, res=300)
 
-#ggplot(melt(sub.pp.marginals.DirAssoc), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
-#ggplot(melt(newhits[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
-ggplot(melt(sub.pp.marginals.DirAssoc.newhits), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+##ggplot(melt(sub.pp.marginals.DirAssoc), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+##ggplot(melt(newhits[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#ggplot(melt(sub.pp.marginals.DirAssoc.newhits), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#ggPlotData_newhits <- melt(sub.pp.marginals.DirAssoc.newhits)
+#ggPlotData_newhits$snp <- factor(ggPlotData_newhits$snp, levels=sub.pp.marginals.DirAssoc.newhits[,1][hclust(dist(sub.pp.marginals.DirAssoc.newhits[,2:5]))$order])
+ggPlotData_newhits <- melt(sub.pp.marginals.DirAssoc.newhits[hclust(dist(sub.pp.marginals.DirAssoc.newhits[,2:5]))$order,][c(1:20,60:92),])
+ggPlotData_newhits$snp <- factor(ggPlotData_newhits$snp, levels=sub.pp.marginals.DirAssoc.newhits[,1][hclust(dist(sub.pp.marginals.DirAssoc.newhits[,2:5]))$order][c(1:20,60:92)])
+
+#ggplot(melt(sub.pp.marginals.DirAssoc.newhits), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue") + coord_flip() 
+ggplot(ggPlotData_newhits, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue") + coord_flip() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
 
 dev.off()
 
