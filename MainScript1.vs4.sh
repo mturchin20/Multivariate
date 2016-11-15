@@ -2891,14 +2891,14 @@ zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.tb
 zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz
 
 #join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'my $switch = "Same"; if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } $switch = "Switch"; } print join("\t", @F[2..$#F]), "\t", $switch;' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.wSwitchTag.tbl.gz
-join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
-join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
-join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
 
 zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz 
-zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
-zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
-zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
+zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | grep -v NoAlleleMatch | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | grep -v NoAlleleMatch | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | grep -v NoAlleleMatch | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
 
 ~~~
 [  mturchin20@spudling96  ~]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 100003553
@@ -2940,21 +2940,69 @@ zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.In
 8       97585747        0.042   a       t       +       0.7256  95454
 [  mturchin20@spudling96  ~/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | grep 28635908
 12      28635908        0.075   t       c       +       0.08854 95446
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | grep NoAlleleMatch
+1  33381798     0.008   a       g       +       0.9507  13015   NoAlleleMatch
+2  180144902    0.167   t       c       +       0.9237  95446   NoAlleleMatch
+2  180144902    0       a       g       +       0.6696  7776    NoAlleleMatch
+2  209886487    0       a       t       +       0.6401  7776    NoAlleleMatch
+2  209886487    0.517   c       a       +       0.1491  92495   NoAlleleMatch
+4  70240740     1       g       a       +       0.2427  7776    NoAlleleMatch
+4  70240740     0.683   c       t       +       0.3575  90533   NoAlleleMatch
+5  168120106    0.00800000000000001     t       c       +       0.7115  12722   NoAlleleMatch
+7  92339640     0.042   c       g       +       0.02041 89181   NoAlleleMatch
+16 12215381     1       g       t       +       0.6599  2630    NoAlleleMatch
+22 40969589     0       a       g       +       0.6822  7773    NoAlleleMatch
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | perl -lane 'print $#F;' | sort | uniq -c
+2627146 7
+     11 8
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$for i in `ls -lrt /data/external_public/GlobalLipids2010/*_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz | awk '{ print $9 }'`; do echo $i; zcat $i | perl -lane 'print $#F;' | sort | uniq -c; done
+/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+2627146 7
+     11 8
+/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+2627396 7
+     12 8
+/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+2627528 7
+      9 8
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$for i in `ls -lrt /data/external_public/GlobalLipids2010/*_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL* | awk '{ print $9 }'`; do echo $i; zcat $i | wc; done
+/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.wSwitchTag.tbl.gz
+2624358 23619222 112557168
+/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
+2624227 20993816 96672892
+/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
+2624466 20995728 96703993
+/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
+2624603 20996824 97999391
+/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+2627157 21017267 96776029
+/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+2627408 21019276 96807521
+/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+2627537 21020305 98104076
+/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+2627015 21016120 96771348
+/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+2627253 21018024 96802408
+/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+2627393 21019144 98099275
 ~~~
 
-
-
+#HDL <- read.table("/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz", header=T);
+#LDL <- read.table("/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
+#TG <- read.table("/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
+#TC <- read.table("/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
 
 R -q -e "library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass"); 
 HDL <- read.table("/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz", header=T);
-LDL <- read.table("/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
-TG <- read.table("/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
-TC <- read.table("/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
+LDL <- read.table("/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
+TG <- read.table("/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
+TC <- read.table("/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
 GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt", header=F);
 names(GWASsnps) <- c("Chr", "BP")
 #bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
 #print(bmassOutput1);" > shana1.txt
-DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 1; bmassSeedValue=150;
+DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
 ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
 
 
@@ -2990,6 +3038,344 @@ Error in CheckIndividualDataSources(DataSources, GWASsnps, ExpectedColumnNames, 
   2016-10-07 13:28:27 -- the following data sources have entries other than + and - in the Direction column. Please fix and rerun bmass: HDL LDL TG TC
 > bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
 Error in if (GWASsnps1[snpIndex, ]$Chr == as.numeric(as.character(MergedDataSource1["Chr"]))) { :
+.
+.
+.
+>         bmassOutput <- list()
+>         bmassOutput$MergedDataSources <- NULL
+>         if (!is.null(MergedDataSources)) {
++                 bmassOutput$MergedDataSources <- MergedDataSources
++         }
+Error: object 'MergedDataSources' not found
+>         bmassOutput$ZScoresCorMatrix <- NULL
+>         bmassOutput$MarginalSNPs <- list()
+>         bmassOutput$Models <- NULL
+>         bmassOutput$ModelPriors <- NULL
+>         bmassOutput$PreviousSNPs <- list()
+>         bmassOutput$NewSNPs <- list()
+>         bmassOutput$GWASlogBFMinThreshold <- NULL
+>         #LogFile <- c()
+>         bmassOutput$LogFile <- c()
+>
+>         bmassOutput$LogFile <- rbind(bmassOutput$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
+>
+>                 bmassOutput$LogFile <- CheckIndividualDataSources(DataSources, GWASsnps, ExpectedColumnNames, SigmaAlphas, bmassOutput$MergedDataSources, ProvidedPriors, UseFlatPriors, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, NminThreshold, bmassSeedValue, bmassOutput$LogFile)
+>
+>
+>                 bmassOutput[c("MergedDataSources", "LogFile")] <- MergeDataSources(DataSources, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
+>                 system.time(bmassOutput[c("MergedDataSources", "LogFile")] <- MergeDataSources(DataSources, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")])
+   user  system elapsed
+   269.592   0.246 269.864
+>
+>         bmassOutput[c("MergedDataSources", "LogFile")] <- AnnotateMergedDataWithGWASSNPs(bmassOutput$MergedDataSources, GWASsnps, GWASsnps_AnnotateWindow, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
+>
+>         bmassOutput[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")] <- ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, bmassOutput$LogFile)[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")]
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2016-11-08 15:38:24 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+>
+>         bmassOutput[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput$MarginalSNPs, bmassOutput$ZScoresCorMatrix, SigmaAlphas, bmassOutput$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+> 
+> 
+>         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+> 
+>         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput$MarginalSNPs, bmassOutput$PreviousSNPs, GWASsnps, bmassOutput$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+Error in if (x == 1) { : missing value where TRUE/FALSE needed
+> head(bmassOutput$MergedDataSources)
+         ChrBP Chr        BP   MAF A1 HDL_A2 HDL_Direction HDL_pValue HDL_N
+1  10_10000135  10  10000135 0.551  g      a             +    0.41100 99150
+2  10_10000265  10  10000265 0.436  t      c             +    0.39330 99150
+3 10_100002729  10 100002729 0.633  g      a             +    0.03387 99900
+4 10_100002880  10 100002880 0.642  g      a             +    0.03461 99900
+5 10_100003553  10 100003553 0.120  t      c             +    0.84880 99900
+6 10_100003805  10 100003805 0.300  t      c             +    0.11940 99900
+  HDL_ZScore LDL_Direction LDL_pValue LDL_N  LDL_ZScore TG_Direction TG_pValue
+1  0.8221351             -    0.97120 94704 -0.03610329            -   0.43440
+2  0.8536481             +    0.96830 94704  0.03974052            -   0.42320
+3  2.1216160             -    0.03202 95454 -2.14416086            -   0.04005
+4  2.1128921             -    0.06781 95454 -1.82626736            -   0.05027
+5  0.1906498             -    0.26750 95454 -1.10883817            -   0.13120
+6  1.5572969             -    0.17340 95454 -1.36135984            -   0.48220
+   TG_N  TG_ZScore TC_Direction TC_pValue   TC_N  TC_ZScore GWASannot
+1 95848 -0.7816845            -    0.8399  99434 -0.2020214         0
+2 95848 -0.8008819            -    0.8803  99434 -0.1505889         0
+3 96598 -2.0532328            -    0.1812 100184 -1.3370694         0
+4 96598 -1.9576593            -    0.2776 100184 -1.0857265         0
+5 96598 -1.5093867            -    0.2265 100184 -1.2094240         0
+6 96598 -0.7027685            -    0.6764 100184 -0.4173807         0
+> table(is.na(bmassOutput$MergedDataSources$HDL_ZScore))
+
+  FALSE 
+2628101 
+> table(is.na(bmassOutput$MergedDataSources$LDL_ZScore))
+
+  FALSE 
+2628101 
+> table(is.na(bmassOutput$MergedDataSources$TG_ZScore))
+
+  FALSE 
+2628101 
+> table(is.na(bmassOutput$MergedDataSources$TC_ZScore))
+
+  FALSE 
+2628101 
+> PruneMarginalSNPs
+[1] TRUE
+> table(apply(bmassOutput$MarginalSNPs$logBFs, c(1,2), is.na))
+
+  FALSE    TRUE 
+9836876   39130 
+> table(bmassOutput$MarginalSNPs$SNPs$MAF > .5)
+
+FALSE  TRUE 
+ 4539  4170 
+> head(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$MAF > .5,])
+             ChrBP Chr        BP   MAF A1 HDL_A2 HDL_Direction HDL_pValue HDL_N
+2237  10_101902054  10 101902054 0.533  c      t             +  8.152e-05 99702
+15986 10_113892408  10 113892408 0.717  c      a             +  3.578e-07 99900
+16002 10_113906301  10 113906301 0.538  g      a             +  8.961e-04 96908
+16003 10_113907075  10 113907075 0.700  t      a             +  2.555e-07 96908
+16006 10_113910455  10 113910455 0.576  g      a             +  2.172e-03 96908
+16008 10_113911344  10 113911344 0.700  g      a             +  2.157e-07 96908
+      HDL_ZScore LDL_Direction LDL_pValue LDL_N LDL_ZScore TG_Direction
+2237    3.939887             +  5.060e-01 95261  0.6650789            +
+15986   5.090140             +  2.221e-08 95454  5.5938413            -
+16002   3.321266             +  7.160e-06 92503  4.4888759            -
+16003   5.153624             +  3.819e-08 92503  5.4990236            -
+16006   3.065646             +  2.647e-06 92503  4.6964670            -
+16008   5.185272             +  5.466e-09 92503  5.8323260            -
+.
+.
+.
+#Edited bmass code and reran
+>                 bmassOutput[c("MergedDataSources", "LogFile")] <- MergeDataSources(DataSources, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
+> table(bmassOutput$MergedDataSources$MAF > .5)
+
+  FALSE 
+2628101 
+> head(HDL[HDL$MAF > .5,])
+   Chr        BP   MAF A1 A2 Direction  pValue     N
+1    7  92221824 0.967  c  a         + 0.92320 85853
+2   12 125456933 0.627  g  a         + 0.34900 99900
+4    4   1347325 0.808  g  c         + 0.45230 99843
+8    4  95952929 0.592  g  t         + 0.99350 99900
+9    4 156533822 1.000  g  c         + 0.49250  7807
+11   3  99825597 0.875  g  a         + 0.06873 99743
+> bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$BP == 92221824,]
+             ChrBP Chr       BP   MAF A1 HDL_A2 HDL_Direction HDL_pValue HDL_N
+2342864 7_92221824   7 92221824 0.033  c      a             +     0.9232 85853
+         HDL_ZScore LDL_Direction LDL_pValue LDL_N LDL_ZScore TG_Direction
+2342864 -0.09640364             -    0.04027 81680   2.050969            -
+        TG_pValue  TG_N TG_ZScore TC_Direction TC_pValue  TC_N TC_ZScore
+2342864    0.4533 82546 0.7499248            -   0.02582 86136  2.228908
+> bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$BP == 125456933,]
+              ChrBP Chr        BP   MAF A1 HDL_A2 HDL_Direction HDL_pValue
+302329 12_125456933  12 125456933 0.373  g      a             +      0.349
+       HDL_N HDL_ZScore LDL_Direction LDL_pValue LDL_N LDL_ZScore TG_Direction
+302329 99900 -0.9365307             -     0.5077 95454  0.6624233            -
+       TG_pValue  TG_N TG_ZScore TC_Direction TC_pValue   TC_N  TC_ZScore
+302329    0.2134 96598  1.244271            -    0.9855 100184 0.01817406
+> bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$BP == 99825597,]
+             ChrBP Chr       BP   MAF A1 HDL_A2 HDL_Direction HDL_pValue HDL_N
+1669999 3_99825597   3 99825597 0.125  g      a             +    0.06873 99743
+        HDL_ZScore LDL_Direction LDL_pValue LDL_N LDL_ZScore TG_Direction
+1669999   -1.82019             +      0.316 95300  -1.002712            +
+        TG_pValue  TG_N  TG_ZScore TC_Direction TC_pValue   TC_N TC_ZScore
+1669999    0.5112 96437 -0.6569703            +    0.1468 100023 -1.450928
+.
+.
+.
+>         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput$MarginalSNPs, bmassOutput$PreviousSNPs, GWASsnps, bmassOutput$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+Error in if (x == 1) { : missing value where TRUE/FALSE needed
+>
+> table(apply(bmassOutput$MarginalSNPs$logBFs, c(1,2), is.na))
+
+  FALSE    TRUE
+9477384   43680
+> apply(bmassOutput$MarginalSNPs$logBFs[1:10,1:10], 2, is.na)
+       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]
+ [1,] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [2,] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [3,] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [4,] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [5,] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [6,] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [7,] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [8,] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [9,] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+[10,] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+> apply(apply(bmassOutput$MarginalSNPs$logBFs[1:10,1:10], c(1,2), is.na), 2, function(x) { return(TRUE %in% x); })
+ [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+> length(apply(apply(bmassOutput$MarginalSNPs$logBFs, c(1,2), is.na), 2, function(x) { return(TRUE %in% x); }))
+[1] 8396
+> table(apply(apply(bmassOutput$MarginalSNPs$logBFs, c(1,2), is.na), 2, function(x) { return(TRUE %in% x); }))
+
+FALSE  TRUE 
+ 8348    48 
+> head(bmassOutput$MarginalSNPs$SNPs[apply(apply(bmassOutput$MarginalSNPs$logBFs, c(1,2), is.na), 2, function(x) { return(TRUE %in% x); }),])
+              ChrBP Chr        BP MAF A1 HDL_A2 HDL_Direction HDL_pValue HDL_N
+26172  10_122804658  10 122804658   0  g      a             +  4.195e-10  1456
+97134   10_61078772  10  61078772   0  a      g             +  1.047e-09  1456
+584250  14_86135518  14  86135518   0  g      c             +  7.364e-02  1456
+603657  15_24151016  15  24151016   0  t      c             +  4.205e-02   711
+619158  15_42033223  15  42033223   0  a      t             +  2.857e-06 98409
+732176  16_80263472  16  80263472   0  c      t             +  2.269e-07  1456
+       HDL_ZScore LDL_Direction LDL_pValue LDL_N LDL_ZScore TG_Direction
+26172   -6.246594             +     0.8262  1375 -0.2195778            +
+97134    6.102075             -     0.5842  1375 -0.5472602            +
+584250  -1.788844             +     0.7190  1375 -0.3597956            -
+603657   2.033025             +     0.1975  1101  1.2887069            -
+619158   4.680841             +     0.7666 93999  0.2968252            -
+732176  -5.175830             -     0.2270  1375  1.2081229            -
+       TG_pValue  TG_N   TG_ZScore TC_Direction TC_pValue  TC_N  TC_ZScore
+26172  9.551e-01  1458 -0.05630354            -   0.73470  1459  0.3388802
+97134  3.055e-01  1458  1.02471009            -   0.72690  1459 -0.3492522
+584250 3.671e-01  1458  0.90191881            -   0.04739  1459  1.9827980
+603657 3.787e-01   716 -0.88029411            -   0.43580   710 -0.7793051
+619158 1.631e-11 95070 -6.73573796            -   0.64100 98656 -0.4663011
+732176 4.083e-02  1458  2.04525221            +   0.49080  1459 -0.6890370
+       GWASannot   mvstat mvstat_log10pVal   unistat unistat_log10pVal  Nmin
+26172          0 88.80556        17.626801 39.019935          9.377268  1375
+97134          0 82.13563        16.211576 37.235323          8.980053  1375
+584250         0 44.98902         8.398274  3.931488          1.324313  1375
+603657         0 37.19156         6.783883  4.133191          1.376234   710
+619158         1 54.07996        10.295536 45.370166         10.787546 93999
+732176         2 28.98333         5.103553 26.789216          6.644166  1375
+       logBFWeightedAvg
+26172               NaN
+97134               NaN
+584250              NaN
+603657              NaN
+619158              NaN
+732176              NaN
+> head(HDL[HDL$BP == 42033223 & !is.na(HDL$BP),])
+        Chr       BP   MAF A1 A2 Direction    pValue     N
+207918   12 42033223 0.865  c  t         + 1.064e-01 99900
+1502337  15 42033223 0.000  a  t         + 2.857e-06 98409
+> head(LDL[LDL$BP == 42033223,])
+        Chr       BP   MAF A1 A2 Direction pValue     N
+1909876  12 42033223 0.865  c  t         - 0.1670 95454
+2183114  15 42033223 0.000  a  t         + 0.7666 93999
+> head(TG[TG$BP == 42033223,])
+        Chr       BP   MAF A1 A2 Direction    pValue     N
+1910055  12 42033223 0.865  c  t         - 7.502e-01 96598
+2183316  15 42033223 0.000  a  t         - 1.631e-11 95070
+> head(TC[TC$BP == 42033223,])
+        Chr       BP   MAF A1 A2 Direction pValue      N
+1910149  12 42033223 0.865  c  t         - 0.4864 100184
+2183421  15 42033223 0.000  a  t         - 0.6410  98656
+#From /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz 
+#.
+#18      63418292        0       t       c       +       0.1144  1456
+#15      42033223        0       a       t       +       2.857e-06       98409
+#9       7650299 0       a       g       +       0.8839  8581
+#.
+.
+.
+.
+> table(bmassOutput$MergedDataSources$GWASannot)
+
+      0       1       2 
+2513953      99   84205 
+.
+.
+.
+> library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+txt
+DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
+ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;Loading bmass
+> HDL <- read.table("/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz", header=T);
+> LDL <- read.table("/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
+> TG <- read.table("/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
+> TC <- read.table("/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz", header=T);
+> GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt", header=F);
+> names(GWASsnps) <- c("Chr", "BP")
+> #bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+> #print(bmassOutput1);" > shana1.txt
+> DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
+> ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+>
+>         bmassOutput <- list()
+>         bmassOutput$MergedDataSources <- NULL
+>         if (!is.null(MergedDataSources)) {
++                 bmassOutput$MergedDataSources <- MergedDataSources
++         }
+Error: object 'MergedDataSources' not found
+>         bmassOutput$ZScoresCorMatrix <- NULL
+>         bmassOutput$MarginalSNPs <- list()
+>         bmassOutput$Models <- NULL
+>         bmassOutput$ModelPriors <- NULL
+>         bmassOutput$PreviousSNPs <- list()
+>         bmassOutput$NewSNPs <- list()
+>         bmassOutput$GWASlogBFMinThreshold <- NULL
+>         #LogFile <- c()
+>         bmassOutput$LogFile <- c()
+>
+>         bmassOutput$LogFile <- rbind(bmassOutput$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
+>
+>                 bmassOutput$LogFile <- CheckIndividualDataSources(DataSources, GWASsnps, ExpectedColumnNames, SigmaAlphas, bmassOutput$MergedDataSources, ProvidedPriors, UseFlatPriors, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, NminThreshold, bmassSeedValue, bmassOutput$LogFile)
+>
+>                 bmassOutput[c("MergedDataSources", "LogFile")] <- MergeDataSources(DataSources, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
+> 
+>         bmassOutput[c("MergedDataSources", "LogFile")] <- AnnotateMergedDataWithGWASSNPs(bmassOutput$MergedDataSources, GWASsnps, GWASsnps_AnnotateWindow, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
+> 
+>         bmassOutput[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")] <- ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, bmassOutput$LogFile)[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")]
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2016-11-09 15:41:26 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+> 
+>         bmassOutput[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput$MarginalSNPs, bmassOutput$ZScoresCorMatrix, SigmaAlphas, bmassOutput$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+> 
+>         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+> 
+>         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput$MarginalSNPs, bmassOutput$PreviousSNPs, GWASsnps, bmassOutput$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+> 
+> dim(bmassOutput$NewSNPs$SNPs)
+[1] 27 29
+> bmassOutput$GWASlogBFMinThreshold
+[1] 4.341153
+> bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150);
+
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2016-11-09 15:51:54 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+>
+> summary(bmassOutput1)
+                      Length Class  Mode
+MarginalSNPs             4   -none- list
+PreviousSNPs             4   -none- list
+NewSNPs                  3   -none- list
+LogFile                 18   -none- character
+ZScoresCorMatrix        16   -none- numeric
+Models                 324   -none- numeric
+ModelPriors           1134   -none- numeric
+GWASlogBFMinThreshold    1   -none- numeric
+> dim(bmassOutput1$NewSNPs$SNPs)
+[1] 27 29
+> bmassOutput1$GWASlogBFMinThreshold
+[1] 4.341153
+.
+.
+.
+#After dropping non-matching SNPs
+> dim(bmassOutput1$NewSNPs$SNPs)
+[1] 26 29
+> bmassOutput1$GWASlogBFMinThreshold
+[1] 4.34246
+~~~
+
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/dtlesssignif.annot.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/20161109_edits_dtlesssignif.annot.txt
+
+#Put below header into /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/20161109_edits_dtlesssignif.annot.txt
+#SNP Chr BP MAF HDL_N HDL_Beta HDL_SE LDL_N LDL_Beta LDL_SE TC_N TC_Beta TC_SE TG_N TG_Beta TG_SE GWASannot Gene RS TG_ZScore TC_ZScore LDL_ZScore HDL_ZScore mvstat mvstat_log10pVal unistat_log10pVal
+
+R code to use below
+~~~
+
+	library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
 
         bmassOutput <- list()
         bmassOutput$MergedDataSources <- NULL
@@ -3008,31 +3394,84 @@ Error in if (GWASsnps1[snpIndex, ]$Chr == as.numeric(as.character(MergedDataSour
 
         bmassOutput$LogFile <- rbind(bmassOutput$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
 
-        #20160823 CHECK_0: Prob -- list of Matthew functions specifically to double-check, go through, go over
-        #       collapse
-        #       em.priorprobs
+	bmassOutput$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/20161109_edits_dtlesssignif.annot.txt", header=TRUE)
+	bmassOutput$ZScoresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/RSS0.txt", header=TRUE, sep=",")) 
+	GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt", header=F);
+	names(GWASsnps) <- c("Chr", "BP")
+#	DataSources = c("HDL", "LDL", "TG", "TC"); 
+	DataSources = c("TC", "TG", "HDL", "LDL"); NminThreshold = 50000; bmassSeedValue=150;
+	ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+	bmassOutput$MergedDataSources$ChrBP <- paste(bmassOutput$MergedDataSources$Chr, "_", bmassOutput$MergedDataSources$BP, sep="")
 
-        #Loading and checking data
-        #~~~~~~
+	bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
 
-        bmassOutput$LogFile <- CheckIndividualDataSources(DataSources, GWASsnps, ExpectedColumnNames, SigmaAlphas, bmassOutput$MergedDataSources, ProvidedPriors, UseFlatPriors, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, NminThreshold, bmassSeedValue, bmassOutput$LogFile)
+        bmassOutput[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput$MarginalSNPs, bmassOutput$ZScoresCorMatrix, SigmaAlphas, bmassOutput$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
 
-        if (!is.null(MergedDataSources)) {
-                bmassOutput$LogFile <- rbind(bmassOutput$LogFile, paste(format(Sys.time()), " -- MergedDataSources was provided, skipping merging data step.", sep=""))
-        }
-        else {
-                bmassOutput[c("MergedDataSources", "LogFile")] <- MergeDataSources(DataSources, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
-        }
+#	Nmins <- apply(bmassOutput$MarginalSNPs$SNPs[,c("TC_N", "TG_N", "LDL_N", "HDL_N")], 1, min)
+#	ZScores <- bmassOutput$MarginalSNPs$SNPs[,c("TC_ZScore", "TG_ZScore", "HDL_ZScore", "LDL_ZScore")]
+#	MarginalSNPs_logBFs <- compute.allBFs.fromZscores(ZScores, bmassOutput$ZScoresCorMatrix, Nmins, bmassOutput$MarginalSNPs$SNPs$MAF, SigmaAlphas)
 
-        bmassOutput[c("MergedDataSources", "LogFile")] <- AnnotateMergedDataWithGWASSNPs(bmassOutput$MergedDataSources, GWASsnps, GWASsnps_AnnotateWindow, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
+        bmassOutput[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
 
-        bmassOutput[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")] <- ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, bmassOutput$LogFile)[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")]
+        bmassOutput[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput$MarginalSNPs, bmassOutput$PreviousSNPs, GWASsnps, bmassOutput$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+
+	
 
 ~~~
 
-
-
-
+#Output from above
+~~~
+>         library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+oresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/RSS0.txt", header=TRUE, sep=","))
+        GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt", header=F);
+        names(GWASsnps) <- c("Chr", "BP")
+#       DataSources = c("HDL", "LDL", "TG", "TC");
+        DataSources = c("TC", "TG", "HDL", "LDL"); NminThreshold = 50000; bmassSeedValue=150;
+        ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+        bmassOutput$MergedDataSources$ChrBP <- paste(bmassOutput$MergedDataSources$Chr, "_", bmassOutput$MergedDataSources$BP, sep="")
+Loading bmass
+>         
+>         bmassOutput <- list()
+>         bmassOutput$MergedDataSources <- NULL
+>         if (!is.null(MergedDataSources)) {
++                 bmassOutput$MergedDataSources <- MergedDataSources
++         }       
+Error: object 'MergedDataSources' not found
+>         bmassOutput$ZScoresCorMatrix <- NULL
+>         bmassOutput$MarginalSNPs <- list()
+>         bmassOutput$Models <- NULL
+>         bmassOutput$ModelPriors <- NULL
+>         bmassOutput$PreviousSNPs <- list()
+>         bmassOutput$NewSNPs <- list()
+>         bmassOutput$GWASlogBFMinThreshold <- NULL
+>         #LogFile <- c()
+>         bmassOutput$LogFile <- c()
+>         
+>         bmassOutput$LogFile <- rbind(bmassOutput$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
+>         
+>         bmassOutput$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/20161109_edits_dtlesssignif.annot.txt", header=TRUE)
+>         bmassOutput$ZScoresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/RSS0.txt", header=TRUE, sep=","))
+>         GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt", header=F);
+>         names(GWASsnps) <- c("Chr", "BP")
+> #       DataSources = c("HDL", "LDL", "TG", "TC");
+>         DataSources = c("TC", "TG", "HDL", "LDL"); NminThreshold = 50000; bmassSeedValue=150;
+>         ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+>         bmassOutput$MergedDataSources$ChrBP <- paste(bmassOutput$MergedDataSources$Chr, "_", bmassOutput$MergedDataSources$BP, sep="")
+>
+>         bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+>
+>         bmassOutput[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput$MarginalSNPs, bmassOutput$ZScoresCorMatrix, SigmaAlphas, bmassOutput$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+>
+> 
+>         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+> 
+>         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput$MarginalSNPs, bmassOutput$PreviousSNPs, GWASsnps, bmassOutput$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+> 
+> dim(bmassOutput$NewSNPs$SNPs)
+[1] 19 29
+> bmassOutput$GWASlogBFMinThreshold
+[1] 4.352589
+~~~
 
 #20161102
 #Scrap/Misc related to getting DAVID/RDAVIDWebServices to work
@@ -3087,6 +3526,9 @@ Result type:  FunctionalAnnotationChart
 3 0.70496204
 4 1.23752805
 ~~~
+
+
+
 
 
 
@@ -3384,11 +3826,254 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipid
 cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GLC.MTedits.For2013.vs3.SignCrrct.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GLC.MTedits.For2013.vs3.SignCrrct.vs1.R
 
 
+#20161109
+#Vs2 -- Running things through version of bmass() code
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2 
+
+zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz
+zcat /data/external_public/GlobalLipid/jointGwasMc_LDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.txt.gz
+zcat /data/external_public/GlobalLipid/jointGwasMc_TG.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.txt.gz
+zcat /data/external_public/GlobalLipid/jointGwasMc_TC.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.txt.gz
+
+join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.txt.gz 
+join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.txt.gz 
+join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.txt.gz 
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.txt.gz | grep -v NoAlleleMatch | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.txt.gz | grep -v NoAlleleMatch | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.txt.gz | grep -v NoAlleleMatch | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
+
+~~~
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | awk '{ print $6 }' | sort | uniq -c
+2447441 +
+      1 Direction
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $6 }' | sort | uniq -c
+2437751 +
+      1 Direction
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.txt.gz | awk '{ print $6 }' | sort | uniq -c
+2439432 +
+      1 Direction
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.txt.gz | awk '{ print $6 }' | sort | uniq -c
+2446981 +
+      1 Direction
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$for i in `ls -lrt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_*.IncAllele.bmass.formatted.txt.gz | awk '{ print $9 }'`; do echo $i; zcat $i | wc; zcat $i | grep -v NA | wc; done
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz
+2447442 19579531 98456444
+2447442 19579531 98456444
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.txt.gz
+2437752 19502013 98039596
+2437752 19502013 98039596
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.txt.gz
+2446982 19575851 98439224
+2446982 19575851 98439224
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.txt.gz
+2439433 19515461 98113749
+2439433 19515461 98113749
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | awk '{ print $1 }' | grep rs | wc        
+      5       5      48
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$zcat /data/external_public/GlobalLipid/jointGwasMc_LDL.txt.gz | awk '{ print $1 }' | grep rs | wc
+      3       3      28
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$zcat /data/external_public/GlobalLipid/jointGwasMc_TC.txt.gz | awk '{ print $1 }' | grep rs | wc
+      5       5      48
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$zcat /data/external_public/GlobalLipid/jointGwasMc_TG.txt.gz | awk '{ print $1 }' | grep rs | wc
+      3       3      28
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$for i in `ls -lrt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_*.IncAllele.bmass.formatted.txt.gz | awk '{ print $9 }'`; do echo $i; zcat $i | wc; zcat $i | grep -v rs | wc; done
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz
+2447442 19579531 98456444
+2447437 19579496 98456260
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.txt.gz
+2437752 19502013 98039596
+2437749 19501992 98039485
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.txt.gz
+2446982 19575851 98439224
+2446977 19575816 98439039
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.txt.gz
+2439433 19515461 98113749
+2439430 19515440 98113638
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$for i in `ls -lrt  /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_*.IncAllele.bmass.formatted.MatchedToHDL.txt.gz | awk '{ print $9 }'`; do echo $i; zcat $i | awk '{ print $6 }' | sort | uniq -c; done
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.txt.gz
+1147511 +
+1290001 -
+      1 Direction
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.txt.gz
+ 886926 +
+1552083 -
+      1 Direction
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.txt.gz
+1325486 +
+1120942 -
+      1 Direction
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$for i in `ls -lrt  /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_*.IncAllele.bmass.formatted.MatchedToHDL.txt.gz | awk '{ print $9 }'`; do echo $i; zcat $i | perl -lane 'print $#F;' | sort | uniq -c; done;
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.txt.gz
+2437513 7
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.txt.gz
+2439010 7
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.txt.gz
+2446429 7
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$for i in `ls -lrt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_*.IncAllele.bmass.formatted.MatchedToHDL* | awk '{ print $9 }'`; do echo $i; zcat $i | wc; done
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.txt.gz
+2437513 19500104 98036573
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.txt.gz
+2439010 19512080 98100496
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.txt.gz
+2446429 19571432 98426865
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
+2437513 19500104 98036573
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
+2439010 19512080 98100496
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
+2446429 19571432 98426865
+~~~
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.MarkerChrBP.txt | awk '{ print $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt
+
+R -q -e "library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass"); 
+HDL <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz", header=T);
+LDL <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+TG <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+TC <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+names(GWASsnps) <- c("Chr", "BP")
+#bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+#print(bmassOutput1);" > shana1.txt
+DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
+ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+
+#Output of R Code
+~~~
+> library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");                                                                                                                   HDL <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz", header=T);                                                           LDL <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+gz", header=T);                                    GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);                                             names(GWASsnps) <- c("Chr", "BP")
+#bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+#print(bmassOutput1);" > shana1.txt
+DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
+ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+Loading bmass
+> TG <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);                                    TC <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);                                    GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);                                             names(GWASsnps) <- c("Chr", "BP")
+> #bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+> #print(bmassOutput1);" > shana1.txt
+> DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
+> ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+>
+>
+>         bmassOutput <- list()
+>         bmassOutput$MergedDataSources <- NULL
+>         if (!is.null(MergedDataSources)) {
++                 bmassOutput$MergedDataSources <- MergedDataSources
++         }
+Error: object 'MergedDataSources' not found
+>         bmassOutput$ZScoresCorMatrix <- NULL
+>         bmassOutput$MarginalSNPs <- list()
+>         bmassOutput$Models <- NULL
+>         bmassOutput$ModelPriors <- NULL
+>         bmassOutput$PreviousSNPs <- list()
+>         bmassOutput$NewSNPs <- list()
+>         bmassOutput$GWASlogBFMinThreshold <- NULL
+>         #LogFile <- c()
+>         bmassOutput$LogFile <- c()
+>
+>         bmassOutput$LogFile <- rbind(bmassOutput$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
+>
+>                 bmassOutput$LogFile <- CheckIndividualDataSources(DataSources, GWASsnps, ExpectedColumnNames, SigmaAlphas, bmassOutput$MergedDataSources, ProvidedPriors, UseFlatPriors, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, NminThreshold, bmassSeedValue, bmassOutput$LogFile)
+>
+>                 bmassOutput[c("MergedDataSources", "LogFile")] <- MergeDataSources(DataSources, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
+>
+>         bmassOutput[c("MergedDataSources", "LogFile")] <- AnnotateMergedDataWithGWASSNPs(bmassOutput$MergedDataSources, GWASsnps, GWASsnps_AnnotateWindow, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
+>
+>         bmassOutput[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")] <- ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, bmassOutput$LogFile)[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")]
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2016-11-10 00:07:29 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+>
+>
+>         bmassOutput[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput$MarginalSNPs, bmassOutput$ZScoresCorMatrix, SigmaAlphas, bmassOutput$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+>
+>         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+>                  
+>         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput$MarginalSNPs, bmassOutput$PreviousSNPs, GWASsnps, bmassOutput$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+> dim(bmassOutput$NewSNPs$SNPs)
+[1] 65 29
+> dim(bmassOutput$PreviousSNPs$SNPs)
+[1] 148  29
+> bmassOutput$GWASlogBFMinThreshold
+[1] 4.28084
+> bmassOutput$ZScoresCorMatrix
+            HDL_ZScore  LDL_ZScore  TG_ZScore TC_ZScore
+HDL_ZScore  1.00000000 -0.08715854 -0.3635593 0.1531368
+LDL_ZScore -0.08715854  1.00000000  0.1585048 0.8197523
+TG_ZScore  -0.36355928  0.15850485  1.0000000 0.2877814
+TC_ZScore   0.15313683  0.81975235  0.2877814 1.0000000
+> dim(bmassOutput1$NewSNPs$SNPs)
+[1] 65 29
+> dim(bmassOutput1$PreviousSNPs$SNPs)
+[1] 148  29
+> bmassOutput1$GWASlogBFMinThreshold
+[1] 4.28084
+> bmassOutput1$ZScoresCorMatrix     
+            HDL_ZScore  LDL_ZScore  TG_ZScore TC_ZScore
+HDL_ZScore  1.00000000 -0.08715854 -0.3635593 0.1531368
+LDL_ZScore -0.08715854  1.00000000  0.1585048 0.8197523
+TG_ZScore  -0.36355928  0.15850485  1.0000000 0.2877814
+TC_ZScore   0.15313683  0.81975235  0.2877814 1.0000000
+~~~
 
 
 
 
 
+
+
+
+
+
+
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161110_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz
+
+#Put below header into /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161110_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz 
+#SNP Chr BP MAF HDL_N HDL_Beta HDL_SE LDL_N LDL_Beta LDL_SE TC_N TC_Beta TC_SE TG_N TG_Beta TG_SE GWASannot Gene RS TG_ZScore TC_ZScore LDL_ZScore HDL_ZScore mvstat mvstat_log10pVal unistat_log10pVal
+
+
+
+
+
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz | head -n 10
+posHg18 chr     pos     snp     a1      a2      maf     beta_LDL        se_LDL  n_LDL   beta_HDL        se_HDL  n_HDL   beta_TG se_TG   n_TG    beta_TC se_TC   n_TC    annot   gene    Z.tg    Z.tc    Z.ldl   Z.hdl   mvstatmvp unip
+
+
+        bmassOutput$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/20161109_edits_dtlesssignif.annot.txt", header=TRUE)
+        bmassOutput$ZScoresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/RSS0.txt", header=TRUE, sep=","))
+        GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt", header=F);
+        names(GWASsnps) <- c("Chr", "BP")
+#       DataSources = c("HDL", "LDL", "TG", "TC");
+        DataSources = c("TC", "TG", "HDL", "LDL"); NminThreshold = 50000; bmassSeedValue=150;
+        ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+        bmassOutput$MergedDataSources$ChrBP <- paste(bmassOutput$MergedDataSources$Chr, "_", bmassOutput$MergedDataSources$BP, sep="")
+
+        bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+
+
+~~~
+
+~~~
+
+
+#Chr BP  MAF     A1      A2      Direction       pValue  N
+#ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N")
+
+1) Expand/Correct/Make format of files
+2) Match to a phenotype
+3) Extra steps such as drop no allele matches or 0dir step (latter maybe specific to GlobalLipids 2010)
+
+
+join <(zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | awk '{ print $1, "\t", $4 }') <(zcat /data/external_public/GlobalLipid/jointGwasMc_LDL.txt.gz) | perl -lane 'if ($F[1] ne $F[4]) { $F[9] = -1 * $F[9]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/jointGwasMc_LDL.MatchedToHDL.txt.gz
+join <(zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | awk '{ print $1, "\t", $4 }') <(zcat /data/external_public/GlobalLipid/jointGwasMc_TG.txt.gz) | perl -lane 'if ($F[1] ne $F[4]) { $F[9] = -1 * $F[9]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/jointGwasMc_TG.MatchedToHDL.txt.gz
+join <(zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | awk '{ print $1, "\t", $4 }') <(zcat /data/external_public/GlobalLipid/jointGwasMc_TC.txt.gz) | perl -lane 'if ($F[1] ne $F[4]) { $F[9] = -1 * $F[9]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/jointGwasMc_TC.MatchedToHDL.txt.gz
+
+
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
 
 
 
@@ -3792,6 +4477,41 @@ zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs
 
 cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GLC.MTedits.ForGIANT2010.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GLC.MTedits.ForGIANT2010.vs1.SignCrrct.vs1.R
 
+
+
+#20161109
+#Vs2 -- Running things through version of bmass() code
+
+
+
+
+
+
+
+
+
+
+
+
+#Chr BP  MAF     A1      A2      Direction       pValue  N
+#ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N")
+
+1) Expand/Correct/Make format of files
+2) Match to a phenotype
+3) Extra steps such as drop no allele matches or 0dir step (latter maybe specific to GlobalLipids 2010)
+
+zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz
+zcat /data/external_public/GlobalLipid/jointGwasMc_LDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.txt.gz
+zcat /data/external_public/GlobalLipid/jointGwasMc_TG.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.txt.gz
+zcat /data/external_public/GlobalLipid/jointGwasMc_TC.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.txt.gz
+
+join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.txt.gz 
+join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.txt.gz 
+join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.txt.gz 
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.txt.gz | grep -v NoAlleleMatch | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.txt.gz | grep -v NoAlleleMatch | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.txt.gz | grep -v NoAlleleMatch | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
 
 
 
@@ -9708,10 +10428,928 @@ mkdir /mnt/gluster/data/external_private_supp/Stein2016
 
 mv /mnt/lustre/home/mstein3/mvbimbam_files/* /mnt/gluster/data/external_private_supp/Stein2016/.
 
-#20161106 NOTE_0 -- Prob: Haven't done the below yet, need to ask Michelle to remove her original files from lustre since I don't have permissions to do so myself
-for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/. | awk '{ print $9 }'`; do
-	ln -s /mnt/gluster/data/external_private_supp/Stein2016/$i /mnt/lustre/home/mstein3/mvbimbam_files/$i;
-done
+##20161106 NOTE_0 -- Prob: Haven't done the below yet, need to ask Michelle to remove her original files from lustre since I don't have permissions to do so myself
+#for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/. | awk '{ print $9 }'`; do
+#	ln -s /mnt/gluster/data/external_private_supp/Stein2016/$i /mnt/lustre/home/mstein3/mvbimbam_files/$i;
+#done
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1
+
+#cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.txt | perl -lane 'shift @F; for (my $i = 5; $i <= $#F; $i += 3) { if ($F[$i] > 0) { $F[$i] = "+"; } elsif ($F[$i] < 0) { $F[$i] = "-"; } else { $F[$i] = "NoDir"; } } print join("\t", @F);' | grep -v "NoDir" | R -q -e "Data1 <- read.table(file('stdin'), header=F); devtools::load_all(\"/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass\"); for (i in seq(6, ncol(Data1), by=3)) { Data2 <- Data1[,c(i+1, i)]; colnames(Data2) <- c(\"pValue\", \"Direction\"); cbind(Data1, apply(Data2, 1, GetZScoreAndDirection)); }; print(Data1);" | head -n 10
+
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $7 "\t" $8 "\t" $6 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IFN.g_lps.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $10 "\t" $11 "\t" $9 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.12p70_lps.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $13 "\t" $14 "\t" $12 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.23_lps.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $16 "\t" $17 "\t" $15 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.TNF.a_lps.txt.gz
+
+zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IFN.g_lps.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IFN.g_lps.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.12p70_lps.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.12p70_lps.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.23_lps.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.23_lps.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.TNF.a_lps.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.TNF.a_lps.No0Dir.txt.gz
+
+#for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/*.No0Dir.txt.gz | awk '{ print $9; }'`; do echo $i; zcat $i | awk '{ if ($6 < .00000005) { print $0 } } '; done
+#for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.*.No0Dir.txt.gz | awk '{ print $9; }'`; do echo $i; zcat $i | awk '{ if ($6 < .00000005) { print $0 } } '; done
+#for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.*.No0Dir.txt.gz | awk '{ print $9; }'`; do echo $i; zcat $i | awk '{ if ($6 < .00000005) { print $0 } } '; done
+for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/*.No0Dir.txt.gz | awk '{ print $9; }'`; do echo $i; zcat $i | awk '{ if ($6 < .00000005) { print $1 "\t" $2 } } ' > $i.5e8.GWASHits.ChrBP.txt; done
+for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/*.No0Dir.txt.gz | awk '{ print $9; }'`; do echo $i.5e8.GWASHits.ChrBP.txt; cat $i.5e8.GWASHits.ChrBP.txt | wc; done
+
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.*.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.AllPheno.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.*.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.AllPheno.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.*.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.AllPheno.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.*.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.AllPheno.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+
+~~~
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$cat /mnt/gluster/data/external_private_supp/Stein2016/LPSCytoNames_Grp2_4cyto.txt             
+"x"
+"1" "IFN.g_lps"
+"2" "IL.12p70_lps"
+"3" "IL.23_lps"
+"4" "TNF.a_lps"
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.txt | head -n 10
+"chr" "ps" "MAF" "ref_allele" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val"
+"1062" 1 785989 0.075 3 107 0.03018724 0.9149532 107 -0.0348633 0.8968772 107 0.15492 0.3940235 107 0.524026 0.03167614
+"2548" 1 1003629 0.245 5 106 0.1911938 0.29826 106 0.3103519 0.07058205 106 0.09921486 0.4000917 106 -0.01446367 0.9281819
+"3767" 1 1211292 0.168 3 107 0.03472233 0.86001 107 -0.06709015 0.721068 107 0.04177471 0.740388 107 0.05498399 0.7455785
+"5323" 1 1478153 0.36 5 107 0.2579772 0.1345667 107 0.107584 0.5053216 107 0.01076524 0.9203882 107 -0.1058473 0.4586944
+"5442" 1 1500941 0.36 2 107 0.2579772 0.1345667 107 0.107584 0.5053216 107 0.01076524 0.9203882 107 -0.1058473 0.4586944
+"5511" 1 1510801 0.304 3 107 0.3638154 0.04009265 107 0.3378388 0.03492036 107 0.1774923 0.08384151 107 -0.05904868 0.6877749
+"6774" 1 1692321 0.467 5 107 -0.2903621 0.04497574 107 -0.4338463 0.0007013064 107 -0.2900595 0.000322561 107 -0.2074867 0.07895722
+"6884" 1 1721479 0.379 3 107 0.2914682 0.04644262 107 0.4142917 0.002688777 107 0.31001 0.0003383953 107 0.2261611 0.06788764
+"6888" 1 1722932 0.381 3 105 0.2593161 0.07921238 105 0.3982738 0.004311464 105 0.2950783 0.0007555375 105 0.2076696 0.09586794
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/ | grep "Nov 10" | awk '{ print $9 }'`; do echo $i; zcat /mnt/gluster/data/external_private_supp/Stein2016/$i | wc; zcat /mnt/gluster/data/external_private_supp/Stein2016/$i | grep -v NoDir | wc; done
+LPSGemma_Grp2_4cyto.IFN.g_lps.txt.gz
+4111638 28781466 145843209
+4111637 28781459 145843164
+LPSGemma_Grp2_4cyto.IL.12p70_lps.txt.gz
+4111638 28781466 145829039
+4111637 28781459 145828994
+LPSGemma_Grp2_4cyto.IL.23_lps.txt.gz
+4111638 28781466 145828947
+4111637 28781459 145828902
+LPSGemma_Grp2_4cyto.TNF.a_lps.txt.gz
+4111638 28781465 145831161
+4111637 28781459 145831120
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.TNF.a_lps.txt.gz | head -n 10
+Chr BP  MAF     A1      Direction       pValue  N
+"ps" "MAF"      "ref_allele"    "n"     NoDir   "beta"
+1  785989       0.075   3       +       0.03167614      107
+1  1003629      0.245   5       -       0.9281819       106
+1  1211292      0.168   3       +       0.7455785       107
+1  1478153      0.36    5       -       0.4586944       107
+1  1500941      0.36    2       -       0.4586944       107
+1  1510801      0.304   3       -       0.6877749       107
+1  1692321      0.467   5       -       0.07895722      107
+1  1721479      0.379   3       +       0.06788764      107
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/*.No0Dir.txt.gz | awk '{ print $9; }'`; do echo $i; zcat $i | awk '{ if ($6 < .00000005) { print $0 } } '; done
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IFN.g_lps.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.12p70_lps.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.23_lps.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.TNF.a_lps.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.10_cd.No0Dir.txt.gz
+1  54381839     0.107   3       +       4.212424e-08    84
+1  54382357     0.107   3       +       4.212424e-08    84
+1  54390466     0.107   3       +       4.212424e-08    84
+18 69130485     0.087   3       +       4.805697e-08    86
+18 69131983     0.087   2       +       4.805697e-08    86
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.13_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.15_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.23_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.4_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.5_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.9_cd.No0Dir.txt.gz
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/*.No0Dir.txt.gz | awk '{ print $9; }'`; do echo $i.5e8.GWASHits.ChrBP.txt; cat $i.5e8.GWASHits.ChrBP.txt | wc; done
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IFN.g_lps.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+      0       0       0
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.12p70_lps.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+      0       0       0
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.23_lps.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+      0       0       0
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.TNF.a_lps.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+      0       0       0
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.10_cd.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+      5      10      57
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.13_cd.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+      0       0       0
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.15_cd.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+      0       0       0
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.23_cd.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+      0       0       0
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.4_cd.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+      0       0       0
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.5_cd.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+      0       0       0
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.9_cd.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt
+      0       0       0
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.*.No0Dir.txt.gz | awk '{ print $9; }'`; do echo $i; zcat $i | awk '{ if ($6 < .00000005) { print $0 } } '; done
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.13_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.15_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.22_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.33_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.4_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.5_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.9_cd.No0Dir.txt.gz
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.*.No0Dir.txt.gz | awk '{ print $9; }'`; do echo $i; zcat $i | awk '{ if ($6 < .00000005) { print $0 } } '; done
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.GMCSF_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IFN.g_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.1b_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.2_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.6_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.MIP3A_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.TNF.a_cd.No0Dir.txt.gz
+/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.TNF.b_cd.No0Dir.txt.gz
+~~~
+
+R -q -e "library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+IFN.g_lps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IFN.g_lps.No0Dir.txt.gz", header=T)
+IL.12p70_lps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.12p70_lps.No0Dir.txt.gz", header=T)
+IL.23_lps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.IL.23_lps.No0Dir.txt.gz", header=T)
+TNF.a_lps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp2_4cyto.TNF.a_lps.No0Dir.txt.gz", header=T)
+GWASsnps <- NULL
+#GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+#names(GWASsnps) <- c("Chr", "BP")
+#bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+#print(bmassOutput1);" > shana1.txt
+DataSources = c("IFN.g_lps", "IL.12p70_lps", "IL.23_lps", "TNF.a_lps"); NminThreshold = 1; bmassSeedValue=150;
+ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-4; SNPMarginalMultivariateThreshold = 1e-4; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=TRUE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+
+#All steps up to Finalize
+
+set.seed(99)
+MarginalSNPs_PrunedList <- indephits(jitter(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, factor=.0001), bmassOutput$MarginalSNPs$SNPs$Chr, bmassOutput$MarginalSNPs$SNPs$BP, T=PruneMarginalSNPs_bpWindow)
+bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MarginalSNPs$SNPs[MarginalSNPs_PrunedList==1,]
+bmassOutput$MarginalSNPs$logBFs <- bmassOutput$MarginalSNPs$logBFs[,MarginalSNPs_PrunedList==1]
+
+#Posteriors <- posteriorprob(bmassOutput$MarginalSNPs$logBFs, normalize(rep(c(0,ModelPriors[-1]),length(SigmaAlphas))))
+Posteriors <- posteriorprob(bmassOutput$MarginalSNPs$logBFs, bmassOutput$ModelPriors)
+
+Posteriors.marginals <- marginal.postprobs(Posteriors, bmassOutput$Models, length(SigmaAlphas))
+Posteriors.marginals.DirAssoc <- t(Posteriors.marginals[[2]])
+Posteriors.marginals.DirAssoc <- data.frame(cbind(as.character(bmassOutput$MarginalSNPs$SNPs$ChrBP), Posteriors.marginals.DirAssoc))
+Posteriors.marginals.DirAssoc[,2] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,2]))
+Posteriors.marginals.DirAssoc[,3] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,3]))
+Posteriors.marginals.DirAssoc[,4] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,4]))
+Posteriors.marginals.DirAssoc[,5] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,5]))
+colnames(Posteriors.marginals.DirAssoc) <- c("snp", "IFN.g_lps", "IL.12p70_lps", "IL.23_lps", "TNF.a_lps")
+Posteriors.marginals.DirAssoc.Subset <- Posteriors.marginals.DirAssoc[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,]
+Posteriors.marginals.DirAssoc <- Posteriors.marginals.DirAssoc[order(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, decreasing=TRUE),]
+Posteriors.marginals.DirAssoc.Subset <- Posteriors.marginals.DirAssoc.Subset[order(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,]$logBFWeightedAvg, decreasing=TRUE),]
+
+Z <- cbind(bmassOutput$MergedDataSources$IFN.g_lps_ZScore, bmassOutput$MergedDataSources$IL.12p70_lps_ZScore, bmassOutput$MergedDataSources$IL.23_lps_ZScore, bmassOutput$MergedDataSources$TNF.a_lps_ZScore)
+Z.Directions <- apply(Z, c(1,2), function(x) { y <- 0; if (x > 0) { y <- 1; } else if (x < 0) { y <- -1; } else if (x == 0) { y <- 0; } else { y <- NA; }; return(y);})
+Z.Directions.marginals <- Z.Directions[as.numeric(row.names(bmassOutput$MarginalSNPs$SNPs)),][order(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, decreasing=TRUE),]
+
+Posteriors.marginals.DirAssoc.wDir <- Posteriors.marginals.DirAssoc
+Posteriors.marginals.DirAssoc.wDir[,2:5] <- Posteriors.marginals.DirAssoc[,2:5] * Z.Directions.marginals
+Posteriors.marginals.DirAssoc.Subset.wDir <- Posteriors.marginals.DirAssoc.Subset
+Posteriors.marginals.DirAssoc.Subset.wDir[,2:5] <- Posteriors.marginals.DirAssoc.Subset[,2:5] * Z.Directions.marginals[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,][order(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,]$logBFWeightedAvg, decreasing=TRUE),]
+
+library(ggplot2)
+library(reshape2)
+
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.LPSGemma_Grp2_4cyto.Marginals.HeatPlot.All.vs1.jpeg", width=6000, height=2000, res=300)
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.LPSGemma_Grp2_4cyto.Marginals.HeatPlot.Subset.vs1.jpeg", width=6000, height=2000, res=300)
+jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.LPSGemma_Grp2_4cyto.Marginals.HeatPlot.Subset.wDir.vs1.jpeg", width=6000, height=2000, res=300)
+
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc[hclust(dist(Posteriors.marginals.DirAssoc[,2:5]))$order,])
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc.wDir[hclust(dist(Posteriors.marginals.DirAssoc.wDir[,2:5]))$order,])
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:5]))$order,])
+ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset.wDir[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:5]))$order,])
+#ggPlotData$snp <- factor(ggPlotData$snp, levels=Posteriors.marginals.DirAssoc[,1][hclust(dist(Posteriors.marginals.DirAssoc[,2:5]))$order])
+ggPlotData$snp <- factor(ggPlotData$snp, levels=Posteriors.marginals.DirAssoc.Subset[,1][hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:5]))$order])
+
+#ggplot(ggPlotData, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue") + coord_flip() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(ggPlotData, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradientn(colours=c("darkred", "white", "steelblue")) + coord_flip() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+dev.off()
+
+
+
+R output
+~~~
+>         bmassOutput[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput$MarginalSNPs, bmassOutput$ZScoresCorMatrix, SigmaAlphas, bmassOutput$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+> length(bmassOutput$ModelPriors)                                                                                                                                                                                              [1] 81
+>         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+> length(bmassOutput$ModelPriors)                                                                                                                                                                                              [1] 1134
+> dim(bmassOutput$MarginalSNPs$SNPs)
+[1] 3339   28
+> dim(bmassOutput$MergedDataSources)
+[1] 4133176      22
+> Posteriors <- posteriorprob(bmassOutput$MarginalSNPs$logBFs, bmassOutput$ModelPriors)
+> 
+> dim(Posteriors)
+[1] 1134 3339
+> MarginalSNPs_PrunedList <- indephits(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, bmassOutput$MarginalSNPs$SNPs$Chr, bmassOutput$MarginalSNPs$SNPs$BP, T=PruneMarginalSNPs_bpWindow)
+> length(MarginalSNPs_PrunedList)
+[1] 3339
+> length(MarginalSNPs_PrunedList[MarginalSNPs_PrunedList==1])
+[1] 878
+> bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MarginalSNPs$SNPs[MarginalSNPs_PrunedList==1,]
+> dim(bmassOutput$MarginalSNPs$SNPs)
+[1] 878  28
+> bmassOutput$MarginalSNPs$logBFs <- bmassOutput$MarginalSNPs$logBFs[,MarginalSNPs_PrunedList==1]
+> dim(bmassOutput$MarginalSNPs$logBFs)
+[1] 1134  878
+> head(Posteriors.marginals.DirAssoc)
+            snp IFN.g_lps IL.12p70_lps IL.23_lps TNF.a_lps
+796 9_110439352 0.6455953    0.7162374 0.9539106 0.8527608
+797 9_110440040 0.6455953    0.7162374 0.9539106 0.8527608
+431 3_159461456 0.4590177    0.9812005 0.4314724 0.3847088
+120 13_83803328 0.7664079    0.5308406 0.9483302 0.4956707
+164  1_74443864 0.9352095    0.5732003 0.8019028 0.5249784
+681  6_31341672 0.8386581    0.6368238 0.5243734 0.6475138
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > 1,])
+[1] 14 28
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .8,])
+[1] 57 28
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .7,])
+[1] 70 28
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,])
+[1] 320  28
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,])
+[1] 259  28
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .6,])
+[1] 125  28
+> set.seed(99)
+> MarginalSNPs_PrunedList <- indephits(jitter(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, factor=.0001), bmassOutput$MarginalSNPs$SNPs$Chr, bmassOutput$MarginalSNPs$SNPs$BP, T=PruneMarginalSNPs_bpWindow)
+> dim(bmassOutput$MarginalSNPs$SNPs[MarginalSNPs_PrunedList==1,])
+[1] 322  28
+> dim(Posteriors.marginals.DirAssoc[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .6,])
+[1] 45  5
+> dim(Posteriors.marginals.DirAssoc[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,])
+[1] 75  5
+> dim(Posteriors.marginals.DirAssoc[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,])
+[1] 107   5
+> dim(Posteriors.marginals.DirAssoc[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .3,])
+[1] 163   5
+.
+.
+.
+> head(bmassOutput$MarginalSNPs$SNPs[order(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, decreasing=TRUE),][bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,][order(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,]$logBFWeightedAvg, decreasing=TRUE),grep("ZScore", colnames(bmassOutput$MarginalSNPs$SNPs))])
+        IFN.g_lps_ZScore IL.12p70_lps_ZScore IL.23_lps_ZScore TNF.a_lps_ZScore
+80539          0.7543900            2.508924         2.076325         4.021061
+2513824       -1.4191555           -3.413513        -4.746484        -1.533014
+2543392        1.6915443            4.042268         3.764491         2.218352
+3746817       -2.1217845           -4.291384        -4.157887        -2.984210
+891361        -0.6239513           -1.749292        -3.984162        -1.414049
+289306        -1.6276081           -2.251459        -4.054636        -1.689122
+> head(Z.Directions.marginals[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,][order(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,]$logBFWeightedAvg, decreasing=TRUE),])
+     [,1] [,2] [,3] [,4]
+[1,]    1    1    1    1
+[2,]   -1   -1   -1   -1
+[3,]    1    1    1    1
+[4,]   -1   -1   -1   -1
+[5,]   -1   -1   -1   -1
+[6,]   -1   -1   -1   -1
+>  head(bmassOutput$MarginalSNPs$SNPs[order(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, decreasing=TRUE),grep("ZScore", colnames(bmassOutput$MarginalSNPs$SNPs))]) 
+        IFN.g_lps_ZScore IL.12p70_lps_ZScore IL.23_lps_ZScore TNF.a_lps_ZScore
+3975078        -2.914954           -3.733187       -5.1011847       -4.3081857
+2447868         2.040181            5.176852        1.7913587        0.9863100
+962564          3.142782            1.557326        4.3938535        0.9301112
+1446412        -4.448188           -1.777171       -3.4890046       -1.7314800
+3364431        -2.406673            1.500273       -0.6493787        1.8072121
+3980616        -2.860371           -1.849111       -3.6156639       -4.6984744
+> head(Z.Directions.marginals)
+     [,1] [,2] [,3] [,4]
+[1,]   -1   -1   -1   -1
+[2,]    1    1    1    1
+[3,]    1    1    1    1
+[4,]   -1   -1   -1   -1
+[5,]   -1    1   -1    1
+[6,]   -1   -1   -1   -1
+> bmassOutput$ZScoresCorMatrix
+                    IFN.g_lps_ZScore IL.12p70_lps_ZScore IL.23_lps_ZScore
+IFN.g_lps_ZScore           1.0000000           0.5298928        0.2987746
+IL.12p70_lps_ZScore        0.5298928           1.0000000        0.4538220
+IL.23_lps_ZScore           0.2987746           0.4538220        1.0000000
+TNF.a_lps_ZScore           0.3702133           0.2987075        0.4114108
+                    TNF.a_lps_ZScore
+IFN.g_lps_ZScore           0.3702133
+IL.12p70_lps_ZScore        0.2987075
+IL.23_lps_ZScore           0.4114108
+TNF.a_lps_ZScore           1.0000000
+~~~
+
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $7 "\t" $8 "\t" $6 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.13_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $10 "\t" $11 "\t" $9 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.15_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $13 "\t" $14 "\t" $12 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.22_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $16 "\t" $17 "\t" $15 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.33_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $19 "\t" $20 "\t" $18 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.4_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $22 "\t" $23 "\t" $21 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.5_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $25 "\t" $26 "\t" $24 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.9_cd.txt.gz
+
+zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.13_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.13_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.15_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.15_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.22_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.22_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.33_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.33_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.4_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.4_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.5_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.5_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.9_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.9_cd.No0Dir.txt.gz
+
+
+~~~
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$cat /mnt/gluster/data/external_private_supp/Stein2016/LPSCytoNames_Grp1_7cyto.txt
+"x"
+"1" "IL.13_lps"
+"2" "IL.15_lps"
+"3" "IL.22_lps"
+"4" "IL.33_lps"
+"5" "IL.4_lps"
+"6" "IL.5_lps"
+"7" "IL.9_lps"
+.
+.
+.
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1]$cat /mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.txt | grep 38835018
+"8660543" 12 38835018 0.103 3 107 -0.05477269 0.7036978 107 -0.116289 0.3576457 107 -0.1468588 0.1730663 107 -0.01469994 0.8610959 107 0.02006067 0.8910973 107 -0.3119887 0.008564315 107 -0.02922608 0.8188888
+"8660544" 12 38835018 0.057 4 105 0.09579013 0.6321584 105 0.1450891 0.396663 105 0.1244478 0.4137071 105 0.1521323 0.1867208 105 0.3513101 0.07425048 105 0.3434218 0.02119242 105 0.2985855 0.08172489
+
+~~~
+
+
+R -q -e "library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+IL.13_lps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.13_cd.No0Dir.txt.gz", header=T)
+IL.15_lps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.15_cd.No0Dir.txt.gz", header=T)
+IL.22_lps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.22_cd.No0Dir.txt.gz", header=T)
+IL.33_lps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.33_cd.No0Dir.txt.gz", header=T)
+IL.4_lps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.4_cd.No0Dir.txt.gz", header=T)
+IL.5_lps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.5_cd.No0Dir.txt.gz", header=T)
+IL.9_lps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/LPSGemma_Grp1_7cyto.IL.9_cd.No0Dir.txt.gz", header=T)
+GWASsnps <- NULL
+#GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+#names(GWASsnps) <- c("Chr", "BP")
+#bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+#print(bmassOutput1);" > shana1.txt
+DataSources = c("IL.13_lps", "IL.15_lps", "IL.22_lps", "IL.33_lps", "IL.4_lps", "IL.5_lps", "IL.9_lps"); NminThreshold = 1; bmassSeedValue=150;
+ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-4; SNPMarginalMultivariateThreshold = 1e-4; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=TRUE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+
+#After merging
+
+Z <- cbind(bmassOutput$MergedDataSources$IL.13_lps_ZScore, bmassOutput$MergedDataSources$IL.15_lps_ZScore, bmassOutput$MergedDataSources$IL.22_lps_ZScore, bmassOutput$MergedDataSources$IL.33_lps_ZScore, bmassOutput$MergedDataSources$IL.4_lps_ZScore, bmassOutput$MergedDataSources$IL.5_lps_ZScore, bmassOutput$MergedDataSources$IL.9_lps_ZScore)
+dim(bmassOutput$MergedDataSources)
+dim(bmassOutput$MergedDataSources[!duplicated(bmassOutput$MergedDataSources[,1]),])
+bmassOutput$MergedDataSources <- bmassOutput$MergedDataSources[!duplicated(bmassOutput$MergedDataSources[,1]),]
+
+#All steps up to Finalize
+
+set.seed(99)
+MarginalSNPs_PrunedList <- indephits(jitter(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, factor=.0001), bmassOutput$MarginalSNPs$SNPs$Chr, bmassOutput$MarginalSNPs$SNPs$BP, T=PruneMarginalSNPs_bpWindow)
+bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MarginalSNPs$SNPs[MarginalSNPs_PrunedList==1,]
+bmassOutput$MarginalSNPs$logBFs <- bmassOutput$MarginalSNPs$logBFs[,MarginalSNPs_PrunedList==1]
+
+#Posteriors <- posteriorprob(bmassOutput$MarginalSNPs$logBFs, normalize(rep(c(0,ModelPriors[-1]),length(SigmaAlphas))))
+Posteriors <- posteriorprob(bmassOutput$MarginalSNPs$logBFs, bmassOutput$ModelPriors)
+
+Posteriors.marginals <- marginal.postprobs(Posteriors, bmassOutput$Models, length(SigmaAlphas))
+Posteriors.marginals.DirAssoc <- t(Posteriors.marginals[[2]])
+Posteriors.marginals.DirAssoc <- data.frame(cbind(as.character(bmassOutput$MarginalSNPs$SNPs$ChrBP), Posteriors.marginals.DirAssoc))
+Posteriors.marginals.DirAssoc[,2] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,2]))
+Posteriors.marginals.DirAssoc[,3] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,3]))
+Posteriors.marginals.DirAssoc[,4] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,4]))
+Posteriors.marginals.DirAssoc[,5] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,5]))
+Posteriors.marginals.DirAssoc[,6] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,6]))
+Posteriors.marginals.DirAssoc[,7] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,7]))
+Posteriors.marginals.DirAssoc[,8] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,8]))
+colnames(Posteriors.marginals.DirAssoc) <- c("snp", "IL.13_lps", "IL.15_lps", "IL.22_lps", "IL.33_lps", "IL.4_lps", "IL.5_lps", "IL.9_lps")
+Posteriors.marginals.DirAssoc.Subset <- Posteriors.marginals.DirAssoc[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,]
+Posteriors.marginals.DirAssoc <- Posteriors.marginals.DirAssoc[order(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, decreasing=TRUE),]
+Posteriors.marginals.DirAssoc.Subset <- Posteriors.marginals.DirAssoc.Subset[order(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,]$logBFWeightedAvg, decreasing=TRUE),]
+
+#Z <- cbind(bmassOutput$MergedDataSources$IL.13_lps_ZScore, bmassOutput$MergedDataSources$IL.15_lps_ZScore, bmassOutput$MergedDataSources$IL.22_lps_ZScore, bmassOutput$MergedDataSources$IL.33_lps_ZScore, bmassOutput$MergedDataSources$IL.4_lps_ZScore, bmassOutput$MergedDataSources$IL.5_lps_ZScore, bmassOutput$MergedDataSources$IL.9_lps_ZScore)
+Z.Directions <- apply(Z, c(1,2), function(x) { y <- 0; if (x > 0) { y <- 1; } else if (x < 0) { y <- -1; } else if (x == 0) { y <- 0; } else { y <- NA; }; return(y);})
+Z.Directions.marginals <- Z.Directions[as.numeric(row.names(bmassOutput$MarginalSNPs$SNPs)),][order(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, decreasing=TRUE),]
+
+Posteriors.marginals.DirAssoc.wDir <- Posteriors.marginals.DirAssoc
+Posteriors.marginals.DirAssoc.wDir[,2:8] <- Posteriors.marginals.DirAssoc[,2:8] * Z.Directions.marginals
+Posteriors.marginals.DirAssoc.Subset.wDir <- Posteriors.marginals.DirAssoc.Subset
+Posteriors.marginals.DirAssoc.Subset.wDir[,2:8] <- Posteriors.marginals.DirAssoc.Subset[,2:8] * Z.Directions.marginals[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,][order(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,]$logBFWeightedAvg, decreasing=TRUE),]
+
+library(ggplot2)
+library(reshape2)
+
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.LPSGemma_Grp1_7cyto.Marginals.HeatPlot.All.vs1.jpeg", width=6000, height=2000, res=300)
+jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.LPSGemma_Grp1_7cyto.Marginals.HeatPlot.Subset.vs1.jpeg", width=6000, height=2000, res=300)
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.LPSGemma_Grp1_7cyto.Marginals.HeatPlot.Subset.wDir.vs1.jpeg", width=6000, height=2000, res=300)
+
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc[hclust(dist(Posteriors.marginals.DirAssoc[,2:8]))$order,])
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc.wDir[hclust(dist(Posteriors.marginals.DirAssoc.wDir[,2:8]))$order,])
+ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:8]))$order,])
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset.wDir[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:8]))$order,])
+#ggPlotData$snp <- factor(ggPlotData$snp, levels=Posteriors.marginals.DirAssoc[,1][hclust(dist(Posteriors.marginals.DirAssoc[,2:8]))$order])
+ggPlotData$snp <- factor(ggPlotData$snp, levels=Posteriors.marginals.DirAssoc.Subset[,1][hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:8]))$order])
+
+ggplot(ggPlotData, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue") + coord_flip() + theme(axis.text.x = element_text(angle = 91, hjust = 1))
+#ggplot(ggPlotData, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradientn(colours=c("darkred", "white", "steelblue")) + coord_flip() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+dev.off()
+
+
+R output
+~~~
+> DataSources
+[1] "IL.13_lps" "IL.15_lps" "IL.22_lps" "IL.33_lps" "IL.4_lps"  "IL.5_lps" 
+[7] "IL.9_lps" 
+> dim(bmassOutput$MergedDataSources)
+[1] 4306978      33
+> library("pryr")
+> object_size(bmassOutput$MergedDataSources)
+1.07 GB
+.
+.
+.
+> dim(IL.13_lps)
+[1] 4111636       7
+> length(IL.13_lps)
+[1] 7
+> length(IL.13_lps[,2])
+[1] 4111636
+> length(unique(IL.13_lps[,2]))
+[1] 4065059
+"IL.13_lps", "IL.15_lps", "IL.22_lps", "IL.33_lps", "IL.4_lps", "IL.5_lps", "IL.9_lps")
+.
+.
+.
+> val1 <- paste(IL.13_lps[,1], IL.13_lps[,2], sep="_")
+> length(val1)
+[1] 4111636
+> length(unique(val1))
+[1] 4110101
+> for (i in round(runif(5,1,length(IL.13_lps[duplicated(val1),2])))) { print(IL.13_lps[IL.13_lps[,2]==IL.13_lps[duplicated(val1),][i,2],]);}
+        Chr       BP   MAF A1 Direction    pValue   N
+2996609  12 38835018 0.103  3         - 0.7036978 107
+2996610  12 38835018 0.057  4         + 0.6321584 105
+        Chr       BP   MAF A1 Direction    pValue   N
+1415666   5 84448958 0.397  5         + 0.3122069 107
+1415667   5 84448958 0.397  2         + 0.3122069 107
+        Chr       BP   MAF A1 Direction    pValue   N
+3309267  14 40118357 0.269  2         + 0.3767578 104
+3309268  14 40118357 0.269  3         + 0.3767578 104
+        Chr        BP   MAF A1 Direction    pValue   N
+1439241   5 100493344 0.055  5         + 0.2971801 100
+1439242   5 100493344 0.416  2         + 0.6908818 107
+       Chr       BP   MAF A1 Direction    pValue   N
+361176   2 29373764 0.387  2         + 0.2799848 106
+361177   2 29373764 0.387  4         + 0.2799848 106
+> head(bmassOutput$MarginalSNPs$SNPs[order(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, decreasing=TRUE),], n=5)
+              ChrBP Chr       BP   MAF A1 IL.13_lps_Direction IL.13_lps_pValue
+3568986  6_64412189   6 64412189 0.420  4                   +      0.038144890
+991649  13_78752332  13 78752332 0.416  3                   -      0.008028971
+3568978  6_64412189   6 64412189 0.420  4                   +      0.038144890
+3568987  6_64412189   6 64412189 0.420  4                   +      0.038144890
+991657  13_78752332  13 78752332 0.416  3                   -      0.008028971
+        IL.13_lps_N IL.13_lps_ZScore IL.15_lps_Direction IL.15_lps_pValue
+3568986         106         2.073294                   +       0.02950447
+991649          107        -2.650849                   -       0.03426028
+3568978         106         2.073294                   +       0.02950447
+3568987         106         2.073294                   +       0.02950447
+991657          107        -2.650849                   -       0.03426028
+> length(unique(bmassOutput$MergedDataSources[,1]))
+[1] 4110101
+> dim(bmassOutput$MergedDataSources)
+[1] 4306978      34
+.
+.
+.
+> bmassOutput$MergedDataSources[bmassOutput$MergedDataSources[,1] %in% head(unique(bmassOutput$MergedDataSources[,1])),1:5]
+         ChrBP Chr        BP   MAF A1
+1 10_100000625  10 100000625 0.402  2
+2 10_100000645  10 100000645 0.280  2
+3 10_100003785  10 100003785 0.318  5
+4 10_100004360  10 100004360 0.280  4
+5 10_100004441  10 100004441 0.318  3
+6 10_100004906  10 100004906 0.402  3
+> dim(bmassOutput$MergedDataSources[bmassOutput$MergedDataSources[,1] %in% unique(bmassOutput$MergedDataSources[,1]),])
+[1] 4306978      34
+> FALSE %in% c(bmassOutput$MergedDataSources[,1] %in% unique(bmassOutput$MergedDataSources[,1]))
+[1] FALSE
+> head(unique(bmassOutput$MergedDataSources[,1]))
+[1] "10_100000625" "10_100000645" "10_100003785" "10_100004360" "10_100004441"
+[6] "10_100004906"
+> head(bmassOutput$MergedDataSources[,1])
+[1] "10_100000625" "10_100000645" "10_100003785" "10_100004360" "10_100004441"
+[6] "10_100004906"
+> length(unique(bmassOutput$MergedDataSources[,1]))
+[1] 4110101
+> length(bmassOutput$MergedDataSources[,1])
+[1] 4306978
+> "nana" %in% unique(bmassOutput$MergedDataSources[,1])
+[1] FALSE
+> dim(bmassOutput$MergedDataSources[!duplicated(bmassOutput$MergedDataSources[,1]),])
+[1] 4110101      34
+> table(duplicated(bmassOutput$MergedDataSources[,1]))
+
+  FALSE    TRUE 
+4110101  196877 
+.
+.
+.
+> dim(bmassOutput$MergedDataSources)
+[1] 4306978      33
+> dim(bmassOutput$MergedDataSources[!duplicated(bmassOutput$MergedDataSources[,1]),])
+[1] 4110101      33
+> bmassOutput$MergedDataSources <- bmassOutput$MergedDataSources[!duplicated(bmassOutput$MergedDataSources[,1]),]
+.
+.
+.
+> bmassOutput$ZScoresCorMatrix
+                 IL.13_lps_ZScore IL.15_lps_ZScore IL.22_lps_ZScore
+IL.13_lps_ZScore       1.00000000        0.1610763        0.5510241
+IL.15_lps_ZScore       0.16107632        1.0000000        0.2315951
+IL.22_lps_ZScore       0.55102411        0.2315951        1.0000000
+IL.33_lps_ZScore       0.08358425        0.1926497        0.3722365
+IL.4_lps_ZScore        0.35730252        0.3550513        0.2187726
+IL.5_lps_ZScore        0.30340116        0.2139177        0.4099843
+IL.9_lps_ZScore        0.27226482        0.3704924        0.3687152
+                 IL.33_lps_ZScore IL.4_lps_ZScore IL.5_lps_ZScore
+IL.13_lps_ZScore       0.08358425       0.3573025       0.3034012
+IL.15_lps_ZScore       0.19264970       0.3550513       0.2139177
+IL.22_lps_ZScore       0.37223650       0.2187726       0.4099843
+IL.33_lps_ZScore       1.00000000       0.2018183       0.3293138
+IL.4_lps_ZScore        0.20181829       1.0000000       0.4059243
+IL.5_lps_ZScore        0.32931375       0.4059243       1.0000000
+IL.9_lps_ZScore        0.22918768       0.3697856       0.4430454
+                 IL.9_lps_ZScore
+IL.13_lps_ZScore       0.2722648
+IL.15_lps_ZScore       0.3704924
+IL.22_lps_ZScore       0.3687152
+IL.33_lps_ZScore       0.2291877
+IL.4_lps_ZScore        0.3697856
+IL.5_lps_ZScore        0.4430454
+IL.9_lps_ZScore        1.0000000
+> quantile(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg)
+       0%       25%       50%       75%      100% 
+0.0399808 0.1034739 0.1926883 0.3099051 1.9484681 
+
+~~~
+
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $7 "\t" $8 "\t" $6 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.GMCSF_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $10 "\t" $11 "\t" $9 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IFN.g_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $13 "\t" $14 "\t" $12 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.1b_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $16 "\t" $17 "\t" $15 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.2_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $19 "\t" $20 "\t" $18 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.6_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $22 "\t" $23 "\t" $21 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.MIP3A_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $25 "\t" $26 "\t" $24 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.TNF.a_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $28 "\t" $29 "\t" $27 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.TNF.b_cd.txt.gz
+
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.GMCSF_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.GMCSF_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IFN.g_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IFN.g_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.1b_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.1b_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.2_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.2_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.6_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.6_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.MIP3A_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.MIP3A_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.TNF.a_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.TNF.a_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.TNF.b_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.TNF.b_cd.No0Dir.txt.gz
+
+~~~
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$cat /mnt/gluster/data/external_private_supp/Stein2016/CDCytoNames_Grp1_8cyto.txt 
+"x"
+"1" "GMCSF_cd"
+"2" "IFN.g_cd"
+"3" "IL.1b_cd"
+"4" "IL.2_cd"
+"5" "IL.6_cd"
+"6" "MIP3A_cd"
+"7" "TNF.a_cd"
+"8" "TNF.b_cd"
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.txt | head -n 10
+"chr" "ps" "MAF" "ref_allele" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val"
+"1062" 1 785989 0.087 3 86 0.4753319 0.01061618 86 0.2197598 0.3183647 86 0.2210381 0.3255201 86 0.187842 0.3723487 86 0.2449633 0.2571314 86 0.07485174 0.678315 86 0.3543271 0.09536621 86 0.05587719 0.7710176
+"2548" 1 1003629 0.276 5 85 -0.01874137 0.8859609 85 -0.02415705 0.875509 85 -0.1152311 0.4570165 85 0.05774578 0.689072 85 -0.1029904 0.4898695 85 0.00468391 0.9701497 85 -0.08071752 0.5729249 85 0.2442303 0.06176981
+"3767" 1 1211292 0.186 3 86 0.06657314 0.6393984 86 0.05952447 0.7213611 86 0.09887736 0.555756 86 0.203982 0.1981636 86 -0.06036034 0.708823 86 -0.01133245 0.9331616 86 0.04546671 0.76769 86 0.1638528 0.2545144
+"5323" 1 1478153 0.36 5 86 -0.06763584 0.5852594 86 0.06765619 0.625145 86 -0.003029514 0.9818628 86 0.225764 0.06889433 86 0.04086542 0.7499444 86 0.1278392 0.2288152 86 0.07449873 0.5413528 86 0.2661852 0.01698087
+"5442" 1 1500941 0.36 2 86 -0.06763584 0.5852594 86 0.06765619 0.625145 86 -0.003029514 0.9818628 86 0.225764 0.06889433 86 0.04086542 0.7499444 86 0.1278392 0.2288152 86 0.07449873 0.5413528 86 0.2661852 0.01698087
+"5511" 1 1510801 0.32 3 86 0.1114195 0.3469383 86 0.1488356 0.2525479 86 -0.03336247 0.8010324 86 0.3473009 0.002596369 86 -0.014909 0.9068666 86 0.09294869 0.3795356 86 0.1192796 0.3241256 86 0.2558212 0.02109778
+"6774" 1 1692321 0.43 5 86 -0.1597153 0.106821 86 -0.03440904 0.7806821 86 0.06172808 0.6096533 86 -0.2517566 0.01945874 86 0.06916918 0.5521142 86 -0.06571159 0.4970195 86 -0.1194525 0.2795911 86 -0.01399911 0.8919315
+"6884" 1 1721479 0.395 3 86 0.1364934 0.1578405 86 0.1333809 0.2487149 86 0.007127612 0.9492402 86 0.1584345 0.1458642 86 -0.09415163 0.3811464 86 0.05585931 0.5464744 86 0.1793559 0.07755196 86 -0.03496942 0.713697
+"6888" 1 1722932 0.399 3 84 0.1242914 0.2062543 84 0.1204675 0.3034659 84 -0.01213535 0.9146448 84 0.1475215 0.1815631 84 -0.113025 0.2980433 84 0.05233822 0.576433 84 0.1682488 0.1020359 84 -0.0477868 0.6199267
+
+~~~
+
+R -q -e "library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+GMCSF_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.GMCSF_cd.No0Dir.txt.gz", header=T)
+IFN.g_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IFN.g_cd.No0Dir.txt.gz", header=T)
+IL.1b_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.1b_cd.No0Dir.txt.gz", header=T)
+IL.2_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.2_cd.No0Dir.txt.gz", header=T)
+IL.6_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.IL.6_cd.No0Dir.txt.gz", header=T)
+MIP3A_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.MIP3A_cd.No0Dir.txt.gz", header=T)
+TNF.a_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.TNF.a_cd.No0Dir.txt.gz", header=T)
+TNF.b_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp1_8cyto.TNF.b_cd.No0Dir.txt.gz", header=T)
+GWASsnps <- NULL
+#GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+#names(GWASsnps) <- c("Chr", "BP")
+#bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+#print(bmassOutput1);" > shana1.txt
+DataSources = c("GMCSF_cd", "IFN.g_cd", "IL.1b_cd", "IL.2_cd", "IL.6_cd", "MIP3A_cd", "TNF.a_cd", "TNF.b_cd"); NminThreshold = 1; bmassSeedValue=150;
+ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-4; SNPMarginalMultivariateThreshold = 1e-4; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=TRUE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+
+#After merging
+
+Z <- cbind(bmassOutput$MergedDataSources$GMCSF_cd_ZScore, bmassOutput$MergedDataSources$IFN.g_cd_ZScore, bmassOutput$MergedDataSources$IL.1b_cd_ZScore, bmassOutput$MergedDataSources$IL.2_cd_ZScore, bmassOutput$MergedDataSources$IL.6_cd_ZScore, bmassOutput$MergedDataSources$MIP3A_cd_ZScore, bmassOutput$MergedDataSources$TNF.a_cd_ZScore, bmassOutput$MergedDataSources$TNF.b_cd_ZScore)
+dim(bmassOutput$MergedDataSources)
+dim(bmassOutput$MergedDataSources[!duplicated(bmassOutput$MergedDataSources[,1]),])
+bmassOutput$MergedDataSources <- bmassOutput$MergedDataSources[!duplicated(bmassOutput$MergedDataSources[,1]),]
+
+#All steps up to Finalize
+
+set.seed(99)
+MarginalSNPs_PrunedList <- indephits(jitter(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, factor=.0001), bmassOutput$MarginalSNPs$SNPs$Chr, bmassOutput$MarginalSNPs$SNPs$BP, T=PruneMarginalSNPs_bpWindow)
+bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MarginalSNPs$SNPs[MarginalSNPs_PrunedList==1,]
+bmassOutput$MarginalSNPs$logBFs <- bmassOutput$MarginalSNPs$logBFs[,MarginalSNPs_PrunedList==1]
+
+#Posteriors <- posteriorprob(bmassOutput$MarginalSNPs$logBFs, normalize(rep(c(0,ModelPriors[-1]),length(SigmaAlphas))))
+Posteriors <- posteriorprob(bmassOutput$MarginalSNPs$logBFs, bmassOutput$ModelPriors)
+
+Posteriors.marginals <- marginal.postprobs(Posteriors, bmassOutput$Models, length(SigmaAlphas))
+Posteriors.marginals.DirAssoc <- t(Posteriors.marginals[[2]])
+Posteriors.marginals.DirAssoc <- data.frame(cbind(as.character(bmassOutput$MarginalSNPs$SNPs$ChrBP), Posteriors.marginals.DirAssoc))
+Posteriors.marginals.DirAssoc[,2] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,2]))
+Posteriors.marginals.DirAssoc[,3] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,3]))
+Posteriors.marginals.DirAssoc[,4] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,4]))
+Posteriors.marginals.DirAssoc[,5] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,5]))
+Posteriors.marginals.DirAssoc[,6] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,6]))
+Posteriors.marginals.DirAssoc[,7] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,7]))
+Posteriors.marginals.DirAssoc[,8] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,8]))
+Posteriors.marginals.DirAssoc[,9] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,9]))
+colnames(Posteriors.marginals.DirAssoc) <- c("snp", "GMCSF_cd", "IFN.g_cd", "IL.1b_cd", "IL.2_cd", "IL.6_cd", "MIP3A_cd", "TNF.a_cd", "TNF.b_cd")
+Posteriors.marginals.DirAssoc.Subset <- Posteriors.marginals.DirAssoc[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .3,]
+Posteriors.marginals.DirAssoc <- Posteriors.marginals.DirAssoc[order(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, decreasing=TRUE),]
+Posteriors.marginals.DirAssoc.Subset <- Posteriors.marginals.DirAssoc.Subset[order(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .3,]$logBFWeightedAvg, decreasing=TRUE),]
+
+#Z <- cbind(bmassOutput$MergedDataSources$GMCSF_cd_ZScore, bmassOutput$MergedDataSources$IFN.g_cd_ZScore, bmassOutput$MergedDataSources$IL.1b_cd_ZScore, bmassOutput$MergedDataSources$IL.2_cd_ZScore, bmassOutput$MergedDataSources$IL.6_cd_ZScore, bmassOutput$MergedDataSources$MIP3A_cd_ZScore, bmassOutput$MergedDataSources$TNF.a_cd_ZScore, bmassOutput$MergedDataSources$TNF.b_cd_ZScore)
+Z.Directions <- apply(Z, c(1,2), function(x) { y <- 0; if (x > 0) { y <- 1; } else if (x < 0) { y <- -1; } else if (x == 0) { y <- 0; } else { y <- NA; }; return(y);})
+Z.Directions.marginals <- Z.Directions[as.numeric(row.names(bmassOutput$MarginalSNPs$SNPs)),][order(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, decreasing=TRUE),]
+
+Posteriors.marginals.DirAssoc.wDir <- Posteriors.marginals.DirAssoc
+Posteriors.marginals.DirAssoc.wDir[,2:9] <- Posteriors.marginals.DirAssoc[,2:9] * Z.Directions.marginals
+Posteriors.marginals.DirAssoc.Subset.wDir <- Posteriors.marginals.DirAssoc.Subset
+Posteriors.marginals.DirAssoc.Subset.wDir[,2:9] <- Posteriors.marginals.DirAssoc.Subset[,2:9] * Z.Directions.marginals[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .3,][order(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .3,]$logBFWeightedAvg, decreasing=TRUE),]
+
+library(ggplot2)
+library(reshape2)
+
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.CDGemma_Grp1_8cyto.Marginals.HeatPlot.All.vs1.jpeg", width=6000, height=2000, res=300)
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.CDGemma_Grp1_8cyto.Marginals.HeatPlot.Subset.vs1.jpeg", width=6000, height=2000, res=300)
+jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.CDGemma_Grp1_8cyto.Marginals.HeatPlot.Subset.wDir.vs1.jpeg", width=6000, height=2000, res=300)
+
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc[hclust(dist(Posteriors.marginals.DirAssoc[,2:9]))$order,])
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc.wDir[hclust(dist(Posteriors.marginals.DirAssoc.wDir[,2:9]))$order,])
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:9]))$order,])
+ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset.wDir[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:9]))$order,])
+#ggPlotData$snp <- factor(ggPlotData$snp, levels=Posteriors.marginals.DirAssoc[,1][hclust(dist(Posteriors.marginals.DirAssoc[,2:9]))$order])
+ggPlotData$snp <- factor(ggPlotData$snp, levels=Posteriors.marginals.DirAssoc.Subset[,1][hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:9]))$order])
+
+#ggplot(ggPlotData, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue") + coord_flip() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(ggPlotData, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradientn(colours=c("darkred", "white", "steelblue")) + coord_flip() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+dev.off()
+
+R output
+~~~
+> dim(bmassOutput$MergedDataSources)
+[1] 4507559      37
+> dim(bmassOutput$MergedDataSources[!duplicated(bmassOutput$MergedDataSources[,1]),])
+[1] 4110084      37
+.
+.
+.
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,])
+[1] 33 44
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,])
+[1] 19 44
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .3,])
+[1] 55 44
+> bmassOutput$ZScoresCorMatrix
+                GMCSF_cd_ZScore IFN.g_cd_ZScore IL.1b_cd_ZScore IL.2_cd_ZScore
+GMCSF_cd_ZScore       1.0000000       0.4973878       0.1525728      0.4769355
+IFN.g_cd_ZScore       0.4973878       1.0000000       0.5039446      0.4070713
+IL.1b_cd_ZScore       0.1525728       0.5039446       1.0000000      0.0932959
+IL.2_cd_ZScore        0.4769355       0.4070713       0.0932959      1.0000000
+IL.6_cd_ZScore        0.1054800       0.1945063       0.5954770      0.1631806
+MIP3A_cd_ZScore       0.1883726       0.3224038       0.4036079      0.3056533
+TNF.a_cd_ZScore       0.4077857       0.5412116       0.4153842      0.1585173
+TNF.b_cd_ZScore       0.1777196       0.3412471       0.2898973      0.4214811
+                IL.6_cd_ZScore MIP3A_cd_ZScore TNF.a_cd_ZScore TNF.b_cd_ZScore
+GMCSF_cd_ZScore      0.1054800       0.1883726       0.4077857       0.1777196
+IFN.g_cd_ZScore      0.1945063       0.3224038       0.5412116       0.3412471
+IL.1b_cd_ZScore      0.5954770       0.4036079       0.4153842       0.2898973
+IL.2_cd_ZScore       0.1631806       0.3056533       0.1585173       0.4214811
+IL.6_cd_ZScore       1.0000000       0.5483300       0.2150846       0.1780315
+MIP3A_cd_ZScore      0.5483300       1.0000000       0.4666557       0.4103428
+TNF.a_cd_ZScore      0.2150846       0.4666557       1.0000000       0.2720482
+TNF.b_cd_ZScore      0.1780315       0.4103428       0.2720482       1.0000000
+
+~~~
+
+
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $7 "\t" $8 "\t" $6 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.10_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $10 "\t" $11 "\t" $9 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.13_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $13 "\t" $14 "\t" $12 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.15_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $16 "\t" $17 "\t" $15 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.23_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $19 "\t" $20 "\t" $18 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.4_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $22 "\t" $23 "\t" $21 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.5_cd.txt.gz
+cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.txt | awk '{ print $2 "\t" $3 "\t" $4 "\t" $5 "\t" $25 "\t" $26 "\t" $24 }' | perl -lane 'if ($F[4] > 0) { $F[4] = "+"; } elsif ($F[4] < 0) { $F[4] = "-"; } else { $F[4] = "NoDir"; } print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.9_cd.txt.gz
+
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.10_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.10_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.13_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.13_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.15_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.15_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.23_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.23_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.4_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.4_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.5_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.5_cd.No0Dir.txt.gz
+zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.9_cd.txt.gz | grep -v NoDir | gzip > /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.9_cd.No0Dir.txt.gz
+
+~~~
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$cat /mnt/gluster/data/external_private_supp/Stein2016/CDCytoNames_Grp2_7cyto.txt | head -n 10
+"x"
+"1" "IL.10_cd"
+"2" "IL.13_cd"
+"3" "IL.15_cd"
+"4" "IL.23_cd"
+"5" "IL.4_cd"
+"6" "IL.5_cd"
+"7" "IL.9_cd"
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$cat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.txt | head -n 10
+"chr" "ps" "MAF" "ref_allele" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val" "n" "beta" "p_val"
+"1062" 1 785989 0.087 3 86 0.04210777 0.857362 86 0.2707796 0.1450781 86 -0.08197585 0.6050011 86 -0.02302538 0.8624858 86 0.2184266 0.2367246 86 0.3500217 0.1062334 86 0.3668583 0.09947047
+"2548" 1 1003629 0.276 5 85 0.3778017 0.01570569 85 0.2399258 0.05837053 85 -0.01528276 0.8886623 85 0.03871112 0.6684948 85 0.1852996 0.1343398 85 0.3566824 0.01289832 85 0.3558245 0.01642738
+"3767" 1 1211292 0.186 3 86 0.08382453 0.6357063 86 0.04601755 0.7416195 86 0.03017982 0.7984058 86 0.2051074 0.04137444 86 0.1006134 0.4698077 86 0.1206348 0.4626514 86 0.3684652 0.02782147
+"5323" 1 1478153 0.36 5 86 0.2872235 0.05092702 86 0.1270515 0.2463335 86 0.05717154 0.5420885 86 0.1354669 0.07697241 86 0.09230824 0.4015854 86 0.0854664 0.5208085 86 0.2033144 0.1550232
+"5442" 1 1500941 0.36 2 86 0.2872235 0.05092702 86 0.1270515 0.2463335 86 0.05717154 0.5420885 86 0.1354669 0.07697241 86 0.09230824 0.4015854 86 0.0854664 0.5208085 86 0.2033144 0.1550232
+"5511" 1 1510801 0.32 3 86 0.3612212 0.01231594 86 0.1590263 0.1431924 86 0.07395419 0.4262997 86 0.1345635 0.07705826 86 0.1130161 0.2983287 86 0.1437184 0.2740993 86 0.2536837 0.07353442
+"6774" 1 1692321 0.43 5 86 -0.1834548 0.1608587 86 0.06161833 0.5369827 86 -0.06123552 0.4711575 86 -0.06671411 0.3417241 86 0.0470585 0.6366111 86 -0.04917271 0.6801686 86 -0.1707377 0.1749795
+"6884" 1 1721479 0.395 3 86 0.03752578 0.7686483 86 -0.116953 0.2036479 86 0.06085456 0.4388749 86 0.05565388 0.4106019 86 -0.1047288 0.2441583 86 -0.06104613 0.5713475 86 0.04928359 0.6813373
+"6888" 1 1722932 0.399 3 84 0.01511207 0.9066229 84 -0.1319491 0.1556098 84 0.04897511 0.5381491 84 0.06262799 0.3628721 84 -0.1222968 0.1761535 84 -0.07731144 0.4746334 84 0.01995509 0.8688484
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$for i in `ls -lrt /mnt/gluster/data/external_private_supp/Stein2016/ | grep CDGemma_Grp2_7cyto.IL.* | grep -v No0Dir | awk '{ print $9 }'`; do echo $i; zcat /mnt/gluster/data/external_private_supp/Stein2016/$i | wc; zcat /mnt/gluster/data/external_private_supp/Stein2016/$i | grep -v NoDir | wc; done
+CDGemma_Grp2_7cyto.IL.10_cd.txt.gz
+4111621 28781347 142032290
+4111620 28781340 142032245
+CDGemma_Grp2_7cyto.IL.13_cd.txt.gz
+4111621 28781347 141950214
+4111620 28781340 141950169
+CDGemma_Grp2_7cyto.IL.15_cd.txt.gz
+4111621 28781347 141984864
+4111620 28781340 141984819
+CDGemma_Grp2_7cyto.IL.23_cd.txt.gz
+4111621 28781347 142003921
+4111620 28781340 142003876
+CDGemma_Grp2_7cyto.IL.4_cd.txt.gz
+4111621 28781347 142044814
+4111620 28781340 142044769
+CDGemma_Grp2_7cyto.IL.5_cd.txt.gz
+4111621 28781347 142053590
+4111620 28781340 142053545
+CDGemma_Grp2_7cyto.IL.9_cd.txt.gz
+4111621 28781346 142089345
+4111620 28781340 142089304
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate]$zcat /mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.10_cd.txt.gz | head -n 10
+Chr BP  MAF     A1      Direction       pValue  N
+"ps" "MAF"      "ref_allele"    "n"     NoDir   "n"     "beta"
+1  785989       0.087   3       +       0.857362        86
+1  1003629      0.276   5       +       0.01570569      85
+1  1211292      0.186   3       +       0.6357063       86
+1  1478153      0.36    5       +       0.05092702      86
+1  1500941      0.36    2       +       0.05092702      86
+1  1510801      0.32    3       +       0.01231594      86
+1  1692321      0.43    5       -       0.1608587       86
+1  1721479      0.395   3       +       0.7686483       86
+
+~~~
+"1" "IL.10_cd"  
+"2" "IL.13_cd"  
+"3" "IL.15_cd"  
+"4" "IL.23_cd"  
+"5" "IL.4_cd"   
+"6" "IL.5_cd"   
+"7" "IL.9_cd"
+
+   
+R -q -e "library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+IL.10_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.10_cd.No0Dir.txt.gz", header=T)
+IL.13_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.13_cd.No0Dir.txt.gz", header=T)
+IL.15_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.15_cd.No0Dir.txt.gz", header=T)
+IL.23_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.23_cd.No0Dir.txt.gz", header=T)
+IL.4_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.4_cd.No0Dir.txt.gz", header=T)
+IL.5_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.5_cd.No0Dir.txt.gz", header=T)
+IL.9_cd <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.IL.9_cd.No0Dir.txt.gz", header=T)
+GWASsnps <- read.table("/mnt/gluster/data/external_private_supp/Stein2016/CDGemma_Grp2_7cyto.AllPheno.No0Dir.txt.gz.5e8.GWASHits.ChrBP.txt", header=F)
+names(GWASsnps) <- c("Chr", "BP")
+#bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+#print(bmassOutput1);" > shana1.txt
+DataSources = c("IL.10_cd", "IL.13_cd", "IL.15_cd", "IL.23_cd", "IL.4_cd", "IL.5_cd", "IL.9_cd"); NminThreshold = 1; bmassSeedValue=150;
+ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-4; SNPMarginalMultivariateThreshold = 1e-4; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=TRUE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+
+#After merging
+
+Z <- cbind(bmassOutput$MergedDataSources$IL.10_cd_ZScore, bmassOutput$MergedDataSources$IL.13_cd_ZScore, bmassOutput$MergedDataSources$IL.15_cd_ZScore, bmassOutput$MergedDataSources$IL.23_cd_ZScore, bmassOutput$MergedDataSources$IL.4_cd_ZScore, bmassOutput$MergedDataSources$IL.5_cd_ZScore, bmassOutput$MergedDataSources$IL.9_cd_ZScore)
+dim(bmassOutput$MergedDataSources)
+dim(bmassOutput$MergedDataSources[!duplicated(bmassOutput$MergedDataSources[,1]),])
+bmassOutput$MergedDataSources <- bmassOutput$MergedDataSources[!duplicated(bmassOutput$MergedDataSources[,1]),]
+
+#All steps up to Finalize
+
+set.seed(99)
+MarginalSNPs_PrunedList <- indephits(jitter(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, factor=.0001), bmassOutput$MarginalSNPs$SNPs$Chr, bmassOutput$MarginalSNPs$SNPs$BP, T=PruneMarginalSNPs_bpWindow)
+bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MarginalSNPs$SNPs[MarginalSNPs_PrunedList==1,]
+bmassOutput$MarginalSNPs$logBFs <- bmassOutput$MarginalSNPs$logBFs[,MarginalSNPs_PrunedList==1]
+
+#Posteriors <- posteriorprob(bmassOutput$MarginalSNPs$logBFs, normalize(rep(c(0,ModelPriors[-1]),length(SigmaAlphas))))
+Posteriors <- posteriorprob(bmassOutput$MarginalSNPs$logBFs, bmassOutput$ModelPriors)
+
+Posteriors.marginals <- marginal.postprobs(Posteriors, bmassOutput$Models, length(SigmaAlphas))
+Posteriors.marginals.DirAssoc <- t(Posteriors.marginals[[2]])
+Posteriors.marginals.DirAssoc <- data.frame(cbind(as.character(bmassOutput$MarginalSNPs$SNPs$ChrBP), Posteriors.marginals.DirAssoc))
+Posteriors.marginals.DirAssoc[,2] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,2]))
+Posteriors.marginals.DirAssoc[,3] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,3]))
+Posteriors.marginals.DirAssoc[,4] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,4]))
+Posteriors.marginals.DirAssoc[,5] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,5]))
+Posteriors.marginals.DirAssoc[,6] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,6]))
+Posteriors.marginals.DirAssoc[,7] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,7]))
+Posteriors.marginals.DirAssoc[,8] <- as.numeric(as.character(Posteriors.marginals.DirAssoc[,8]))
+colnames(Posteriors.marginals.DirAssoc) <- c("snp", "IL.10_cd", "IL.13_cd", "IL.15_cd", "IL.23_cd", "IL.4_cd", "IL.5_cd", "IL.9_cd")
+Posteriors.marginals.DirAssoc.Subset <- Posteriors.marginals.DirAssoc[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,]
+Posteriors.marginals.DirAssoc <- Posteriors.marginals.DirAssoc[order(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, decreasing=TRUE),]
+Posteriors.marginals.DirAssoc.Subset <- Posteriors.marginals.DirAssoc.Subset[order(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,]$logBFWeightedAvg, decreasing=TRUE),]
+
+#Z <- cbind(bmassOutput$MergedDataSources$IL.13_lps_ZScore, bmassOutput$MergedDataSources$IL.15_lps_ZScore, bmassOutput$MergedDataSources$IL.22_lps_ZScore, bmassOutput$MergedDataSources$IL.33_lps_ZScore, bmassOutput$MergedDataSources$IL.4_lps_ZScore, bmassOutput$MergedDataSources$IL.5_lps_ZScore, bmassOutput$MergedDataSources$IL.9_lps_ZScore)
+Z.Directions <- apply(Z, c(1,2), function(x) { y <- 0; if (x > 0) { y <- 1; } else if (x < 0) { y <- -1; } else if (x == 0) { y <- 0; } else { y <- NA; }; return(y);})
+Z.Directions.marginals <- Z.Directions[as.numeric(row.names(bmassOutput$MarginalSNPs$SNPs)),][order(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, decreasing=TRUE),]
+
+Posteriors.marginals.DirAssoc.wDir <- Posteriors.marginals.DirAssoc
+Posteriors.marginals.DirAssoc.wDir[,2:8] <- Posteriors.marginals.DirAssoc[,2:8] * Z.Directions.marginals
+Posteriors.marginals.DirAssoc.Subset.wDir <- Posteriors.marginals.DirAssoc.Subset
+Posteriors.marginals.DirAssoc.Subset.wDir[,2:8] <- Posteriors.marginals.DirAssoc.Subset[,2:8] * Z.Directions.marginals[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,][order(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,]$logBFWeightedAvg, decreasing=TRUE),]
+
+library(ggplot2)
+library(reshape2)
+
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.CDGemma_Grp2_7cyto.Marginals.HeatPlot.All.vs1.jpeg", width=6000, height=2000, res=300)
+jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.CDGemma_Grp2_7cyto.Marginals.HeatPlot.Subset.vs1.jpeg", width=6000, height=2000, res=300)
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.CDGemma_Grp2_7cyto.Marginals.HeatPlot.Subset.wDir.vs1.jpeg", width=6000, height=2000, res=300)
+
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc[hclust(dist(Posteriors.marginals.DirAssoc[,2:8]))$order,])
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc.wDir[hclust(dist(Posteriors.marginals.DirAssoc.wDir[,2:8]))$order,])
+ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:8]))$order,])
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset.wDir[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:8]))$order,])
+#ggPlotData$snp <- factor(ggPlotData$snp, levels=Posteriors.marginals.DirAssoc[,1][hclust(dist(Posteriors.marginals.DirAssoc[,2:8]))$order])
+ggPlotData$snp <- factor(ggPlotData$snp, levels=Posteriors.marginals.DirAssoc.Subset[,1][hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:8]))$order])
+
+#ggplot(ggPlotData, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue") + coord_flip() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(ggPlotData, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradientn(colours=c("darkred", "white", "steelblue")) + coord_flip() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+dev.off()
+
+
+R output
+~~~
+> dim(bmassOutput$MergedDataSources)
+[1] 4306961      33
+> dim(bmassOutput$MergedDataSources[!duplicated(bmassOutput$MergedDataSources[,1]),])
+[1] 4110084      33
+.
+.
+.
+> bmassOutput$ZScoresCorMatrix
+                IL.10_cd_ZScore IL.13_cd_ZScore IL.15_cd_ZScore IL.23_cd_ZScore
+IL.10_cd_ZScore      1.00000000     0.440165639     0.017431748     0.068254726
+IL.13_cd_ZScore      0.44016564     1.000000000     0.001071523     0.096480984
+IL.15_cd_ZScore      0.01743175     0.001071523     1.000000000     0.428313651
+IL.23_cd_ZScore      0.06825473     0.096480984     0.428313651     1.000000000
+IL.4_cd_ZScore       0.50768315     0.761930189    -0.081988007    -0.007962297
+IL.5_cd_ZScore       0.41660541     0.665927303    -0.049924415     0.009390457
+IL.9_cd_ZScore       0.41961275     0.499855689     0.093864238     0.173527288
+                IL.4_cd_ZScore IL.5_cd_ZScore IL.9_cd_ZScore
+IL.10_cd_ZScore    0.507683151    0.416605410     0.41961275
+IL.13_cd_ZScore    0.761930189    0.665927303     0.49985569
+IL.15_cd_ZScore   -0.081988007   -0.049924415     0.09386424
+IL.23_cd_ZScore   -0.007962297    0.009390457     0.17352729
+IL.4_cd_ZScore     1.000000000    0.737097347     0.54783958
+IL.5_cd_ZScore     0.737097347    1.000000000     0.68484545
+IL.9_cd_ZScore     0.547839582    0.684845453     1.00000000
+.
+.
+.
+> dim(bmassOutput$MarginalSNPs$SNPs)
+[1] 4935   40
+> 
+> set.seed(99)
+> MarginalSNPs_PrunedList <- indephits(jitter(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg, factor=.0001), bmassOutput$MarginalSNPs$SNPs$Chr, bmassOutput$MarginalSNPs$SNPs$BP, T=PruneMarginalSNPs_bpWindow)
+> bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MarginalSNPs$SNPs[MarginalSNPs_PrunedList==1,]
+> bmassOutput$MarginalSNPs$logBFs <- bmassOutput$MarginalSNPs$logBFs[,MarginalSNPs_PrunedList==1]
+> 
+> dim(bmassOutput$MarginalSNPs$SNPs)
+[1] 407  40
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .5,])
+[1] 39 40
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .4,])
+[1] 71 40
+> dim(bmassOutput$MarginalSNPs$SNPs[bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg > .3,])
+[1] 128  40
+> quantile(bmassOutput$MarginalSNPs$SNPs$logBFWeightedAvg)
+        0%        25%        50%        75%       100% 
+0.01568922 0.12746958 0.20873739 0.33201492 1.52434327 
+
+~~~
+
+
 
 
 
