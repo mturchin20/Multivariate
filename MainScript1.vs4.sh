@@ -4018,44 +4018,215 @@ TC_ZScore   0.15313683  0.81975235  0.2877814 1.0000000
 ~~~
 
 
+#20161115 -- checking to see if I start with same merged file from most recent `Vs1` run if I also get same `NewSNPs` count, eg liek ~84 or around there or something
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161115_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz
+
+#Put below header into /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161115_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz
+#SNP Chr BP SNP A1 A2 MAF LDL_Beta LDL_SE LDL_N HDL_Beta HDL_SE HDL_N TG_Beta TG_SE TG_N TC_Beta TC_SE TC_N GWASannot Gene TG_ZScore TC_ZScore LDL_ZScore HDL_ZScore mvstat mvstat_log10pVal unistat_log10pVal
 
 
+R code to use below
+~~~
+
+	library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+
+        bmassOutput <- list()
+        bmassOutput$MergedDataSources <- NULL
+        if (!is.null(MergedDataSources)) {
+                bmassOutput$MergedDataSources <- MergedDataSources
+        }
+        bmassOutput$ZScoresCorMatrix <- NULL
+        bmassOutput$MarginalSNPs <- list()
+        bmassOutput$Models <- NULL
+        bmassOutput$ModelPriors <- NULL
+        bmassOutput$PreviousSNPs <- list()
+        bmassOutput$NewSNPs <- list()
+        bmassOutput$GWASlogBFMinThreshold <- NULL
+        #LogFile <- c()
+        bmassOutput$LogFile <- c()
+
+        bmassOutput$LogFile <- rbind(bmassOutput$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
+
+	bmassOutput$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161115_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz", header=TRUE)
+	bmassOutput$MergedDataSources <- bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$MAF > 0 & !is.na(bmassOutput$MergedDataSources$MAF),]	
+
+	bmassOutput$ZScoresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.RSS0.vs1.SignCrrct.vs1.txt", header=TRUE, sep=","))
+	GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+	names(GWASsnps) <- c("Chr", "BP")
+	#Z.LDL,Z.HDL,Z.TC,Z.TG
+	DataSources = c("LDL", "HDL", "TC", "TG"); NminThreshold = 50000; bmassSeedValue=150;
+	ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+	bmassOutput$MergedDataSources$ChrBP <- paste(bmassOutput$MergedDataSources$Chr, "_", bmassOutput$MergedDataSources$BP, sep="")
+
+	bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+
+        bmassOutput[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput$MarginalSNPs, bmassOutput$ZScoresCorMatrix, SigmaAlphas, bmassOutput$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+
+#	Nmins <- apply(bmassOutput$MarginalSNPs$SNPs[,c("TC_N", "TG_N", "LDL_N", "HDL_N")], 1, min)
+#	ZScores <- bmassOutput$MarginalSNPs$SNPs[,c("TC_ZScore", "TG_ZScore", "HDL_ZScore", "LDL_ZScore")]
+#	MarginalSNPs_logBFs <- compute.allBFs.fromZscores(ZScores, bmassOutput$ZScoresCorMatrix, Nmins, bmassOutput$MarginalSNPs$SNPs$MAF, SigmaAlphas)
+
+        bmassOutput[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+
+        bmassOutput[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput$MarginalSNPs, bmassOutput$PreviousSNPs, GWASsnps, bmassOutput$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+
+HDL2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz", header=T);
+LDL2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+TG2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+TC2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+GWASsnps2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+names(GWASsnps2) <- c("Chr", "BP")
+bmassOutput2 <- bmass(c("HDL2", "LDL2", "TG2", "TC2"), GWASsnps=GWASsnps2, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+bmassOutput3 <- bmass(c("HDL2", "LDL2", "TG2", "TC2"), GWASsnps=GWASsnps2, NminThreshold = 50000, PrintMergedData=TRUE, PruneMarginalSNPs=FALSE, bmassSeedValue=150);
+
+~~~
+
+#Output from above
+~~~
+> table(bmassOutput$MergedDataSources$GWASannot)
+
+   0    1    2 
+1783  148 9642 
+.
+.
+.
+> FinalizeAndFormatResults(DataSources, bmassOutput$MarginalSNPs, bmassOutput$PreviousSNPs, GWASsnps, bmassOutput$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+Error in if (x == 1) { : missing value where TRUE/FALSE needed
+> table(apply(bmassOutput$MarginalSNPs$logBFs, c(1,2), is.na))
 
 
+   FALSE     TRUE
+12883542   240240
+>
+> table(bmassOutput$MarginalSNPs$SNPs$MAF > .5)
 
+FALSE 
+11445 
+> table(bmassOutput$MarginalSNPs$SNPs$MAF == 0)
 
+FALSE  TRUE 
+11309   136 
+> table(bmassOutput$MarginalSNPs$SNPs$MAF == .5)
 
+FALSE  TRUE 
+11431    14 
+> table(bmassOutput$MarginalSNPs$SNPs$MAF == 1)
 
+FALSE 
+11445 
+.
+.
+.
+> dim(bmassOutput$MergedDataSources)
+[1] 11573    28
+> dim(bmassOutput$MergedDataSources[bmassOutput$MergedDataSource$MAF == 0,])
+[1] 264  28
+> dim(bmassOutput$MergedDataSources[bmassOutput$MergedDataSource$MAF > 0,])
+[1] 11437    28
+> bmassOutput$MergedDataSources <- bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$MAF > 0,]
+> dim(bmassOutput$MergedDataSources)                                                                                                                                                                                           [1] 11437    28
+> dim(bmassOutput$MergedDataSources[bmassOutput$MergedDataSource$MAF == 0,])
+[1] 128  28
+> dim(bmassOutput$MergedDataSources[bmassOutput$MergedDataSource$MAF > 0,])
+[1] 11437    28
+> head(bmassOutput$MergedDataSources[bmassOutput$MergedDataSource$MAF == 0,])
+      SNP Chr BP SNP.1   A1   A2 MAF LDL_Beta LDL_SE LDL_N HDL_Beta HDL_SE
+NA   <NA>  NA NA  <NA> <NA> <NA>  NA       NA     NA    NA       NA     NA
+NA.1 <NA>  NA NA  <NA> <NA> <NA>  NA       NA     NA    NA       NA     NA
+NA.2 <NA>  NA NA  <NA> <NA> <NA>  NA       NA     NA    NA       NA     NA
+NA.3 <NA>  NA NA  <NA> <NA> <NA>  NA       NA     NA    NA       NA     NA
+NA.4 <NA>  NA NA  <NA> <NA> <NA>  NA       NA     NA    NA       NA     NA
+NA.5 <NA>  NA NA  <NA> <NA> <NA>  NA       NA     NA    NA       NA     NA
+.
+.
+.
+> table(apply(bmassOutput$MergedDataSources, c(1,2), is.na))
 
+ FALSE   TRUE 
+312343  11701 
+> table(is.na(bmassOutput$MergedDataSources$MAF))
 
-cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161110_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz
+FALSE  TRUE 
+11445   128 
+.
+.
+.
+> dim(bmassOutput$MergedDataSources)
+[1] 11573    28
+> table(is.na(bmassOutput$MergedDataSources$MAF))
 
-#Put below header into /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161110_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz 
-#SNP Chr BP MAF HDL_N HDL_Beta HDL_SE LDL_N LDL_Beta LDL_SE TC_N TC_Beta TC_SE TG_N TG_Beta TG_SE GWASannot Gene RS TG_ZScore TC_ZScore LDL_ZScore HDL_ZScore mvstat mvstat_log10pVal unistat_log10pVal
+FALSE  TRUE 
+11445   128 
+> dim(bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$MAF == 0,])
+[1] 264  28
+>         bmassOutput$MergedDataSources <- bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$MAF > 0 & !is.na(bmassOutput$MergedDataSources$MAF),]
+> dim(bmassOutput$MergedDataSources)
+[1] 11309    28
+> table(is.na(bmassOutput$MergedDataSources$MAF))
 
+FALSE 
+11309 
+> dim(bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$MAF == 0,])
+[1]  0 28
+.
+.
+.
+> dim(bmassOutput$NewSNPs$SNPs)
+[1] 92 31
+> bmassOutput$GWASlogBFMinThreshold
+[1] 3.989499
+> dim(bmassOutput$MergedDataSources)
+[1] 11309    29
+> quantile(bmassOutput$MergedDataSources$mvstat_log10pVal)
+         0%         25%         50%         75%        100% 
+   4.153174    6.991042   10.456705   21.017019 5554.224810 
+> quantile(bmassOutput$MergedDataSources$unistat_log10pVal)
+        0%        25%        50%        75%       100% 
+  1.076808   6.936291   9.519993  17.633577 317.777283 
+> LDL2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+> TG2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+> TC2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+> GWASsnps2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+> names(GWASsnps2) <- c("Chr", "BP")
+>
+> bmassOutput2 <- bmass(c("HDL2", "LDL2", "TG2", "TC2"), GWASsnps=GWASsnps2, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2016-11-15 17:57:26 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+> dim(bmassOutput2$MergedDataSources)
+[1] 2063845      23
+> dim(bmassOutput2$NewSNPs$SNPs)
+[1] 65 29
+> dim(bmassOutput2$MarginalSNPs$SNPs)
+[1] 252  29
+> table(bmassOutput2$MergedDataSources$GWASannot)
 
+      0       1       2
+1945082     149  118614
+> table(bmassOutput2$MarginalSNPs$SNPs$GWASannot)
 
+ 0  1  2
+96 87 69
+> table(MergeDataSources$
+MergeDataSources$
+> table(bmassOutput$MergedDataSources$GWASannot)
 
+   0    1    2
+1744  148 9417
+> table(bmassOutput$MarginalSNPs$SNPs$GWASannot)
 
-[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz | head -n 10
-posHg18 chr     pos     snp     a1      a2      maf     beta_LDL        se_LDL  n_LDL   beta_HDL        se_HDL  n_HDL   beta_TG se_TG   n_TG    beta_TC se_TC   n_TC    annot   gene    Z.tg    Z.tc    Z.ldl   Z.hdl   mvstatmvp unip
-
-
-        bmassOutput$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/20161109_edits_dtlesssignif.annot.txt", header=TRUE)
-        bmassOutput$ZScoresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/multivariate/globallipids/RSS0.txt", header=TRUE, sep=","))
-        GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt", header=F);
-        names(GWASsnps) <- c("Chr", "BP")
-#       DataSources = c("HDL", "LDL", "TG", "TC");
-        DataSources = c("TC", "TG", "HDL", "LDL"); NminThreshold = 50000; bmassSeedValue=150;
-        ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
-        bmassOutput$MergedDataSources$ChrBP <- paste(bmassOutput$MergedDataSources$Chr, "_", bmassOutput$MergedDataSources$BP, sep="")
-
-        bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+  0   1   2
+106  79  75
+> bmassOutput3 <- bmass(c("HDL2", "LDL2", "TG2", "TC2"), GWASsnps=GWASsnps2, NminThreshold = 50000, PrintMergedData=TRUE, PruneMarginalSNPs=FALSE, bmassSeedValue=150);
 
 
 ~~~
 
-~~~
+
+
+
+
 
 
 #Chr BP  MAF     A1      A2      Direction       pValue  N
@@ -4886,6 +5057,556 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5
 
 
 
+
+
+
+
+
+
+
+#20161222
+#Vs2 -- Running things through version of bmass() code
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2
+cd /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2
+
+#Dropping SNPs with multiple GenomeBrowser SNP location hits via grep -v ,
+~~~
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.gz | grep 126943397
+rs17212015      A       T       0.8583  0.0094  0.0057  0.09912 232876  X_126943397,13_81046747
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep 107486155                                                                                                                                                                                                      rs10884221      T       C       0.808   -0.0024 0.0035  0.48    249684  10_107486155,6_cox_hap1_48402                                                                                                                          
+~~~
+
+zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | grep -v ChrBP | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz  
+zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz
+zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.txt.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.txt.gz
+
+#Chr BP  MAF     A1      A2      Direction       pValue  N
+#ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N")
+
+join <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.MatchedToHeight.txt.gz
+join <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.MatchedToHeight.txt.gz
+
+zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.MatchedToHeight.txt.gz | grep -v NoAlleleMatch | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz 
+zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.MatchedToHeight.txt.gz | grep -v NoAlleleMatch | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz
+
+#bmass code thing
+#ChrBP final SNPs thing
+
+~~~
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz | head -n 10
+Chr BP  MAF     A1      A2      Direction       pValue  N
+10 10000134     0.449   G       A       +       0.70    253213
+10 10000264     0.564   C       T       +       0.70    253213
+10 100002728    0.633   G       A       +       0.042   253116
+10 100002879    0.642   G       A       +       0.041   252156
+10 100003552    0.88    C       T       +       0.024   248425
+10 100003804    0.7     C       T       +       8.2e-06 251271
+10 100003966    0.356   T       A       +       0.029   253086
+10 10000458     0.573   G       T       +       0.70    253213
+10 100005552    0.856   G       C       +       0.62    253056
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz | wc
+2535924 20287392 91982463
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz | perl -lane 'print $#F;' | sort | uniq -c
+2535924 7
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz | head -n 10
+Chr BP  MAF     A1      A2      Direction       pValue  N
+1  100002698    0.7     C       T       +       0.1273  233918
+1  100002784    0.93333 C       T       +       0.1885  234025
+1  100003454    1       C       T       +       0.2486  217165
+1  100006954    0.93333 C       A       +       0.2797  222182
+1  100007330    0.7167  G       A       +       0.09721 233809
+1  100007518    0.0625  T       A       -       0.249   233266
+1  100007855    1       C       T       +       0.2301  222236
+1  100008013    0.2167  C       T       -       0.3633  233837
+1  100008024    1       C       T       +       0.3284  234002
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz | wc
+2534376 20275008 97022409
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz | perl -lane 'print $#F;' | sort | uniq -c
+2534376 7
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz | head -n 10
+Chr BP  MAF     A1      A2      Direction       pValue  N
+1  100002698    0.7     C       T       +       0.93    142700
+1  100002784    0.93333 C       T       +       0.56    142749
+1  100003454    1       C       T       +       0.63    127489
+1  100006954    0.93333 C       A       +       0.44    130999
+1  100007330    0.7167  G       A       +       0.63    142695
+1  100007518    0.0625  T       A       -       0.53    142316
+1  100007855    1       C       T       +       0.38    131011
+1  100008013    0.2167  C       T       -       0.97    142741
+1  100008024    1       C       T       +       0.97    142729
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz | wc
+2494521 19956168 90436894
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz | perl -lane 'print $#F;' | sort | uniq -c
+2494521 7
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz | grep cox | head -n 10              
+6  cox  0.717   C       T       +       0.024   251823
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz | grep ChrBP           
+231091  ChrBP   1       A       A-2097957       +       0.0033  0.00040
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz | awk '{ print $2 }' | sort -g | head -n 5
+BP
+ChrBP
+cox
+1522
+1542
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz | awk '{ print $2 }' | sort -g | head -n 5
+BP
+cox
+1522
+1542
+2182
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz | awk '{ print $2 }' | sort -g | head -n 5
+BP
+cox
+1522
+1542
+2182
+.
+.
+.
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.AllPheno.MarkerChrBP.txt | head -n 10
+rs425277         1       2059032
+rs9434723        1       9214869
+rs10779751       1       11206923
+rs2284746        1       17179262
+rs12137162       1       19635983
+rs212524         1       21455898
+rs1014987        1       22371411
+rs2806561        1       23377382
+rs4601530        1       24916698
+rs926438         1       25626225
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep rs2806561
+rs2806561       A       G       0.567   0.027   0.0029  1.9e-20 253049  1_23377381
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep rs425277
+rs425277        T       C       0.28    0.028   0.0033  1.2e-17 252521  1_2059031
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep rs12137162
+rs12137162      A       C       0.271   0.019   0.0032  4.1e-09 253175  1_19635982
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.AllPheno.MarkerChrBP.txt | head -n 150 | tail -n 10
+rs1658351        3       57988613
+rs6794009        3       61488535
+rs17806888       3       67499012
+rs2175513        3       68705056
+rs12330322       3       72538045
+rs7633464        3       100198513
+rs9825951        3       100752611
+rs1797625        3       114309105
+rs1533269        3       115697301
+rs1546391        3       116180147
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep rs17806888
+rs17806888      T       C       0.908   0.034   0.0048  2.9e-12 245828  3_67499011
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep rs1533269 
+rs1533269       A       C       0.317   -0.020  0.0033  1.1e-09 250818  3_115697300
+.
+.
+.
+#>         bmassOutput1[c("MergedDataSources", "LogFile")] <- AnnotateMergedDataWithGWASSNPs(bmassOutput1$MergedDataSources, GWASsnps, GWASsnps_AnnotateWindow, bmassOutput1$LogFile)[c("MergedDataSources", "LogFile")]
+#> table(bmassOutput1$MergedDataSources$GWASannot)
+#
+#      0       1       2
+#1942212     873  546528
+#> write.table(bmassOutput1$MergedDataSources[bmassOutput1$MergedDataSources$GWASannot == 1,3]+1, file="blahblah.BP.txt")
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 2 <(cat ../../../../blahblah.BP.txt | awk '{ print $2 }' | sort) <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.AllPheno.MarkerChrBP.txt | awk '{ print $3 "\t" $2 "\t" $1; }' | sort -k 1,1)
+127496586 6 rs72959041
+28859706 6 rs1233627
+29912144 6 rs9404952
+31214438 6 rs1265097
+31380240 6 rs6457374
+31696363 6 rs2857693
+32489714 6 rs7759742
+33216265 6 rs3129254
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep rs1265097
+rs12650977      A       C       0.025   0.0043  0.014   0.75    228549  4_122462644
+rs12650975      T       G       0.991   -0.00050        0.016   0.98    187678  4_148841903
+rs1265097       A       C       0.075   -0.059  0.0050  1.7e-32 236690  6_31214437,6_cox_hap1_2557687,6_qbl_hap2_2356251
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep rs7759742
+rs7759742       A       T       0.525   -0.015  0.0030  5.7e-07 249717  6_32489713,6_cox_hap1_3788644,6_qbl_hap2_3596549
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep rs72959041
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.gz | grep rs72959041
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat ../../../../blahblah.BP.txt | wc
+    855    1709   12910
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 2 <(cat ../../../../blahblah.BP.txt | awk '{ print $2 }' | sort) <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt | awk '{ print $3 "\t" $2 "\t" $1; }' | sort -k 1,1) | wc
+      8      24     170
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 2 <(cat ../../../../blahblah.BP.txt | awk '{ print $2 }' | sort) <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt | awk '{ print $3 "\t" $2 "\t" $1; }' | sort -k 1,1)
+127496586 6 rs72959041
+28859706 6 rs1233627
+29912144 6 rs9404952
+31214438 6 rs1265097
+31380240 6 rs6457374
+31696363 6 rs2857693
+32489714 6 rs7759742
+33216265 6 rs3129254
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHR_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.ColRightFormat.txt.gz | grep rs72959041
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.AllPheno.MarkerChrBP.txt | wc
+    881    2643   22310
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt | sort -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | wc
+    861    3444   29026
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt | wc
+    862    2586   21825
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt | sort -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | head -n 10
+rs1000940 17 5223976 17_5223975
+rs1004202 5 36101220 5_36101219
+rs10048625 2 1754655 2_1754654
+rs10059761 5 67191839 5_67191838
+rs1007358 7 46167880 7_46167879
+rs10083886 17 67434950 17_67434949
+rs10119624 9 117345259 9_117345258
+rs10131337 14 36214267 14_36214266
+rs10132280 14 24998019 14_24998018
+rs10140101 14 74108442 14_74108441
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt | sort -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | grep ,    
+rs1233627 6 28859706 6_28859705,6_cox_hap1_211260,6_qbl_hap2_9083
+rs1265097 6 31214438 6_31214437,6_cox_hap1_2557687,6_qbl_hap2_2356251
+rs2857693 6 31696363 6_31696362,6_cox_hap1_3034507,6_qbl_hap2_2835971
+rs3129254 6 33216265 6_33216264,6_cox_hap1_4488425,6_qbl_hap2_4294418
+rs6457374 6 31380240 6_31380239,6_cox_hap1_2722003,6_qbl_hap2_2519738
+rs7759742 6 32489714 6_32489713,6_cox_hap1_3788644,6_qbl_hap2_3596549
+rs9404952 6 29912144 6_29912143,6_cox_hap1_1256589,6_qbl_hap2_1058722
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt | sort -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | grep , | perl -lane '$F[$#F] = ((split(/,/, $F[$#F]))[0]); print join("\t", @F);'
+rs1233627       6       28859706        6_28859705
+rs1265097       6       31214438        6_31214437
+rs2857693       6       31696363        6_31696362
+rs3129254       6       33216265        6_33216264
+rs6457374       6       31380240        6_31380239
+rs7759742       6       32489714        6_32489713
+rs9404952       6       29912144        6_29912143
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt | sort -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | grep , | perl -lane '$F[$#F] = ((split(/,/, $F[$#F]))[0]); print join("\t", @F);' | sed 's/_/ /g' | awk '{ print $1 "\t" $4 "\t" $5 }' 
+rs1233627       6       28859705
+rs1265097       6       31214437
+rs2857693       6       31696362
+rs3129254       6       33216264
+rs6457374       6       31380239
+rs7759742       6       32489713
+rs9404952       6       29912143
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt | sort -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | perl -lane 'print $F[0], "\t", $F[$#F];' | sort -k 1,1) | perl -lane '$F[$#F] = ((split(/,/, $F[$#F]))[0]); print join("\t", @F);' | sed 's/_/ /g' | awk '{ print $1 "\t" $4 "\t" $5 }' | head -n 10
+rs1000940       17      5223975
+rs1004202       5       36101219
+rs10048625      2       1754654
+rs10059761      5       67191838
+rs1007358       7       46167879
+rs10083886      17      67434949
+rs10119624      9       117345258
+rs10131337      14      36214266
+rs10132280      14      24998018
+rs10140101      14      74108441
+~~~
+
+cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/ng.3097-S2.noCarriageReturn.noQuotes.noCommas.rsIDs.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/Locke2015.SupplTables1_2.wManualOCREdits.rsIDs.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/nature14132-s2.ST4.noCarriageReturn.rsIDs.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMI.MarkerChrBP.txt
+
+#20161226 NOTE -- It looks like the ChrBP coordinates given in the manuscripts are off-by-1, at least compared to what the dbSNP130 values present for the same rsIDs. I'm going to go with the dbSNP130 values and subtract 1 from all BP values of the 'GWASsnps' to make the matches okay. Matches were done using both rsID# and ChrBP in the python script used in the first runs of things, hence why they 'matched' previous but then seemed to 'not match' now
+#This is where the `GWASsnps[,2] <- GWASsnps[,2] - 1` type calls are now coming from
+
+#20161226 NOTE -- A few SNPs get dropped out of 'MergedDataSources' because they have multiple entries for ChrBP in dbSNP130, so going to a direct grab of ChrBP based on marker from the Wood et al. 2014 dataset just to be complete and easy here
+#Also it looks like rs72959041 wasn't even found in the original runs since there were only '880' SNPs with '1' annotations, and there's no header in /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.AllPheno.MarkerChrBP.txt so the total count was 881.
+#I realized as I was doing this that this wouldn't change anything? The SNP hit list is fine, which is what I'm attempting to change here -- regardless, the 'MergedDataSources' will still be missing these SNPs unless I feel like changing my default QC of 'dropping SNPs with multiple dbSNP130 entries' in the individual GWAS dataset file prep steps
+
+#20161226 NOTE -- Below code/work is to compare the new results to the old results, trying to figure out where the differences are
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GIANT2014_5.Orig3.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/20161217_edits_GIANT2014_5.Orig3.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz 
+
+#Put below header into /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/20161217_edits_GIANT2014_5.Orig3.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz
+#SNP Chr BP A1 A2 chrbp MAF GWASannot Height_Beta Height_SE Height_N BMI_Beta BMI_SE BMI_N WHRadjBMI_Beta WHRadjBMI_SE WHRadjBMI_N Height_ZScore BMI_ZScore WHRadjBMI_ZScore mvstat mvstat_log10pVal unistat_log10pVal
+
+zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sed 's/_/ /g' | perl -lane 'my $dir = "+"; if ($F[6] < 0) { $dir = "-"; } print $F[$#F-1], "\t", $F[$#F], "\t", $F[3], "\t", $F[1], "\t", $F[2], "\t", $dir, "\t", abs($F[6]), "\t", $F[7];' | grep -v ChrBP | grep -v NA | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz 
+zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.IncAllele.gz | sed 's/_/ /g' | perl -lane 'my $dir = "+"; if ($F[6] < 0) { $dir = "-"; } print $F[$#F-1], "\t", $F[$#F], "\t", $F[3], "\t", $F[1], "\t", $F[2], "\t", $dir, "\t", abs($F[6]), "\t", $F[7];' | grep -v ChrBP | grep -v NA | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.IncAllele.gz 
+zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.MatchedToHeight.IncAllele.txt.gz | sed 's/_/ /g' | perl -lane 'my $dir = "+"; if ($F[6] < 0) { $dir = "-"; } print $F[$#F-1], "\t", $F[$#F], "\t", $F[3], "\t", $F[1], "\t", $F[2], "\t", $dir, "\t", abs($F[6]), "\t", $F[7];' | grep -v ChrBP | grep -v NA | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.MatchedToHeight.IncAllele.txt.gz
+      
+
+
+
+
+
+
+
+#In R
+```
+library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass"); 
+
+Height <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz", header=T);
+BMI <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz", header=T);
+WHRadjBMI <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz", header=T);
+Height2 <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz", header=T)
+BMI2 <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.IncAllele.gz", header=T)
+WHRadjBMI2 <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.MatchedToHeight.IncAllele.txt.gz", header=T)
+
+#GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.AllPheno.MarkerChrBP.txt", header=F);
+GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt", header=F);
+GWASsnps <- GWASsnps[,2:3]
+GWASsnps[,2] <- GWASsnps[,2] - 1
+GWASsnps2 <- read.table("/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMI.MarkerChrBP.txt", header=F);
+GWASsnps2 <- GWASsnps2[,2:3]
+GWASsnps2[,2] <- GWASsnps2[,2] - 1
+names(GWASsnps) <- c("Chr", "BP");
+names(GWASsnps2) <- c("Chr", "BP");
+
+bmassOutput1 <- bmass(c("Height", "BMI", "WHRadjBMI"), GWASsnps=GWASsnps, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+bmassOutput1.1 <- bmass(c("Height2", "BMI2", "WHRadjBMI2"), GWASsnps=GWASsnps, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+#bmassOutput2 <- bmass(c("Height", "BMI"), GWASsnps=GWASsnps2, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+
+        bmassOutput1.2 <- list()
+        bmassOutput1.2$MergedDataSources <- NULL
+        if (!is.null(MergedDataSources)) {
+                bmassOutput1.2$MergedDataSources <- MergedDataSources
+        }
+        bmassOutput1.2$ZScoresCorMatrix <- NULL
+        bmassOutput1.2$MarginalSNPs <- list()
+        bmassOutput1.2$Models <- NULL
+        bmassOutput1.2$ModelPriors <- NULL
+        bmassOutput1.2$PreviousSNPs <- list()
+        bmassOutput1.2$NewSNPs <- list()
+        bmassOutput1.2$GWASlogBFMinThreshold <- NULL
+        #LogFile <- c()
+        bmassOutput1.2$LogFile <- c()
+
+        bmassOutput1.2$LogFile <- rbind(bmassOutput1.2$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
+
+	bmassOutput1.3 <- bmassOutput1.2
+	bmassOutput1.4 <- bmassOutput1.2
+
+#	DataSources = c("Height", "BMI", "WHRadjBMI"); NminThreshold = 50000; bmassSeedValue=150;
+#	ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+#         
+#	bmassOutput$LogFile <- CheckIndividualDataSources(DataSources, GWASsnps, ExpectedColumnNames, SigmaAlphas, bmassOutput$MergedDataSources, ProvidedPriors, UseFlatPriors, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, NminThreshold, bmassSeedValue, bmassOutput$LogFile)
+#
+#        bmassOutput[c("MergedDataSources", "LogFile")] <- MergeDataSources(DataSources, bmassOutput$LogFile)[c("MergedDataSources", "LogFile")]
+#
+#	bmassOutput1 <- bmassOutput
+# 
+#        bmassOutput1[c("MergedDataSources", "LogFile")] <- AnnotateMergedDataWithGWASSNPs(bmassOutput1$MergedDataSources, GWASsnps, GWASsnps_AnnotateWindow, bmassOutput1$LogFile)[c("MergedDataSources", "LogFile")]
+# 
+#        bmassOutput1[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")] <- ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput1$MergedDataSources, SNPMarginalUnivariateThreshold, SNPMarginalMultivariateThreshold, bmassOutput1$LogFile)[c("MarginalSNPs", "ZScoresCorMatrix", "LogFile")]
+#
+##	bmassOutput$MergedDataSources$ChrBP <- paste(bmassOutput$MergedDataSources$Chr, "_", bmassOutput$MergedDataSources$BP, sep="")
+##	bmassOutput$MarginalSNPs$SNPs <- bmassOutput$MergedDataSources[bmassOutput$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+#
+#        bmassOutput1[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput1$MarginalSNPs, bmassOutput1$ZScoresCorMatrix, SigmaAlphas, bmassOutput1$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+#
+##	Nmins <- apply(bmassOutput$MarginalSNPs$SNPs[,c("TC_N", "TG_N", "LDL_N", "HDL_N")], 1, min)
+##	ZScores <- bmassOutput$MarginalSNPs$SNPs[,c("TC_ZScore", "TG_ZScore", "HDL_ZScore", "LDL_ZScore")]
+##	MarginalSNPs_logBFs <- compute.allBFs.fromZscores(ZScores, bmassOutput$ZScoresCorMatrix, Nmins, bmassOutput$MarginalSNPs$SNPs$MAF, SigmaAlphas)
+#
+#        bmassOutput1[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput1$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput1$Models, bmassOutput1$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput1$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+#
+#        bmassOutput1[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput1$MarginalSNPs, bmassOutput1$PreviousSNPs, GWASsnps, bmassOutput1$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput1$Models, bmassOutput1$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput1$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+.
+.
+.
+
+	bmassOutput1.4$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/20161217_edits_GIANT2014_5.Orig3.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz", header=TRUE) 
+	bmassOutput1.4$ZScoresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GIANT2014_5.Orig3.RSS0.vs1.SignCrrct.vs1.txt",header=T,sep=",")) 
+	#Same as GWASsnps but whatevers
+	GWASsnps1.4 <- read.table("/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt", header=F);
+	GWASsnps1.4 <- GWASsnps1.4[,2:3]
+	GWASsnps1.4[,2] <- GWASsnps1.4[,2] - 1
+	names(GWASsnps1.4) <- c("Chr", "BP");
+	
+	#Print new results too... 
+	#Come up with way to recalculate ZSoresCorMatrix....
+	#Compare merged files, print out new one and create files with Chr BP A1 ZScore1 ZScore2 ZScore3 for both and see how they differ/compare on a per SNP basis....is there something systemic going on? Are ZScores the same? They should be...
+	#Do halfRan version of files?
+ 
+	DataSources1.4 = c("Height", "BMI", "WHRadjBMI"); NminThreshold = 50000; bmassSeedValue=150;
+        ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+        bmassOutput1.4$MergedDataSources$ChrBP <- paste(bmassOutput1.4$MergedDataSources$Chr, "_", bmassOutput1.4$MergedDataSources$BP, sep="")
+
+        bmassOutput1.4$MarginalSNPs$SNPs <- bmassOutput1.4$MergedDataSources[bmassOutput1.4$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput1.4$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+
+        bmassOutput1.4[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources1.4, bmassOutput1.4$MarginalSNPs, bmassOutput1.4$ZScoresCorMatrix, SigmaAlphas, bmassOutput1.4$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+
+#       Nmins <- apply(bmassOutput1.4$MarginalSNPs$SNPs[,c("TC_N", "TG_N", "LDL_N", "HDL_N")], 1, min)
+#       ZScores <- bmassOutput1.4$MarginalSNPs$SNPs[,c("TC_ZScore", "TG_ZScore", "HDL_ZScore", "LDL_ZScore")]
+#       MarginalSNPs_logBFs <- compute.allBFs.fromZscores(ZScores, bmassOutput1.4$ZScoresCorMatrix, Nmins, bmassOutput1.4$MarginalSNPs$SNPs$MAF, SigmaAlphas)
+
+        bmassOutput1.4[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources1.4, bmassOutput1.4$MarginalSNPs, GWASsnps1.4, SigmaAlphas, bmassOutput1.4$Models, bmassOutput1.4$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput1.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+
+        bmassOutput1.4[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources1.4, bmassOutput1.4$MarginalSNPs, bmassOutput1.4$PreviousSNPs, GWASsnps1.4, bmassOutput1.4$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput1.4$Models, bmassOutput1.4$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput1.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+
+        
+
+
+```
+
+~~~
+.
+.
+.
+> summary(bmassOutput1)
+                  Length Class      Mode     
+MarginalSNPs       0     -none-     list     
+PreviousSNPs       0     -none-     list     
+NewSNPs            0     -none-     list     
+LogFile           10     -none-     character
+MergedDataSources 19     data.frame list     
+> table(bmassOutput1$MergedDataSources$GWASannot)
+
+      0       2 
+1942213  547400 
+.
+.
+.
+> head(GWASsnps)
+  Chr       BP
+1   1  2059032
+2   1  9214869
+3   1 11206923
+4   1 17179262
+5   1 19635983
+6   1 21455898
+> head(GWASsnps[,2] - 1)
+[1]  2059031  9214868 11206922 17179261 19635982 21455897
+> GWASsnps[,2] <- GWASsnps[,2] - 1
+> head(GWASsnps)
+  Chr       BP
+1   1  2059031
+2   1  9214868
+3   1 11206922
+4   1 17179261
+5   1 19635982
+6   1 21455897
+>         bmassOutput1[c("MergedDataSources", "LogFile")] <- AnnotateMergedDataWithGWASSNPs(bmassOutput1$MergedDataSources, GWASsnps, GWASsnps_AnnotateWindow, bmassOutput1$LogFile)[c("MergedDataSources", "LogFile")]
+> table(bmassOutput1$MergedDataSources$GWASannot)
+
+      0       1       2 
+1942212     873  546528 
+> write.table(bmassOutput1$MergedDataSources[bmassOutput1$MergedDataSources$GWASannot == 1,3]+1, file="blahblah.BP.txt")
+> GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt", header=F);
+> GWASsnps <- GWASsnps[,2:3]
+> GWASsnps[,2] <- GWASsnps[,2] - 1
+> names(GWASsnps) <- c("Chr", "BP");
+> head(GWASsnps)
+  Chr       BP
+1   1  2059031
+2   1  9214868
+3   1 11206922
+4   1 17179261
+5   1 19635982
+6   1 21455897
+>         bmassOutput1[c("MergedDataSources", "LogFile")] <- AnnotateMergedDataWithGWASSNPs(bmassOutput1$MergedDataSources, GWASsnps, GWASsnps_AnnotateWindow, bmassOutput1$LogFile)[c("MergedDataSources", "LogFile")]
+> table(bmassOutput1$MergedDataSources$GWASannot)
+
+      0       1       2 
+1956477     854  532282 
+> write.table(bmassOutput1$MergedDataSources[bmassOutput1$MergedDataSources$GWASannot == 1,3]+1, file="blahblah.BP.txt")
+
+.
+.
+.
+> dim(bmassOutput1$NewSNPs$SNPs)
+[1] 302  25
+> bmassOutput1$ZScoresCorMatrix
+                 Height_ZScore BMI_ZScore WHRadjBMI_ZScore
+Height_ZScore       1.00000000 0.01157916       0.01108188
+BMI_ZScore          0.01157916 1.00000000       0.67291581
+WHRadjBMI_ZScore    0.01108188 0.67291581       1.00000000
+> bmassOutput1$GWASlogBFMinThreshold
+[1] 3.564426
+.
+.
+.
+> Height2 <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz", header=T)
+> BMI2 <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.IncAllele.gz", header=T)
+> WHRadjBMI2 <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.MatchedToHeight.IncAllele.txt.gz", header=T)
+>
+> bmassOutput1.1 <- bmass(c("Height2", "BMI2", "WHRadjBMI2"), GWASsnps=GWASsnps, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+> summary(bmassOutput1.1)
+                      Length Class      Mode     
+MarginalSNPs            4    -none-     list     
+PreviousSNPs            4    -none-     list     
+NewSNPs                 3    -none-     list     
+LogFile                17    -none-     character
+MergedDataSources      19    data.frame list     
+ZScoresCorMatrix        9    -none-     numeric  
+Models                 81    -none-     numeric  
+ModelPriors           378    -none-     numeric  
+GWASlogBFMinThreshold   1    -none-     numeric  
+> dim(bmassOutput1.1$NewSNPs$SNPs)
+[1] 240  25
+> bmassOutput1.1$ZScoresCorMatrix
+                  Height2_ZScore BMI2_ZScore WHRadjBMI2_ZScore
+Height2_ZScore       1.000000000 -0.05096709      -0.009691941
+BMI2_ZScore         -0.050967089  1.00000000       0.015522429
+WHRadjBMI2_ZScore   -0.009691941  0.01552243       1.000000000
+> bmassOutput1.1$GWASlogBFMinThreshold
+[1] 2.907321
+.
+.
+.
+>         bmassOutput1.4$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/20161217_edits_GIANT2014_5.Orig3.dtlesssignif.vs1.SignCrrct.vs1.annot.vs1.MAF.txt.gz", header=TRUE)
+>         bmassOutput1.4$ZScoresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs1/GIANT2014_5.Orig3.RSS0.vs1.SignCrrct.vs1.txt",header=T,sep=","))
+>         #Same as GWASsnps but whatevers
+>         GWASsnps1.4 <- read.table("/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt", header=F);
+>         GWASsnps1.4 <- GWASsnps1.4[,2:3]
+>         GWASsnps1.4[,2] <- GWASsnps1.4[,2] - 1
+>         names(GWASsnps1.4) <- c("Chr", "BP");
+>         DataSources1.4 = c("Height", "BMI", "WHRadjBMI"); NminThreshold = 50000; bmassSeedValue=150;
+>         ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+>         bmassOutput1.4$MergedDataSources$ChrBP <- paste(bmassOutput1.4$MergedDataSources$Chr, "_", bmassOutput1.4$MergedDataSources$BP, sep="")
+>
+>         bmassOutput1.4$MarginalSNPs$SNPs <- bmassOutput1.4$MergedDataSources[bmassOutput1.4$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput1.4$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+>
+> dim(bmassOutput1.4$MarginalSNPs$SNPs)
+[1] 43187    24
+> dim(bmassOutput1.4$MergedDataSources)
+[1] 43187    24
+>         bmassOutput1.4[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources1.4, bmassOutput1.4$MarginalSNPs, bmassOutput1.4$ZScoresCorMatrix, SigmaAlphas, bmassOutput1.4$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+GWASlogBFMinThreshold", "LogFile")]
+>         bmassOutput1.4[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources1.4, bmassOutput1.4$MarginalSNPs, GWASsnps1.4, SigmaAlphas, bmassOutput1.4$Models, bmassOutput1.4$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput1.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+>         bmassOutput1.4[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources1.4, bmassOutput1.4$MarginalSNPs, bmassOutput1.4$PreviousSNPs, GWASsnps1.4, bmassOutput1.4$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput1.4$Models, bmassOutput1.4$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput1.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+Error in if (x == 1) { : missing value where TRUE/FALSE needed
+>
+> dim(bmassOutput1.4$NewSNPs$SNPs)
+NULL
+> bmassOutput1.4$GWASlogBFMinThreshold
+[1] 2.953744
+> MarginalSNPs_PrunedList <- indephits(bmassOutput1.4$MarginalSNPs$SNPs$logBFWeightedAvg, bmassOutput1.4$MarginalSNPs$SNPs$Chr, bmassOutput1.4$MarginalSNPs$SNPs$BP, T=PruneMarginalSNPs_bpWindow)
+> MarginalSNPs_Pruned <- bmassOutput1.4$MarginalSNPs$SNPs[MarginalSNPs_PrunedList == 1,]
+> NewSNPs$SNPs <- MarginalSNPs_Pruned[MarginalSNPs_Pruned$GWASanno == 0 & MarginalSNPs_Pruned$logBFWeightedAvg >= 2.953744,]
+> dim(NewSNPs$SNPs)
+[1] 3911   26
+> table(is.na((bmassOutput1.4$MarginalSNPs$SNPs$Chr)))
+
+FALSE
+43187
+> table(is.na((bmassOutput1.4$MarginalSNPs$SNPs$BP)))
+
+FALSE
+43187
+> table(is.na((bmassOutput1.4$MarginalSNPs$SNPs$logBFWeightedAvg)))
+
+FALSE  TRUE
+43163    24
+> MarginalSNPs <- bmassOutput1.4$MarginalSNPs$SNPs[!is.na(bmassOutput1.4$MarginalSNPs$SNPs$logBFWeightedAvg),]
+> MarginalSNPs_PrunedList <- indephits(MarginalSNPs$logBFWeightedAvg, MarginalSNPs$Chr, MarginalSNPs$BP, T=PruneMarginalSNPs_bpWindow)
+> MarginalSNPs_Pruned <- MarginalSNPs[MarginalSNPs_PrunedList == 1,]
+> NewSNPs$SNPs <- MarginalSNPs_Pruned[MarginalSNPs_Pruned$GWASanno == 0 & MarginalSNPs_Pruned$logBFWeightedAvg >= 2.953744,]
+> dim(NewSNPs$SNPs)
+[1] 217  26
+#[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat ../../GIANT2014_5/Vs1/GIANT2014_5.Orig3.newtophits.vs1.SignCrrct.vs1.MarkerChrBP.txt | wc
+#    218     654    5624
+> summary(bmassOutput1)
+                      Length Class      Mode     
+MarginalSNPs            4    -none-     list     
+PreviousSNPs            4    -none-     list     
+NewSNPs                 3    -none-     list     
+LogFile                17    -none-     character
+MergedDataSources      19    data.frame list     
+ZScoresCorMatrix        9    -none-     numeric  
+Models                 81    -none-     numeric  
+ModelPriors           378    -none-     numeric  
+GWASlogBFMinThreshold   1    -none-     numeric  
+> summary(bmassOutput1.1)
+                      Length Class      Mode     
+MarginalSNPs            4    -none-     list     
+PreviousSNPs            4    -none-     list     
+NewSNPs                 3    -none-     list     
+LogFile                17    -none-     character
+MergedDataSources      19    data.frame list     
+ZScoresCorMatrix        9    -none-     numeric  
+Models                 81    -none-     numeric  
+ModelPriors           378    -none-     numeric  
+GWASlogBFMinThreshold   1    -none-     numeric  
+
+~~~
 
 
 
@@ -11282,13 +12003,13 @@ library(ggplot2)
 library(reshape2)
 
 #jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.CDGemma_Grp2_7cyto.Marginals.HeatPlot.All.vs1.jpeg", width=6000, height=2000, res=300)
-jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.CDGemma_Grp2_7cyto.Marginals.HeatPlot.Subset.vs1.jpeg", width=6000, height=2000, res=300)
-#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.CDGemma_Grp2_7cyto.Marginals.HeatPlot.Subset.wDir.vs1.jpeg", width=6000, height=2000, res=300)
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.CDGemma_Grp2_7cyto.Marginals.HeatPlot.Subset.vs1.jpeg", width=6000, height=2000, res=300)
+jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Stein2016/Vs1/Stein2016.Vs1.CDGemma_Grp2_7cyto.Marginals.HeatPlot.Subset.wDir.vs1.jpeg", width=6000, height=2000, res=300)
 
 #ggPlotData <- melt(Posteriors.marginals.DirAssoc[hclust(dist(Posteriors.marginals.DirAssoc[,2:8]))$order,])
 #ggPlotData <- melt(Posteriors.marginals.DirAssoc.wDir[hclust(dist(Posteriors.marginals.DirAssoc.wDir[,2:8]))$order,])
-ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:8]))$order,])
-#ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset.wDir[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:8]))$order,])
+#ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:8]))$order,])
+ggPlotData <- melt(Posteriors.marginals.DirAssoc.Subset.wDir[hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:8]))$order,])
 #ggPlotData$snp <- factor(ggPlotData$snp, levels=Posteriors.marginals.DirAssoc[,1][hclust(dist(Posteriors.marginals.DirAssoc[,2:8]))$order])
 ggPlotData$snp <- factor(ggPlotData$snp, levels=Posteriors.marginals.DirAssoc.Subset[,1][hclust(dist(Posteriors.marginals.DirAssoc.Subset[,2:8]))$order])
 
@@ -12034,6 +12755,33 @@ cat /mnt/lustre/home/mturchin20/Data/HaemgenRBC2012/HaemgenRBC2012.Table1.txt | 
 #
 ###########################
 
+##MAF, Gene Proximity SNP matching framework/code setup
+##20161226
+
+#Given list of input SNPs, match based on MAF. Beforehand can annotate whether near gene or not, and/or nearby number of genes.
+#Have 50 hash bins of MAFs, .01, .02, .03, .04, .05, .06 -- round MAFs to two significant digits? Care about being near the edges or not really? 
+
+#Just go through list of all SNPs first and make entries in hash for each maf, then for second file (of SNPs of interest), go through X # of times where X is also an input number, and print out different version of the matched output lists X # of times. Also include an input for seed value 
+
+file1
+file2
+N (number of outputs)
+output1
+seed
+
+build hash of two hashes of MAFs (first prox -- 2 hashes -- then maf -- the 50 or so)
+
+for a given entry snp build the array of +/- 5% MAF entries (taken from within prox or not) then do N random grabs and file outputs for each SNP, so not redoing these array creations N times? Eg create a line that outputs/appends to the N files for each entry SNP?
+
+cp -p /mnt/lustre/home/mturchin20/Scripts/Python/2fileTemplate.vs1.py /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataAnalysis.MatchSNPsBy.MAF_GeneProx.vs1.py 
+
+
+
+
+
+
+
+~~~
 
 ##GlobalLipids2010
 ##20160311
@@ -13450,6 +14198,216 @@ mkdir data
 
 #Log file suggestion -- http://stackoverflow.com/questions/22843775/how-to-create-periodically-send-text-to-a-log-file-while-printing-normal-outpu
 #Post about cat vs print -- http://stackoverflow.com/questions/31843662/what-is-the-difference-between-cat-and-print
+
+
+
+###########################
+#
+#
+# Part F -- Per-dataset analyses for specific people/projects/reasons
+#
+#
+###########################
+
+
+
+
+
+
+##GIANT 2014/5
+##20161222
+
+
+#Sarah U MASH result comparisons
+#20161222
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec
+
+cd /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant
+
+wget https://github.com/surbut/mashgwas/tree/master/Data/significant
+
+#for i in `cat significant | grep txt | sed 's/=/ /g' | awk '{ print $6 }' | sed 's/\"//g'`; do wget --no-check-certificate https://github.com$i; done
+for i in `cat significant | grep txt | sed 's/=/ /g' | awk '{ print $6 }' | sed 's/\"//g' | perl -F/\ -lane 'print $F[$#F];'`; do wget --no-check-certificate https://raw.githubusercontent.com/surbut/mashgwas/master/Data/significant/$i; done
+
+cd /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec
+
+wget https://github.com/surbut/mashgwas/tree/master/Data/traitspec
+
+for i in `cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspec | grep txt | sed 's/=/ /g' | awk '{ print $6 }' | sed 's/\"//g' | perl -F/\ -lane 'print $F[$#F];'`; do wget --no-check-certificate https://raw.githubusercontent.com/surbut/mashgwas/master/Data/traitspec/$i; done
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -F, -lane 'print $F[0];' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.txt
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.txt
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -F, -lane 'print $F[0];' | grep -v NA > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -F, -lane 'print $F[0];' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.txt
+
+~~~
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$cat traitspecheight.txt | wc
+  36288   72575  720066
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$join <(cat traitspecheight.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | wc
+  36287  326583 2167198
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$join <(cat traitspecheight.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | head -n 10
+rs10000502      4 141084206
+rs10000610      4 159252624
+rs1000071       11 4557877
+rs10000747      4 83037841
+rs10000864      4 187936416
+rs10000940      4 44689543
+rs10000960      4 129302182
+rs10001054      4 48103577
+rs10001241      4 132410977
+rs1000176       20 21181552
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$join <(cat traitspecheight.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -lane 'print $#F;' | sort | uniq -c
+  36276 2
+      1 3
+      2 4
+      1 5
+      1 6
+      6 8
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$join <(cat traitspecheight.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -lane 'if ($#F == 8) { print join("\t", @F);}'
+rs1044043       6       32901958,6      cox     hap1    4174836,6       qbl     hap2    3980033
+rs11955148      5       127585712,5     h2      hap1    798644,5        h2      hap1    1302625
+rs1826833       11      50176398,6      cox     hap1    221488,6        qbl     hap2    19336
+rs2235498       6       33238407,6      cox     hap1    4510593,6       qbl     hap2    4316599
+rs2272874       6       29804223,6      cox     hap1    1148935,6       qbl     hap2    951052
+rs7941169       11      50174233,6      cox     hap1    219189,6        qbl     hap2    17020
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$join <(cat traitspecheight.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | grep , | head -n 10              
+rs1044043       6 32901958,6 cox hap1 4174836,6 qbl hap2 3980033
+rs10992512      9 94692771,9 98950389
+rs11955148      5 127585712,5 h2 hap1 798644,5 h2 hap1 1302625
+rs12992721      2 148840166,Y 57656780,6 qbl hap2 3442364
+rs16900380      5 71978016,6 random 565629
+rs1826833       11 50176398,6 cox hap1 221488,6 qbl hap2 19336
+rs2235498       6 33238407,6 cox hap1 4510593,6 qbl hap2 4316599
+rs2272874       6 29804223,6 cox hap1 1148935,6 qbl hap2 951052
+rs5996135       22 40971401,22 h2 hap1 46549
+rs7941169       11 50174233,6 cox hap1 219189,6 qbl hap2 17020
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$join <(cat traitspecheight.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -F, -lane 'print $F[0];' | perl -lane 'print $#F;' | sort | uniq -c
+  36287 2
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$cat traitspecbmi.txt | wc
+    500     999    8957
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$join <(cat traitspecbmi.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | wc
+    499    1497   10830
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$join <(cat traitspecbmi.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | head -n 10
+rs1005552       17 32023710
+rs10057590      5 124363145
+rs10057967      5 75033511
+rs10092489      8 77299142
+rs1009468       9 15815229
+rs10161145      12 87869167
+rs10166736      2 227608662
+rs1016756       2 58530852
+rs10170606      2 565563
+rs10204803      2 58758358
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$join <(cat traitspecbmi.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -lane 'print $#F;' | sort | uniq -c 
+    499 2
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$join <(cat traitspecbmi.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | grep ,                              
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec]$
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat heightsignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | grep , | head -n 10
+rs10419174      19 42297180,6 cox hap1 110605
+rs1042147       6 31191134,6 cox hap1 2534366,6 qbl hap2 2332920
+rs1044043       6 32901958,6 cox hap1 4174836,6 qbl hap2 3980033
+rs10992512      9 94692771,9 98950389
+rs1150753       6 32167844,6 cox hap1 3467036
+rs1150754       6 32158735,6 cox hap1 3457930,6 qbl hap2 3265727
+rs1150755       6 32146527,6 cox hap1 3445724,6 qbl hap2 3253532
+rs11955148      5 127585712,5 h2 hap1 798644,5 h2 hap1 1302625
+rs12198173      6 32134785,6 cox hap1 3433965,6 qbl hap2 3241808
+rs12360875      11 50190697,6 cox hap1 230198,6 cox hap1 244639,6 qbl hap2 28167,6 qbl hap2 42601
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat heightsignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -lane 'if ($#F == 8) { print join("\t", @F);}' | head -n 10
+rs1042147       6       31191134,6      cox     hap1    2534366,6       qbl     hap2    2332920
+rs1044043       6       32901958,6      cox     hap1    4174836,6       qbl     hap2    3980033
+rs1150754       6       32158735,6      cox     hap1    3457930,6       qbl     hap2    3265727
+rs1150755       6       32146527,6      cox     hap1    3445724,6       qbl     hap2    3253532
+rs11955148      5       127585712,5     h2      hap1    798644,5        h2      hap1    1302625
+rs12198173      6       32134785,6      cox     hap1    3433965,6       qbl     hap2    3241808
+rs1265048       6       31189387,6      cox     hap1    2532619,6       qbl     hap2    2331173
+rs1265061       6       31186235,6      cox     hap1    2529467,6       qbl     hap2    2328021
+rs1265063       6       31185916,6      cox     hap1    2529148,6       qbl     hap2    2327702
+rs1265087       6       31217788,6      cox     hap1    2561030,6       qbl     hap2    2359590
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat heightsignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' |
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat heightsignificantin.txt | wc
+  75699  151397 1512936
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat heightsignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | wc
+  75698  227917 1654161
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat heightsignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | head -n 10
+rs10000502      4 141084206
+rs10000531      4 10903454
+rs1000055       18 44835310
+rs10000610      4 159252624
+rs1000071       11 4557877
+rs10000747      4 83037841
+rs10000864      4 187936416
+rs10000940      4 44689543
+rs10000960      4 129302182
+rs10001054      4 48103577
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat heightsignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -lane 'print $#F;' | sort | uniq -c
+      1 1
+      1 11
+      1 14
+  75544 2
+      2 3
+      4 4
+     25 5
+      1 6
+    119 8
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat heightsignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -F, -lane 'print $F[0];' | perl -lane 'print $#F;' | sort | uniq -c 
+      1 1
+  75697 2
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat heightsignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -F, -lane 'print $F[0];' | perl -lane 'if ($#F == 1) { print join("\t", @F); }'
+rs138544        NA
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat heightsignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -F, -lane 'print $F[0];' | grep -v NA | perl -lane 'print $#F;' | sort | uniq -c
+  75697 2
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat bmisignificantin.txt | wc
+   4884    9767   92305
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat bmisignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | wc
+   4883   14727  106511
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat bmisignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | head -n 10
+rs10009336      4 44175539
+rs10010305      4 11656391
+rs10013571      4 28821637
+rs1001870       15 65938501
+rs10020270      4 16069344
+rs1002922       5 40422311
+rs10029408      4 60257431
+rs10029732      4 48193435
+rs10033946      4 20661466
+rs10040401      5 91512801
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat bmisignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -lane 'print $#F;' | sort | uniq -c
+   4869 2
+      2 5
+     12 8
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat bmisignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | grep , | head -n 10           
+rs17421624      6 32174154,6 cox hap1 3473345
+rs2071293       6 32170664,6 cox hap1 3469855
+rs2071295       6 32146677,6 cox hap1 3445874,6 qbl hap2 3253682
+rs2233956       6 31189183,6 cox hap1 2532415,6 qbl hap2 2330969
+rs2299851       6 31826580,6 cox hap1 3164698,6 qbl hap2 2966190
+rs2516049       6 32678377,6 cox hap1 3957888,6 qbl hap2 3761787
+rs2734335       6 32001922,6 cox hap1 3340206,6 qbl hap2 3141683
+rs3117574       6 31833208,6 cox hap1 3171322,6 qbl hap2 2972817
+rs3130484       6 31823860,6 cox hap1 3161979,6 qbl hap2 2963471
+rs577272        6 31945941,6 cox hap1 3284223,6 qbl hap2 3085698
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat bmisignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -lane 'if ($#F == 8) { print join("\t", @F); }' | head -n 10
+rs2071295       6       32146677,6      cox     hap1    3445874,6       qbl     hap2    3253682
+rs2233956       6       31189183,6      cox     hap1    2532415,6       qbl     hap2    2330969
+rs2299851       6       31826580,6      cox     hap1    3164698,6       qbl     hap2    2966190
+rs2516049       6       32678377,6      cox     hap1    3957888,6       qbl     hap2    3761787
+rs2734335       6       32001922,6      cox     hap1    3340206,6       qbl     hap2    3141683
+rs3117574       6       31833208,6      cox     hap1    3171322,6       qbl     hap2    2972817
+rs3130484       6       31823860,6      cox     hap1    3161979,6       qbl     hap2    2963471
+rs577272        6       31945941,6      cox     hap1    3284223,6       qbl     hap2    3085698
+rs589428        6       31956198,6      cox     hap1    3294480,6       qbl     hap2    3095958
+rs605203        6       31954990,6      cox     hap1    3293272,6       qbl     hap2    3094750
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat bmisignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -F, -lane 'print $F[0];' | perl -lane 'print $#F;' | sort | uniq -c
+   4883 2
+~~~
+
 
 
 
