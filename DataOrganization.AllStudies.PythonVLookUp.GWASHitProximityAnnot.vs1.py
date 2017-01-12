@@ -60,6 +60,8 @@ for line1 in file1:
 	End1 = int(line1[2]) + 500000
 #	Start1 = int(line1[2]) - 50
 #	End1 = int(line1[2]) + 50
+#	Start1 = int(line1[2]) - 2000000
+#	End1 = int(line1[2]) + 2000000
 
 #	sys.stderr.write("happening1\n")
 

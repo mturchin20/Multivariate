@@ -2865,7 +2865,7 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipid
 
 
 #20161009
-#Applying bmass while still in development via devtools
+#Applying bmass while still in development via devtools (eg this tag that was later used/adopted: Vs2 -- Running things through version of bmass() code)
 
 cd /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass
 
@@ -3005,8 +3005,17 @@ names(GWASsnps) <- c("Chr", "BP")
 DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
 ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
 
-
 #bmassOutput1 <- bmass(c("bmass_TestData1", "bmass_TestData2"), GWASsnps=bmass_TestSigSNPs, NminThreshold = 2000, bmassSeedValue=NULL)
+
+#From 20161227
+bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150);
+bmassOutput2 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150, PruneMarginalSNPs=FALSE);
+bmassOutput3 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150, PrintMergedData=TRUE, PruneMarginalSNPs=FALSE);
+
+write.table(bmassOutput1$NewSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
+write.table(bmassOutput3$MergedDataSources, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt", quote=FALSE, row.names=FALSE)
+
+system("gzip /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt")
 
 
 #CommandLine:
@@ -3362,8 +3371,32 @@ GWASlogBFMinThreshold    1   -none- numeric
 [1] 26 29
 > bmassOutput1$GWASlogBFMinThreshold
 [1] 4.34246
+.
+.
+.
+#20161227 NOTE -- continuing work from seen above
+> devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+> HDL <- read.table("/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz", header=T);
+> LDL <- read.table("/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
+> TG <- read.table("/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
+> TC <- read.table("/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
+> GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt", header=F);
+> names(GWASsnps) <- c("Chr", "BP")
+> #bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+> #print(bmassOutput1);" > shana1.txt
+> DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
+> ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+> 
+> bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150);
+> bmassOutput2 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150, PruneMarginalSNPs=FALSE);
+#20170105
+> bmassOutput3 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150, PrintMergedData=TRUE, PruneMarginalSNPs=FALSE);
+>
+> write.table(bmassOutput1$NewSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
+> write.table(bmassOutput3$MergedDataSources, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt", quote=FALSE, row.names=FALSE)
+>
+> system("gzip /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt")
 ~~~
-
 
 mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2
 
@@ -3415,6 +3448,7 @@ R code to use below
 
         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput$MarginalSNPs, bmassOutput$PreviousSNPs, GWASsnps, bmassOutput$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
 
+	write.table(bmassOutput$NewSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
 	
 
 ~~~
@@ -3473,6 +3507,280 @@ Error: object 'MergedDataSources' not found
 [1] 4.352589
 ~~~
 
+
+#20170106
+#Found some duplicate entries in the original 2010 files due to use of HapMap references to get Chr & BP information per rsID#
+#These appear to only be a handful of double entries and a number of 'NAs' that end up getting super-duplicated due to use of join statements. These 'NAs' are all eventually removed -- and so therefore likely haven't affected analyses up until this point -- but have probably messed with interim reports of total line counts from files
+
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | grep -v Allele1 | sort | uniq -u) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "_", $F[$#F-1], "\t", $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | sort -k 1,1) | perl -lane 'splice(@F, 0, 1); print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | grep -v Allele1 | sort | uniq -u) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "_", $F[$#F-1], "\t", $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | sort -k 1,1) | perl -lane 'splice(@F, 0, 1); print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | grep -v Allele1 | sort | uniq -u) <(zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "_", $F[$#F-1], "\t", $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | sort -k 1,1) | perl -lane 'splice(@F, 0, 1); print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | grep -v Allele1 | sort | uniq -u) <(zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "_", $F[$#F-1], "\t", $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | sort -k 1,1) | perl -lane 'splice(@F, 0, 1); print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz
+
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.tbl.gz
+join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.tbl.gz
+
+zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.No0Dir.tbl.gz
+zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.tbl.gz | grep -v NoAlleleMatch | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.tbl.gz | grep -v NoAlleleMatch | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.tbl.gz | grep -v NoAlleleMatch | perl -lane 'if ($F[5] ne "0") { print join("\t", @F); }' | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+
+#20170112
+#Note the change to /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.txt from /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt
+
+R -q -e "library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+HDL <- read.table("/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.No0Dir.tbl.gz", header=T);
+LDL <- read.table("/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
+TG <- read.table("/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
+TC <- read.table("/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
+##GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt", header=F);
+GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.txt", header=F);
+names(GWASsnps) <- c("Chr", "BP")
+#bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+#print(bmassOutput1);" > shana1.txt
+DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
+ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+
+#bmassOutput1 <- bmass(c("bmass_TestData1", "bmass_TestData2"), GWASsnps=bmass_TestSigSNPs, NminThreshold = 2000, bmassSeedValue=NULL)
+
+#From 20161227
+bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150);
+bmassOutput2 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150, PruneMarginalSNPs=FALSE);
+bmassOutput3 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150, PrintMergedData=TRUE, PruneMarginalSNPs=FALSE);
+ 
+write.table(bmassOutput1$NewSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
+write.table(bmassOutput3$MergedDataSources, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt", quote=FALSE, row.names=FALSE) 
+
+system("gzip /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt")
+
+~~~
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz | awk '{ print $1 "_" $2 }' | sort | uniq -u | wc
+2627690 2627690 30597403
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | sort -k 1,1) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz | awk '{ print $1 "_" $2 }' | sort | uniq -u) | wc
+2627690 23649210 127286752
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$for i in `ls -lrt /data/external_public/GlobalLipids2010/*_with_Effect.wHapMap23.expanded.tbl.gz | awk '{ print $9 }'`; do echo $i; zcat $i | wc; zcat $i | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | sort | uniq | wc; done
+/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz
+2692430 37694020 331765755
+2627853 2627853 30599302
+/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.tbl.gz
+2692565 37695910 332014156
+2627984 2627984 30600736
+/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.tbl.gz
+2692414 37693796 333301157
+2627835 2627835 30599076
+/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.tbl.gz
+2692561 37695854 331851585
+2627985 2627985 30600838
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.tbl.gz | grep 91950526
+rs17884995      a       g       7776    -0.226  0.8215  -       ?????????????-???????????       -0.0042 0.0185  chr1_91950526_A_0.508_G_0.492   1       91950526        0.492
+rs1805113       a       g       87588   -0.712  0.4764  -       -+---+---+--+++-------+-+       -0.0026 0.0054  chr1_91950526_A_0.492_G_0.508   1       91950526        0.492
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.tbl.gz | grep 104850499
+rs1475276       t       c       94483   -0.827  0.4081  -       --+--+---+-+-----++-+----       -0.0047 0.0065  chr13_104850499_C_0.783_T_0.217 13      104850499       0.217
+rs34921609      t       c       2334    0.887   0.3749  +       ????????????????????++???       0.032   0.0364  chr13_104850499_C_0.224_T_0.776 13      104850499       0.224
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.tbl.gz | grep 40969589 
+rs5751250       t       g       93996   -1.181  0.2375  -       ---+----+--+---++-----++-       -0.0056 0.0052  chr22_40969589_T_0.533_G_0.467  22      40969589        0.467
+rs5758681       a       g       7773    0.41    0.6822  +       ?????????????+???????????       0.0115  0.0279  chr22_40969589_T_0_G_0.208      22      40969589        0
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Python.PerlVLookup.FindrsIDsindbSNPvcf.vs3.py --file1 <(zcat /mnt/lustre/home/mturchin20/Data/UCSC/GenomeBrowser/snp130.txt.gz | perl -lane 'if ($F[1] =~ m/(chr[0-9MXY]+)_.*/) { $F[1] = $1; } print join("\t", @F);') --file2 /data/external_public/GlobalLipids2010/HDL_with_Effect.tbl.gz | head -n 10
+MarkerName      Allele1 Allele2 Weight  GC.Zscore       GC.Pvalue       Overall Direction       Effect  StdErr  ChrBP
+rs10 a  c       85853   -0.096  0.9232  -       ---+-+++-+?+--??--++??+++       -0.0019 0.0147  7_92221824
+rs1000000       a       g       99900   -0.937  0.349   -       ---+-+---++-+---+++-++++-       -0.0056 0.0058  12_125456933
+rs10000010      t       c       99900   0.185   0.8532  +       -+++-+-+--+++-++++--+----       0.0013  0.0049  4_21227772
+rs10000012      c       g       99843   -0.752  0.4523  -       +-+-+-+--+----+--+++++-++       -0.0065 0.0071  4_1347325
+rs10000013      a       c       99900   0.642   0.5209  +       +++-++--+--++--+---+-++--       3e-04   0.0058  4_36901464
+rs10000017      t       c       99900   2.043   0.04106 +       +-++++++---++++---++--+++       0.0105  0.0062  4_84997149
+rs1000002       t       c       99797   2.249   0.02453 +       -+-+---+-+-+++--++-+-+-++       0.0101  0.0049  3_185118462
+rs10000023      t       g       99900   -0.008  0.9935  -       -+-+--+--+++++--++------+       4e-04   0.005   4_95952929
+rs10000027      c       g       7807    -0.686  0.4925  -       ?????????????-???????????       -0.0141 0.0205  4_156395667
+[  mturchin20@spudhead  ~/Software/bedtools2-2.25.0]$for i in `ls -lrt /data/external_public/GlobalLipids2010/*_with_Effect.wHapMap23.expanded.tbl.gz | awk '{ print $9 }'`; do echo $i; zcat $i | wc; zcat $i | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | sort | uniq | wc; zcat $i | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | sort | uniq -u | wc; done
+/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz
+2692430 37694020 331765755
+2627853 2627853 30599302
+2627816 2627816 30598877
+/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.tbl.gz
+2692565 37695910 332014156
+2627984 2627984 30600736
+2627947 2627947 30600311
+/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.tbl.gz
+2692414 37693796 333301157
+2627835 2627835 30599076
+2627798 2627798 30598651
+/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.tbl.gz
+2692561 37695854 331851585
+2627985 2627985 30600838
+2627948 2627948 30600413
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | sort | uniq -c | awk '{ if ($1 > 1) { print $0 } }'                           2 10_107974310
+      2 10_44190021
+      2 1_151269919
+      2 1_181792961
+      2 1_181801167
+      2 1_181822914
+      2 1_243218867
+      2 1_244679662
+      2 13_104850499
+      2 13_27851104
+      2 13_52264136
+      2 13_92475302
+      2 1_40088475
+      2 15_46489749
+      2 17_28342660
+      2 1_91950526
+      2 2_166781097
+      2 2_180144902
+      2 2_209886487
+      2 22_40969589
+      2 3_46444018
+      2 4_118924724
+      2 4_70240740
+      2 6_147339146
+      2 6_40760233
+      2 6_76639833
+      2 7_112790973
+      2 7_150832232
+      2 7_75772576
+      2 7_92339640
+      2 7_94835296
+      2 7_96313573
+      2 8_56053572
+      2 8_8538134
+      2 9_102507732
+      2 9_8919077
+  64542 NA_NA
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | sort | uniq -u | head -n 10                                             10_10000135
+10_10000265
+10_100002729
+10_100002880
+10_100003553
+10_100003805
+10_100003967
+10_10000459
+10_100005553
+10_100005593
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | grep -v Allele1 | sort | uniq -u) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "_", $F[$#F-1], "\t", $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | sort -k 1,1) | wc
+2627815 23650335 127292283
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | grep -v Allele1 | sort | uniq -u | wc
+2627816 2627816 30598877
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | grep -v Allele1 | sort | uniq -u) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "_", $F[$#F-1], "\t", $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | sort -k 1,1) | head -n 10
+10_10000135 10 10000135 0.551 g a + 0.411 99150
+10_10000265 10 10000265 0.436 t c + 0.3933 99150
+10_100002729 10 100002729 0.633 g a + 0.03387 99900
+10_100002880 10 100002880 0.642 g a + 0.03461 99900
+10_100003553 10 100003553 0.12 t c + 0.8488 99900
+10_100003805 10 100003805 0.3 t c + 0.1194 99900
+10_100003967 10 100003967 0.356 a t + 0.03739 99900
+10_10000459 10 10000459 0.427 t g + 0.4015 99150
+10_100005553 10 100005553 0.144 c g + 0.1038 99900
+10_100005593 10 100005593 0.783 g t + 0.8587 99900
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | grep -v Allele1 | sort | uniq -u) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "_", $F[$#F-1], "\t", $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | sort -k 1,1) | perl -lane 'splice(@F, 0, 1); print join("\t", @F);' | head -n 10
+10 10000135     0.551   g       a       +       0.411   99150
+10 10000265     0.436   t       c       +       0.3933  99150
+10 100002729    0.633   g       a       +       0.03387 99900
+10 100002880    0.642   g       a       +       0.03461 99900
+10 100003553    0.12    t       c       +       0.8488  99900
+10 100003805    0.3     t       c       +       0.1194  99900
+10 100003967    0.356   a       t       +       0.03739 99900
+10 10000459     0.427   t       g       +       0.4015  99150
+10 100005553    0.144   c       g       +       0.1038  99900
+10 100005593    0.783   g       t       +       0.8587  99900
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'print $F[$#F-2], "_", $F[$#F-1];' | grep -v Allele1 | sort | uniq -u) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | perl -lane 'if ($F[6] eq "-") { ($F[1], $F[2]) = ($F[2], $F[1]); $F[6] = "+"; $F[$#F] = 1 - $F[$#F]; } print $F[$#F-2], "_", $F[$#F-1], "\t", $F[$#F-2], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $F[6], "\t", $F[5], "\t", $F[3]; ' | grep -v Allele1 | sort -k 1,1) | perl -lane 'splice(@F, 0, 1); print join("\t", @F);' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.tbl.gz | head -n 10
+Chr BP  MAF     A1      A2      Direction       pValue  N
+10 10000135     0.551   g       a       +       0.411   99150
+10 10000265     0.436   t       c       +       0.3933  99150
+10 100002729    0.633   g       a       +       0.03387 99900
+10 100002880    0.642   g       a       +       0.03461 99900
+10 100003553    0.12    t       c       +       0.8488  99900
+10 100003805    0.3     t       c       +       0.1194  99900
+10 100003967    0.356   a       t       +       0.03739 99900
+10 10000459     0.427   t       g       +       0.4015  99150
+10 100005553    0.144   c       g       +       0.1038  99900
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$for i in `ls -lrt /data/external_public/GlobalLipids2010/*_with_Effect.*No0Dir.tbl.gz | awk '{ print $9 }'`; do echo $i; zcat $i | wc; done
+/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz
+2692298 21538384 98440960
+/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
+2624227 20993816 96672892
+/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
+2624466 20995728 96703993
+/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.No0Dir.tbl.gz
+2624603 20996824 97999391
+/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+2627015 21016120 96771348
+/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+2627253 21018024 96802408
+/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+2627393 21019144 98099275
+/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.No0Dir.tbl.gz
+2627690 21021520 96689349
+/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+2624080 20992640 96667639
+/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+2624318 20994544 96698691
+/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz
+2624458 20995664 97994197
+~~~
+
+```
+> library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+Loading bmass
+> HDL <- read.table("/data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.No0Dir.tbl.gz", header=T);
+> LDL <- read.table("/data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
+> TG <- read.table("/data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
+> TC <- read.table("/data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.MatchedToHDL.DropNoMatch.No0Dir.tbl.gz", header=T);
+> GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt", header=F);
+> names(GWASsnps) <- c("Chr", "BP")
+> #bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+> #print(bmassOutput1);" > shana1.txt
+> DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
+> ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+>
+> #bmassOutput1 <- bmass(c("bmass_TestData1", "bmass_TestData2"), GWASsnps=bmass_TestSigSNPs, NminThreshold = 2000, bmassSeedValue=NULL)
+>
+> #From 20161227
+> bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150);
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2017-01-10 16:08:20 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+> bmassOutput2 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150, PruneMarginalSNPs=FALSE);
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2017-01-10 16:13:44 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+> bmassOutput3 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, bmassSeedValue=150, PrintMergedData=TRUE, PruneMarginalSNPs=FALSE);
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2017-01-10 16:19:46 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+>
+> dim(bmassOutput1$NewSNPs$SNPs)
+[1] 26 29
+> bmassOutput1$GWASlogBFMinThreshold
+[1] 4.339657
+#From prior to `NoDups`
+#> dim(bmassOutput1$NewSNPs$SNPs)
+#[1] 26 29
+#> bmassOutput1$GWASlogBFMinThreshold
+#[1] 4.34246
+#> dim(bmassOutput3$MergedDataSources)
+#[1] 2600747      23
+> dim(bmassOutput3$MergedDataSources)
+[1] 2593966      23
+#20170112 -- after adding in the NA'ed GWAS snp via /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.txt
+> dim(bmassOutput1$NewSNPs$SNPs)
+[1] 26 29
+> bmassOutput1$GWASlogBFMinThreshold
+[1] 4.339657
+> dim(bmassOutput3$MergedDataSources)
+[1] 2593966      23
+> dim(GWASsnps)
+[1] 102   2
+
+```
+
+
+
+
+
+
+
+
 #20161102
 #Scrap/Misc related to getting DAVID/RDAVIDWebServices to work
 
@@ -3526,6 +3834,20 @@ Result type:  FunctionalAnnotationChart
 3 0.70496204
 4 1.23752805
 ~~~
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4223,6 +4545,993 @@ MergeDataSources$
 
 ~~~
 
+#20161227 NOTE -- This got kind of paused midway, so picking it up and restarting a bit here
+
+zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.bmass.formatted.txt.gz
+zcat /data/external_public/GlobalLipid/jointGwasMc_LDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.bmass.formatted.txt.gz
+zcat /data/external_public/GlobalLipid/jointGwasMc_TG.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.bmass.formatted.txt.gz
+zcat /data/external_public/GlobalLipid/jointGwasMc_TC.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.bmass.formatted.txt.gz
+
+#/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.bmass.formatted.txt.gz
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/jointGwasMc_LDL.MatchedToHDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[6] > 0) { $F[5] = "+"; } elsif ($F[6] < 0) { $F[5] = "-"; } else { $F[5] = 0;} $F[6] = abs($F[6]); print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.bmass.formatted.MatchedToHDL.txt.gz
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/jointGwasMc_TG.MatchedToHDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[6] > 0) { $F[5] = "+"; } elsif ($F[6] < 0) { $F[5] = "-"; } else { $F[5] = 0;} $F[6] = abs($F[6]); print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.bmass.formatted.MatchedToHDL.txt.gz
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/jointGwasMc_TC.MatchedToHDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[6] > 0) { $F[5] = "+"; } elsif ($F[6] < 0) { $F[5] = "-"; } else { $F[5] = 0;} $F[6] = abs($F[6]); print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.bmass.formatted.MatchedToHDL.txt.gz
+
+#NOTE -- So I realized that /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.RAF.txt.gz  was given the header seen below which incorrectly orders the phenotype ZScores. This order seems to be what was used in the very early, first runs of the analyses (eg see /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/process.MTedits.For2013.vs1.R). So somehow got it mixed up by copying/returning to that order from earlier with the newer file, though the newer file had a different order of HDL LDL TC TG. 
+This appears to account for the previously 'most recent run' having a 'larger' number of new hits. See below:
+#~~~
+#python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/DataOrganization.PythonVLookUp.PutTogetherProcessAndAnnotFiles.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.txt --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/jointGwasMc_AllPheno.Annot.vs1.SignCrrct.RAF.txt.gz | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.RAF.txt.gz
+#
+##Added the following header /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.RAF.txt.gz
+##posHg18 chr pos snp a1 a2 raf beta_LDL se_LDL n_LDL beta_HDL se_HDL n_HDL beta_TG se_TG n_TG beta_TC se_TC n_TC annot gene Z.tg Z.tc Z.ldl Z.hdl mvstat mvp unip
+#~~~
+
+cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161115_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz
+
+#Put below header into /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz
+#SNP Chr BP SNP A1 A2 MAF LDL_Beta LDL_SE LDL_N HDL_Beta HDL_SE HDL_N TG_Beta TG_SE TG_N TC_Beta TC_SE TC_N GWASannot Gene HDL_ZScore LDL_ZScore TC_ZScore TG_ZScore mvstat mvstat_log10pVal unistat_log10pVal
+
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $5 "\t" $1 "\t" $2 "\t" $3 "\t" $4 "\t" $21 }' | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.MarkerChrBP.txt --file2 - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.Hg18vsHg19GWASProxTest.gz
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161228.bmassOutput3.4.NotPruned.MaringalSNPs.txt | awk '{ print $1 "\t" $10 }' | sort -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz | sed 's/chr//g' | sed 's/:/_/g ' | sort -k 1,1) | perl -lane 'if ($F[1] != $F[22]) { $F[22] = -1 * $F[22]; $F[23] = -1 * $F[23]; $F[24] = -1 * $F[24]; $F[25] = -1 * $F[25]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.bmassOutput3.4_ZScoreSignMatch.txt.gz
+
+#Put below header into /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.bmassOutput3.4_ZScoreSignMatch.txt.gz
+#SNP Chr BP SNP A1 A2 MAF LDL_Beta LDL_SE LDL_N HDL_Beta HDL_SE HDL_N TG_Beta TG_SE TG_N TC_Beta TC_SE TC_N GWASannot Gene HDL_ZScore LDL_ZScore TC_ZScore TG_ZScore mvstat mvstat_log10pVal unistat_log10pVal
+
+```
+library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass"); 
+HDL <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz", header=T);
+LDL <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+TG <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+TC <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+names(GWASsnps) <- c("Chr", "BP")
+#bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+#print(bmassOutput1);" > shana1.txt
+DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
+ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+
+#For all
+#ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.txt
+
+HDL2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.bmass.formatted.txt.gz", header=T);
+LDL2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.bmass.formatted.txt.gz", header=T);
+TG2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.bmass.formatted.txt.gz", header=T);
+TC2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.bmass.formatted.txt.gz", header=T);
+GWASsnps2 <- GWASsnps
+
+HDL2 <- HDL2[HDL2$Direction != 0,]
+LDL2 <- LDL2[LDL2$Direction != 0,]
+TG2 <- TG2[TG2$Direction != 0,]
+TC2 <- TC2[TC2$Direction != 0,]
+HDL2 <- HDL2[!is.na(HDL2$MAF),]
+LDL2 <- LDL2[!is.na(LDL2$MAF),]
+TG2 <- TG2[!is.na(TG2$MAF),]
+TC2 <- TC2[!is.na(TC2$MAF),]
+
+HDL3 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.bmass.formatted.txt.gz", header=T);
+LDL3 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.bmass.formatted.MatchedToHDL.txt.gz", header=T);
+TG3 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.bmass.formatted.MatchedToHDL.txt.gz", header=T);
+TC3 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.bmass.formatted.MatchedToHDL.txt.gz", header=T);
+GWASsnps3 <- GWASsnps
+
+HDL3 <- HDL3[HDL3$Direction != 0,]
+LDL3 <- LDL3[LDL3$Direction != 0,]
+TG3 <- TG3[TG3$Direction != 0,]
+TC3 <- TC3[TC3$Direction != 0,]
+HDL3 <- HDL3[!is.na(HDL3$MAF),]
+LDL3 <- LDL3[!is.na(LDL3$MAF),]
+TG3 <- TG3[!is.na(TG3$MAF),]
+TC3 <- TC3[!is.na(TC3$MAF),]
+
+bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+bmassOutput2 <- bmass(c("HDL2", "LDL2", "TG2", "TC2"), GWASsnps=GWASsnps2, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+bmassOutput3 <- bmass(c("HDL3", "LDL3", "TG3", "TC3"), GWASsnps=GWASsnps3, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+bmassOutput3.2 <- bmass(c("HDL3", "LDL3", "TG3", "TC3"), GWASsnps=GWASsnps3, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=34987435);
+
+        bmassOutput4 <- list()
+        bmassOutput4$MergedDataSources <- NULL
+        if (!is.null(MergedDataSources)) {
+                bmassOutput4$MergedDataSources <- MergedDataSources
+        }       
+        bmassOutput4$ZScoresCorMatrix <- NULL
+        bmassOutput4$MarginalSNPs <- list()
+        bmassOutput4$Models <- NULL
+        bmassOutput4$ModelPriors <- NULL
+        bmassOutput4$PreviousSNPs <- list()
+        bmassOutput4$NewSNPs <- list()
+        bmassOutput4$GWASlogBFMinThreshold <- NULL
+        #LogFile <- c()
+        bmassOutput4$LogFile <- c()
+
+        bmassOutput4$LogFile <- rbind(bmassOutput4$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
+
+	bmassOutput5 <- bmassOutput4
+	bmassOutput5.2 <- bmassOutput5
+	#bmassOutput5.3 <- bmassOutput5
+	bmassOutput5.4 <- bmassOutput5
+
+        bmassOutput4$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161115_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz", header=TRUE)
+        bmassOutput4$MergedDataSources <- bmassOutput4$MergedDataSources[bmassOutput4$MergedDataSources$MAF > 0 & !is.na(bmassOutput4$MergedDataSources$MAF),]
+        bmassOutput4$ZScoresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.RSS0.vs1.SignCrrct.vs1.txt", header=TRUE, sep=","))
+        GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+        names(GWASsnps) <- c("Chr", "BP")   
+	#Z.LDL,Z.HDL,Z.TC,Z.TG
+        DataSources = c("LDL", "HDL", "TC", "TG"); NminThreshold = 50000; bmassSeedValue=150;
+        ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+        bmassOutput4$MergedDataSources$ChrBP <- paste(bmassOutput4$MergedDataSources$Chr, "_", bmassOutput4$MergedDataSources$BP, sep="")
+
+        bmassOutput4$MarginalSNPs$SNPs <- bmassOutput4$MergedDataSources[bmassOutput4$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput4$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+
+        bmassOutput4[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput4$MarginalSNPs, bmassOutput4$ZScoresCorMatrix, SigmaAlphas, bmassOutput4$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+
+#       Nmins <- apply(bmassOutput4$MarginalSNPs$SNPs[,c("TC_N", "TG_N", "LDL_N", "HDL_N")], 1, min)
+#       ZScores <- bmassOutput4$MarginalSNPs$SNPs[,c("TC_ZScore", "TG_ZScore", "HDL_ZScore", "LDL_ZScore")]
+#       MarginalSNPs_logBFs <- compute.allBFs.fromZscores(ZScores, bmassOutput4$ZScoresCorMatrix, Nmins, bmassOutput4$MarginalSNPs$SNPs$MAF, SigmaAlphas)
+
+        bmassOutput4[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput4$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput4$Models, bmassOutput4$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+
+        bmassOutput4[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput4$MarginalSNPs, bmassOutput4$PreviousSNPs, GWASsnps, bmassOutput4$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput4$Models, bmassOutput4$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+
+
+
+	#Testing using /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz which has the correct header for the ZScores
+        bmassOutput5$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz", header=TRUE)
+        bmassOutput5$MergedDataSources <- bmassOutput5$MergedDataSources[bmassOutput5$MergedDataSources$MAF > 0 & !is.na(bmassOutput5$MergedDataSources$MAF),]
+        bmassOutput5$ZScoresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.RSS0.vs1.SignCrrct.vs1.txt", header=TRUE, sep=","))
+        GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+        names(GWASsnps) <- c("Chr", "BP")   
+	#Z.LDL,Z.HDL,Z.TC,Z.TG
+        DataSources = c("LDL", "HDL", "TC", "TG"); NminThreshold = 50000; bmassSeedValue=150;
+        ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+        bmassOutput5$MergedDataSources$ChrBP <- paste(bmassOutput5$MergedDataSources$Chr, "_", bmassOutput5$MergedDataSources$BP, sep="")
+
+        bmassOutput5$MarginalSNPs$SNPs <- bmassOutput5$MergedDataSources[bmassOutput5$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput5$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+
+        bmassOutput5[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput5$MarginalSNPs, bmassOutput5$ZScoresCorMatrix, SigmaAlphas, bmassOutput5$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+
+        bmassOutput5[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput5$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput5$Models, bmassOutput5$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput5$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+
+        bmassOutput5[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput5$MarginalSNPs, bmassOutput5$PreviousSNPs, GWASsnps, bmassOutput5$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput5$Models, bmassOutput5$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput5$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+
+        
+	#Testing using bmassOutput1$ZScoresCorMatrix on the bmassOutput5 background
+	bmassOutput5.2$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz", header=TRUE)
+        bmassOutput5.2$MergedDataSources <- bmassOutput5.2$MergedDataSources[bmassOutput5.2$MergedDataSources$MAF > 0 & !is.na(bmassOutput5.2$MergedDataSources$MAF),]
+        bmassOutput5.2$ZScoresCorMatrix <- bmassOutput1$ZScoresCorMatrix
+	GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+        names(GWASsnps) <- c("Chr", "BP")   
+	#Z.LDL,Z.HDL,Z.TC,Z.TG
+        DataSources = c("HDL", "LDL", "TC", "TG"); NminThreshold = 50000; bmassSeedValue=150;
+        ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+        bmassOutput5.2$MergedDataSources$ChrBP <- paste(bmassOutput5.2$MergedDataSources$Chr, "_", bmassOutput5.2$MergedDataSources$BP, sep="")
+
+        bmassOutput5.2$MarginalSNPs$SNPs <- bmassOutput5.2$MergedDataSources[bmassOutput5.2$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput5.2$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+
+        bmassOutput5.2[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput5.2$MarginalSNPs, bmassOutput5.2$ZScoresCorMatrix, SigmaAlphas, bmassOutput5.2$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+
+	bmassOutput5.3 <- bmassOutput5.2
+
+        bmassOutput5.2[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput5.2$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput5.2$Models, bmassOutput5.2$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput5.2$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+
+        bmassOutput5.2[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput5.2$MarginalSNPs, bmassOutput5.2$PreviousSNPs, GWASsnps, bmassOutput5.2$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput5.2$Models, bmassOutput5.2$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput5.2$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+
+
+	#Testing putting in bmassOutput3$ModelPriors to the bmassOutput5 background
+	bmassOutput5.3[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput5.2$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput5.2$Models, bmassOutput5.2$ModelPriors, ProvidedPriors=bmassOutput3$ModelPriors, UseFlatPriors, bmassSeedValue, bmassOutput5.2$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+        bmassOutput5.3[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput5.3$MarginalSNPs, bmassOutput5.3$PreviousSNPs, GWASsnps, bmassOutput5.3$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput5.3$Models, bmassOutput5.3$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput5.3$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+
+
+	
+	#Testing using the corrected Zscores (some were flipped to matched bmassOutput3.4) on the bmassOutput5 background and with the bmassOutput3 ZScore Correlation Matrix
+	bmassOutput5.4$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.bmassOutput3.4_ZScoreSignMatch.txt.gz", header=TRUE)
+        bmassOutput5.4$MergedDataSources <- bmassOutput5.4$MergedDataSources[bmassOutput5.4$MergedDataSources$MAF > 0 & !is.na(bmassOutput5.4$MergedDataSources$MAF),]
+        bmassOutput5.4$ZScoresCorMatrix <- bmassOutput3$ZScoresCorMatrix
+	GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+        names(GWASsnps) <- c("Chr", "BP")   
+	#Z.LDL,Z.HDL,Z.TC,Z.TG
+        DataSources = c("HDL", "LDL", "TC", "TG"); NminThreshold = 50000; bmassSeedValue=150;
+        ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+        bmassOutput5.4$MergedDataSources$ChrBP <- paste(bmassOutput5.4$MergedDataSources$Chr, "_", bmassOutput5.4$MergedDataSources$BP, sep="")
+
+        bmassOutput5.4$MarginalSNPs$SNPs <- bmassOutput5.4$MergedDataSources[bmassOutput5.4$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput5.4$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+
+        bmassOutput5.4[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput5.4$MarginalSNPs, bmassOutput5.4$ZScoresCorMatrix, SigmaAlphas, bmassOutput5.4$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+
+        bmassOutput5.4[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput5.4$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput5.4$Models, bmassOutput5.4$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput5.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+
+        bmassOutput5.4[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput5.4$MarginalSNPs, bmassOutput5.4$PreviousSNPs, GWASsnps, bmassOutput5.4$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput5.4$Models, bmassOutput5.4$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput5.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+
+
+	#bmassOutput3.3 <- bmass(c("HDL3", "LDL3", "TG3", "TC3"), GWASsnps=GWASsnps3, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150, ProvidedPriors=bmassOutput5$ModelPriors);
+	bmassOutput3.4 <- bmass(c("HDL3", "LDL3", "TG3", "TC3"), GWASsnps=GWASsnps3, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150, PruneMarginalSNPs=FALSE)
+```
+
+~~~
+> library("devtools"); devtools::load_all("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass");
+Loading bmass
+> HDL <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz", header=T);
+> LDL <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+> TG <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+> TC <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz", header=T);
+> GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+> names(GWASsnps) <- c("Chr", "BP")
+> #bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 1, bmassSeedValue=150);
+> #print(bmassOutput1);" > shana1.txt
+> DataSources = c("HDL", "LDL", "TG", "TC"); NminThreshold = 50000; bmassSeedValue=150;
+> ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+>
+> bmassOutput1 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2016-12-27 16:21:27 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+>
+> summary(bmassOutput1)
+                      Length Class      Mode     
+MarginalSNPs             4   -none-     list     
+PreviousSNPs             4   -none-     list     
+NewSNPs                  3   -none-     list     
+LogFile                 18   -none-     character
+MergedDataSources       23   data.frame list     
+ZScoresCorMatrix        16   -none-     numeric  
+Models                 324   -none-     numeric  
+ModelPriors           1134   -none-     numeric  
+GWASlogBFMinThreshold    1   -none-     numeric  
+> head(bmassOutput1$MergedDataSources)
+         ChrBP Chr        BP    MAF A1 HDL_A2 HDL_Direction HDL_pValue HDL_N
+1  10_10000135  10  10000135 0.4908  a      g             +    0.75380 93561
+2  10_10000265  10  10000265 0.4908  c      t             +    0.72950 93561
+3 10_100002729  10 100002729 0.3206  a      g             +    0.09234 94311
+4 10_100002880  10 100002880 0.3206  a      g             +    0.09340 94311
+5 10_100003553  10 100003553 0.2190  t      c             +    0.87230 94311
+6 10_100003805  10 100003805 0.3483  c      t             +    0.12400 94311
+  HDL_ZScore LDL_Direction LDL_pValue LDL_N LDL_ZScore TG_Direction TG_pValue
+1  0.3136327             -    0.71580 89138 -0.3640777            -   0.75670
+2  0.3457907             -    0.77480 89138 -0.2861020            -   0.76120
+3  1.6831813             -    0.04000 89888 -2.0537489            -   0.06856
+4  1.6777291             -    0.08428 89888 -1.7263748            -   0.07994
+5  0.1607377             +    0.26890 89888  1.1055993            +   0.11250
+6 -1.5381989             -    0.13760 89888  1.4847880            -   0.73140
+   TG_N  TG_ZScore TC_Direction TC_pValue  TC_N  TC_ZScore GWASannot
+1 90263 -0.3098172            -    0.6530 93845 -0.4495985         0
+2 90263 -0.3039054            -    0.6915 93845 -0.3968203         0
+3 91013 -1.8213083            -    0.1653 94595 -1.3874651         0
+4 91013 -1.7510343            -    0.2550 94595 -1.1382886         0
+5 91013  1.5870558            +    0.1513 94595  1.4349547         0
+6 91013  0.3432638            -    0.7058 94595  0.3775028         0
+> dim(bmassOutput1$PreviousSNPs$SNPs)
+[1] 148  29
+> dim(bmassOutput1$MarginalSNPs$SNPs)
+[1] 252  29
+> head(bmassOutput1$MarginalSNPs$SNPs)
+             ChrBP Chr        BP    MAF A1 HDL_A2 HDL_Direction HDL_pValue
+2044  10_101902054  10 101902054 0.4631  t      c             +  1.287e-06
+15280 10_113911344  10 113911344 0.3193  a      g             +  2.022e-17
+17437 10_115779365  10 115779365 0.3430  c      t             +  1.712e-07
+45109  10_17300296  10  17300296 0.4538  a      g             +  2.648e-04
+74515  10_45333283  10  45333283 0.2770  a      c             +  1.706e-10
+78810   10_5244847  10   5244847 0.1319  g      a             +  1.141e-01
+       HDL_N HDL_ZScore LDL_Direction LDL_pValue  LDL_N LDL_ZScore TG_Direction
+2044  186893  -4.841751             +  5.875e-01 172821 -0.5424624            +
+15280 184088  -8.492522             +  3.935e-13 170057 -7.2577782            -
+17437 187073   5.228166             +  3.965e-01 173006  0.8478886            -
+45109 186923  -3.647504             +  3.135e-07 172857 -5.1151450            +
+74515 186596  -6.385714             +  6.647e-04 172518 -3.4037400            +
+78810 186767   1.580030             +  1.061e-01 172749  1.6159737            +
+      TG_pValue     TG_N  TG_ZScore TC_Direction TC_pValue     TC_N TC_ZScore
+2044  1.393e-02 177587.1 -2.4590634            + 2.526e-04 187083.0 -3.659609
+15280 1.210e-10 174733.9  6.4380728            + 1.472e-15 184217.9 -7.979271
+17437 3.631e-03 177771.0 -2.9085578            + 6.209e-02 187258.0  1.865652
+45109 7.254e-03 177627.0 -2.6849530            + 2.601e-11 187112.1 -6.667555
+74515 4.594e-01 177293.0 -0.7398352            + 8.431e-09 186782.0 -5.759607
+78810 1.718e-12 177504.0  7.0556466            + 4.919e-06 186960.0  4.568213
+      GWASannot    mvstat mvstat_log10pVal  unistat unistat_log10pVal   Nmin
+2044          0  48.52281         9.134137 23.44255          5.890421 172821
+15280         2 165.63939        34.044791 72.12293         16.694219 170057
+17437         0  31.08461         5.531340 27.33372          6.766496 173006
+45109         1  57.81554        11.078700 44.45629         10.584860 172857
+74515         1  66.88366        12.986515 40.77734          9.768021 172518
+78810         1  72.97818        14.273105 49.78215         11.764977 172749
+      logBFWeightedAvg
+2044          7.054519
+15280        31.249129
+17437         4.181650
+45109         9.221851
+74515        11.555365
+78810        12.473907
+> dim(bmassOutput1$NewSNPs$SNPs)
+[1] 65 29
+> bmassOutput1$ZScoresCorMatrix
+            HDL_ZScore  LDL_ZScore  TG_ZScore TC_ZScore
+HDL_ZScore  1.00000000 -0.08715854 -0.3635593 0.1531368
+LDL_ZScore -0.08715854  1.00000000  0.1585048 0.8197523
+TG_ZScore  -0.36355928  0.15850485  1.0000000 0.2877814
+TC_ZScore   0.15313683  0.81975235  0.2877814 1.0000000
+> bmassOutput1$GWASlogBFMinThreshold
+[1] 4.28084
+> HDL2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.bmass.formatted.txt.gz", header=T);
+> LDL2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.bmass.formatted.txt.gz", header=T);
+> TG2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.bmass.formatted.txt.gz", header=T);
+> TC2 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.bmass.formatted.txt.gz", header=T);
+> GWASsnp2 <- GWASsnps
+> 
+> table(HDL2$Direction)
+
+      +       0 
+2433288   14148 
+> table(LDL2$Direction)
+
+      +       0 
+2424368   13380 
+> table(TG2$Direction)
+
+      +       0 
+2424745   14684 
+> table(TC2$Direction)
+
+      +       0 
+2433334   13642 
+> HDL2 <- HDL2[HDL2$Direction != 0,]
+> LDL2 <- LDL2[LDL2$Direction != 0,]
+> TG2 <- TG2[TG2$Direction != 0,]
+> TC2 <- TC2[TC2$Direction != 0,]
+> 
+> table(HDL2$Direction)
+
+      +       0 
+2433288       0 
+> table(LDL2$Direction)
+
+      +       0 
+2424368       0 
+> table(TG2$Direction)
+
+      +       0 
+2424745       0 
+> table(TC2$Direction)
+
+      +       0 
+2433334       0 
+> HDL3 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.bmass.formatted.txt.gz", header=T);
+> LDL3 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.bmass.formatted.MatchedToHDL.txt.gz", header=T);
+> TG3 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.bmass.formatted.MatchedToHDL.txt.gz", header=T);
+> TC3 <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.bmass.formatted.MatchedToHDL.txt.gz", header=T);
+> GWASsnp3 <- GWASsnps
+>
+> table(HDL3$Direction)
+
+      +       0 
+2433288   14148 
+> table(LDL3$Direction)
+
+      -       +       0 
+1146655 1020189       3 
+> table(TG3$Direction)
+
+      -       + 
+1380007  788165 
+> table(TC3$Direction)
+
+      -       + 
+1120423 1324948 
+> 
+> HDL3 <- HDL3[HDL3$Direction != 0,]
+> LDL3 <- LDL3[LDL3$Direction != 0,]
+> TG3 <- TG3[TG3$Direction != 0,]
+> TC3 <- TC3[TC3$Direction != 0,]
+> 
+> table(HDL3$Direction)
+
+      +       0 
+2433288       0 
+> table(LDL3$Direction)
+
+      -       +       0 
+1146655 1020189       0 
+> table(TG3$Direction)
+
+      -       + 
+1380007  788165 
+> table(TC3$Direction)
+
+      -       + 
+1120423 1324948 
+> bmassOutput2 <- bmass(c("HDL2", "LDL2", "TG2", "TC2"), GWASsnps=GWASsnps2, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+Error in `[<-.data.frame`(`*tmp*`, MAF_CheckList, , value = list(ChrBP = c("10_10000135",  : 
+  missing values are not allowed in subscripted assignments of data frames
+> bmassOutput3 <- bmass(c("HDL3", "LDL3", "TG3", "TC3"), GWASsnps=GWASsnps3, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+Error in `[<-.data.frame`(`*tmp*`, MAF_CheckList, , value = list(ChrBP = c("10_10000135",  : 
+  missing values are not allowed in subscripted assignments of data frames
+>         
+> head(HDL2)
+  Chr        BP    MAF A1 A2 Direction  pValue     N
+1  10  10000135 0.5092  g  a         + 0.75380 93561
+2  10  10000265 0.5092  t  c         + 0.72950 93561
+3  10 100002729 0.6794  g  a         + 0.09234 94311
+4  10 100002880 0.6794  g  a         + 0.09340 94311
+5  10 100003553 0.7810  c  t         + 0.87230 94311
+6  10 100003805 0.3483  t  c         + 0.12400 94311
+> table(is.na(HDL2[,1]))
+
+  FALSE 
+2433288 
+> table(is.na(HDL2[,2]))
+
+  FALSE 
+2433288 
+> table(is.na(HDL2[,3]))
+
+  FALSE    TRUE 
+2247211  186077 
+> table(is.na(HDL2[,4]))
+
+  FALSE 
+2433288 
+> table(is.na(HDL2[,5]))
+
+  FALSE 
+2433288 
+> table(is.na(HDL2[,6]))
+
+  FALSE 
+2433288 
+> table(is.na(HDL2[,7]))
+
+  FALSE 
+2433288 
+> table(is.na(HDL2[,8]))
+
+  FALSE 
+2433288 
+> table(is.na(LDL2[,3]))
+
+  FALSE    TRUE 
+2238566  185802 
+> table(is.na(TG2[,3]))
+
+  FALSE    TRUE 
+2238827  185918 
+> table(is.na(TC2[,3]))
+
+  FALSE    TRUE 
+2246688  186646 
+> table(is.na(HDL3[,3]))
+
+  FALSE    TRUE 
+2247211  186077 
+> table(is.na(LDL3[,3]))
+
+  FALSE    TRUE 
+2115718   51126 
+> table(is.na(TG3[,3]))
+
+  FALSE    TRUE 
+2116907   51265 
+> table(is.na(TC3[,3]))
+
+  FALSE    TRUE 
+2259342  186029 
+> HDL2 <- HDL2[!is.na(HDL2$MAF),]
+> table(is.na(HDL2[,3]))
+
+  FALSE 
+2247211 
+> HDL2 <- HDL2[!is.na(HDL2$MAF),]
+> LDL2 <- LDL2[!is.na(LDL2$MAF),]
+> TG2 <- TG2[!is.na(TG2$MAF),]
+> TC2 <- TC2[!is.na(TC2$MAF),]
+> HDL3 <- HDL3[!is.na(HDL3$MAF),]
+> LDL3 <- LDL3[!is.na(LDL3$MAF),]
+> TG3 <- TG3[!is.na(TG3$MAF),]
+> TC3 <- TC3[!is.na(TC3$MAF),]
+> table(is.na(LDL[,3]))      
+
+  FALSE 
+2437512 
+> table(is.na(LDL2[,3]))
+
+  FALSE 
+2238566 
+> table(is.na(TG2[,3]))
+
+  FALSE 
+2238827 
+> table(is.na(TC2[,3]))
+
+  FALSE 
+2246688 
+> table(is.na(LDL3[,3]))
+
+  FALSE 
+2115718 
+> table(is.na(HDL3[,3]))
+
+  FALSE 
+2247211 
+> table(is.na(TG3[,3]))
+
+  FALSE 
+2116907 
+> table(is.na(TC3[,3]))
+
+  FALSE 
+2259342 
+> bmassOutput2 <- bmass(c("HDL2", "LDL2", "TG2", "TC2"), GWASsnps=GWASsnps2, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2016-12-27 23:05:26 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+> bmassOutput3 <- bmass(c("HDL3", "LDL3", "TG3", "TC3"), GWASsnps=GWASsnps3, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2016-12-27 23:10:50 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+> summary(bmassOutput2)
+                      Length Class      Mode     
+MarginalSNPs             4   -none-     list     
+PreviousSNPs             4   -none-     list     
+NewSNPs                  3   -none-     list     
+LogFile                 18   -none-     character
+MergedDataSources       23   data.frame list     
+ZScoresCorMatrix        16   -none-     numeric  
+Models                 324   -none-     numeric  
+ModelPriors           1134   -none-     numeric  
+GWASlogBFMinThreshold    1   -none-     numeric  
+> summary(bmassOutput3)
+                      Length Class      Mode     
+MarginalSNPs             4   -none-     list     
+PreviousSNPs             4   -none-     list     
+NewSNPs                  3   -none-     list     
+LogFile                 18   -none-     character
+MergedDataSources       23   data.frame list     
+ZScoresCorMatrix        16   -none-     numeric  
+Models                 324   -none-     numeric  
+ModelPriors           1134   -none-     numeric  
+GWASlogBFMinThreshold    1   -none-     numeric  
+> dim(bmassOutput2$NewSNPs$SNPs)
+[1] 199  29
+> dim(bmassOutput3$NewSNPs$SNPs)
+[1] 65 29
+>         bmassOutput4 <- list()
+>         bmassOutput4$MergedDataSources <- NULL
+>         if (!is.null(MergedDataSources)) {
++                 bmassOutput4$MergedDataSources <- MergedDataSources
++         }
+Error: object 'MergedDataSources' not found
+>         bmassOutput4$ZScoresCorMatrix <- NULL
+>         bmassOutput4$MarginalSNPs <- list()
+>         bmassOutput4$Models <- NULL
+>         bmassOutput4$ModelPriors <- NULL
+>         bmassOutput4$PreviousSNPs <- list()
+>         bmassOutput4$NewSNPs <- list()
+>         bmassOutput4$GWASlogBFMinThreshold <- NULL
+>         #LogFile <- c()
+>         bmassOutput4$LogFile <- c()
+> 
+>         bmassOutput4$LogFile <- rbind(bmassOutput4$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
+> 
+>         bmassOutput4$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161115_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz", h
+eader=TRUE)
+>         bmassOutput4$ZScoresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.RSS0.vs1.SignCrrct.vs1.txt", header=TRUE, sep=","))
+>         GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+>         names(GWASsnps) <- c("Chr", "BP")
+>         #Z.LDL,Z.HDL,Z.TC,Z.TG
+>         DataSources = c("LDL", "HDL", "TC", "TG"); NminThreshold = 50000; bmassSeedValue=150;
+>         ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+>         bmassOutput4$MergedDataSources$ChrBP <- paste(bmassOutput4$MergedDataSources$Chr, "_", bmassOutput4$MergedDataSources$BP, sep="")
+>
+> dim(bmassOutput4$MarginalSNPs$SNPs)
+[1] 11309    29
+#From /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/process.MTedits.ForGlobalLipids2013.vs1.SignCrrct.vs1.R 
+#> dim(dtlesssignif)
+#[1] 11573     8
+>
+>         bmassOutput4$MarginalSNPs$SNPs <- bmassOutput4$MergedDataSources[bmassOutput4$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput4$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+> 
+>         bmassOutput4[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput4$MarginalSNPs, bmassOutput4$ZScoresCorMatrix, SigmaAlphas, bmassOutput4$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+> 
+> #       Nmins <- apply(bmassOutput4$MarginalSNPs$SNPs[,c("TC_N", "TG_N", "LDL_N", "HDL_N")], 1, min)
+> #       ZScores <- bmassOutput4$MarginalSNPs$SNPs[,c("TC_ZScore", "TG_ZScore", "HDL_ZScore", "LDL_ZScore")]
+> #       MarginalSNPs_logBFs <- compute.allBFs.fromZscores(ZScores, bmassOutput4$ZScoresCorMatrix, Nmins, bmassOutput4$MarginalSNPs$SNPs$MAF, SigmaAlphas)
+> 
+>         bmassOutput4[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput4$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput4$Models, bmassOutput4$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+> 
+>         bmassOutput4[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput4$MarginalSNPs, bmassOutput4$PreviousSNPs, GWASsnps, bmassOutput4$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput4$Models, bmassOutput4$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+> 
+> dim(bmassOutput4$NewSNPs$SNPs)
+[1] 92 31
+> bmassOutput2$ZScoresCorMatrix
+            HDL2_ZScore LDL2_ZScore TG2_ZScore TC2_ZScore
+HDL2_ZScore   1.0000000   0.6764348  0.7045817  0.6792574
+LDL2_ZScore   0.6764348   1.0000000  0.6798776  0.8750846
+TG2_ZScore    0.7045817   0.6798776  1.0000000  0.6938238
+TC2_ZScore    0.6792574   0.8750846  0.6938238  1.0000000
+> bmassOutput2$GWASlogBFMinThreshold
+[1] 4.284365
+> bmassOutput3$ZScoresCorMatrix
+            HDL3_ZScore LDL3_ZScore TG3_ZScore TC3_ZScore
+HDL3_ZScore  1.00000000 -0.08744893 -0.3647370  0.1536905
+LDL3_ZScore -0.08744893  1.00000000  0.1585641  0.8196124
+TG3_ZScore  -0.36473696  0.15856412  1.0000000  0.2871750
+TC3_ZScore   0.15369046  0.81961243  0.2871750  1.0000000
+> bmassOutput3$GWASlogBFMinThreshold
+[1] 4.281287
+> bmassOutput4$ZScoresCorMatrix
+           Z.LDL       Z.HDL       Z.TC       Z.TG
+[1,]  1.00000000 -0.05101127 0.83617727  0.1446093
+[2,] -0.05101127  1.00000000 0.09840344 -0.2298445
+[3,]  0.83617727  0.09840344 1.00000000  0.3389824
+[4,]  0.14460929 -0.22984452 0.33898241  1.0000000
+> bmassOutput4$GWASlogBFMinThreshold
+[1] 3.989499
+> quantile(bmassOutput1$PreviousSNPs$SNPs$logBFWeightedAvg)
+        0%        25%        50%        75%       100% 
+  4.280840   6.897337  10.107299  18.401784 481.572551 
+> quantile(bmassOutput4$PreviousSNPs$SNPs$logBFWeightedAvg)
+         0%         25%         50%         75%        100% 
+   3.989499    9.452513   15.628748   29.678137 1235.633742 
+> bmassOutput1$PreviousSNPs$SNPs[bmassOutput1$PreviousSNPs$SNPs$logBFWeightedAvg > 250,]
+              ChrBP Chr        BP     MAF A1 HDL_A2 HDL_Direction HDL_pValue
+141903  1_109619829   1 109619829 0.21240  t      g             +  7.608e-13
+729318  15_56470658  15  56470658 0.36680  g      a             + 1.240e-188
+805943  16_55550825  16  55550825 0.29420  c      a             +  0.000e+00
+1001775 19_11063306  19  11063306 0.09763  g      t             +  6.321e-05
+1304810  2_27584444   2  27584444 0.41290  t      c             +  1.737e-03
+2239873  8_19888502   8  19888502 0.12140  a      g             + 1.380e-149
+           HDL_N HDL_ZScore LDL_Direction LDL_pValue    LDL_N LDL_ZScore
+141903  155813.0  -7.168038             - 5.400e-241 142644.0 33.1514351
+729318  185482.0 -29.293909             +  6.473e-01 171461.0 -0.4575163
+805943  177533.0 -38.141507             -  2.220e-34 164865.0 12.2273740
+1001775 184617.2  -4.000495             - 3.850e-262 170607.9 34.5878329
+1304810 187062.0   3.131865             -  1.509e-07 172995.0 -5.2514579
+2239873 187049.3 -26.049025             -  5.045e-01 172984.9  0.6674261
+        TG_Direction  TG_pValue     TG_N  TG_ZScore TC_Direction  TC_pValue
+141903             -  6.652e-01 146759.0   0.432745            - 1.700e-170
+729318             +  2.318e-18 176156.0  -8.740637            +  7.334e-47
+805943             -  1.584e-25 169275.0  10.442607            +  3.459e-31
+1001775            -  1.043e-01 175280.0   1.624355            - 5.430e-202
+1304810            - 2.290e-239 177765.0 -33.038308            -  3.079e-42
+2239873            - 1.820e-199 177749.9  30.132478            +  7.352e-01
+            TC_N   TC_ZScore GWASannot   mvstat mvstat_log10pVal   unistat
+141903  155873.0  27.8336313         1 1218.835         261.8811 1099.0176
+729318  185639.0 -14.3758724         1 1311.783         282.0325  858.1331
+805943  177497.0 -11.6149724         1 2238.365         483.0054 1454.7746
+1001775 184763.8  30.3246241         1 1271.658         273.3330 1196.3182
+1304810 187251.0 -13.6192053         1 1189.525         255.5270 1091.5298
+2239873 187233.3  -0.3382166         1 1195.548         256.8326  907.9662
+        unistat_log10pVal     Nmin logBFWeightedAvg
+141903           240.2676 142644.0         259.4150
+729318           187.9066 171461.0         279.3921
+805943           317.5800 164865.0         481.5726
+1001775          261.4145 170607.9         270.2174
+1304810          238.6402 172995.0         252.4891
+2239873          198.7399 172984.9         255.0694
+> bmassOutput4$PreviousSNPs$SNPs[bmassOutput4$PreviousSNPs$SNPs$logBFWeightedAvg > 500,]
+                SNP Chr       BP     SNP.1 A1 A2    MAF LDL_Beta LDL_SE  LDL_N
+3142 chr16:55550825  16 56993324 rs3764261  c  a 0.2942   0.0528 0.0042 164865
+7853 chr15:56470658  15 58683366 rs1532085  a  g 0.3668   0.0026 0.0037 171461
+     HDL_Beta HDL_SE  HDL_N TG_Beta  TG_SE   TG_N TC_Beta  TC_SE   TC_N
+3142   0.2412 0.0039 177533  0.0395 0.0038 169275  0.0503 0.0040 177497
+7853   0.1068 0.0035 185482  0.0310 0.0034 176156  0.0545 0.0036 185639
+     GWASannot Gene TG_ZScore  TC_ZScore LDL_ZScore HDL_ZScore   mvstat
+3142         1   NA -38.15340 12.2273740  -11.61497  10.442607 2852.227
+7853         1   NA  29.29391  0.4575163   14.37587   8.740637 1266.253
+     mvstat_log10pVal unistat_log10pVal       ChrBP   Nmin logBFWeightedAvg
+3142         616.1989          317.7773 16_56993324 164865        1235.6337
+7853         272.1611          187.9066 15_58683366 171461         703.3767
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.txt | head -n 10
+rs,Z.HDL,Z.LDL,Z.TC,Z.TG,mvstat,mvp,unip
+chr10:101902054,4.84175096013916,0.54246240431255,3.65960938616346,2.45906343998997,48.768882385891,9.18546064700021,5.89042145309562
+chr10:101902184,4.28996658928395,0.741979097659704,3.31897041855539,2.04241886517916,36.3776853917822,6.61626523237262,4.74787544749436
+chr10:101914408,4.16769148760827,0.694450074537328,3.21159569456144,2.34730043800811,35.6324406198061,6.46295377959646,4.51187250375254
+chr10:101950956,3.49559840808192,2.98132929795538,4.80442095262784,1.89987138538418,34.3755765844435,6.2047817211044,5.80910828307783
+chr10:101989736,3.87804325071873,2.03680088096434,4.15303118888146,1.89426382584585,33.651359603728,6.05625379108408,4.48399376961395
+chr10:113892408,4.80727691171168,5.40513388872724,5.94718082470692,-2.54333468717218,68.150118444231,13.2536117777103,8.56415563401556
+chr10:113900711,8.38226223514305,7.38382982844603,8.0385200273586,-5.79780128305849,175.072295946929,36.069345409152,16.2846653162077
+chr10:113903212,4.76030564571111,5.5312813228826,6.04447208869014,-2.04932853694305,65.6788629080588,12.7325608116026,8.82419836715172
+chr10:113906292,4.92644305955787,5.60832002246494,6.01116043492249,-2.27626756787699,68.3490493954776,13.2955792602323,8.73471037413917
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.txt | grep chr16:55550825
+chr16:55550825,38.153404647743,-12.2273739740071,11.6149724163073,-10.4426069018792,2852.22747879747,616.198868999995,317.777283224373
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz | head -n 10
+posHg18 chr     pos     snp     a1      a2      maf     beta_LDL        se_LDL  n_LDL   beta_HDL        se_HDL  n_HDL   beta_TG se_TG   n_TG    beta_TC se_TC   n_TC    annot   gene    Z.tg    Z.tc    Z.ldl   Z.hdl   mvstatmvp unip
+chr2:27647654   2       27794150        rs4260197       g       c       0.4723  0.0014  0.0036  172858.00       0.0034  0.0034  186895.00       0.0226  0.0033  177617.00       0.0063  0.0035  187085.00       2       NA    1.11441777795726 -0.37736819416554       -1.64791555971734       -6.72515966642187       46.041078916398 8.617110500481  10.75597041097
+chr11:122011218 11      122506008       rs6589938       t       g       0.3958  0.0239  0.0053  89888.00        0.0217  0.0048  94311.00        0.0030  0.0047  91013.00        0.0315  0.0051  94595.00        2       NA    4.86999689907688 4.40070446560701        6.13816525139913        0.517653567562213       56.5330861681492        10.8096322565807        9.07841755960658
+chr11:55768424  11      56011848        rs1905053       c       t       0.128   0.0007  0.0080  84452.00        0.0351  0.0073  88834.00        0.0055  0.0077  85492.00        0.0146  0.0078  89074.00        0       NA    -4.54675250180027        0.582098998069215       -2.31450568087186       -0.908905519584347      37.453897736508 6.83795063746814        5.26376290109527
+chr11:116101674 11      116596464       rs60583202      a       g       0.06069 0.0684  0.0104  77810.60        0.0903  0.0098  86114.26        0.2003  0.0093  81176.36        0.0973  0.0099  85850.56        2       NA    8.32912796628562 -6.305912969167 -9.39916075941876       -19.8357217790965       422.06640802648 89.3241521253346        86.8344589232776
+chr8:126543488  8       126474306       rs2980885       g       a       0.2177  0.0313  0.0045  172989.02       0.0354  0.0042  187053.05       0.0578  0.0041  177756.98       0.0337  0.0044  187245.96       2       NA    7.66903140951649 -6.53744176280611       -7.46611048441843       -13.2806701245226       219.973486284765        45.7213645218472        39.5233132570543
+chr8:9707185    8       9669775 rs10104807      g       a       0.3456  0.0042  0.0038  172681.10       0.0098  0.0035  186722.00       0.0212  0.0035  177440.10       0.001   0.0037  186893.00       2       NA      2.26553285841545       1.13303394170561        0.336757120162384       -5.56697470766763       36.9188966062519        6.72770601364781        7.58636500280144
+chr8:19895890   8       19851610        rs17091908      c       t       0.02639 0.0109  0.0172  83107.38        0.1670  0.0163  92749.71        0.1343  0.0158  86746.33        0.0173  0.0163  92645.65        2       NA    9.26985451347923 -0.50522615781421       1.23831306836121        -7.57389399535419       133.137018473767        27.0805918929069        19.729554091982
+chr1:109597131  1       109795608       rs437444        c       t       0.03562 0.0818  0.0099  159110.00       0.0330  0.0093  172747.00       0.0186  0.0091  164020.00       0.0621  0.0096  172047.00       2       NA    -3.45696292677496        7.76746888414013        6.23620972254678        1.79861249151656        69.8711064154011        13.6167936453774        14.0965301714928
+chr2:136168146  2       136451676       rs12465544      t       c       0.2309  0.0333  0.0071  86806.00        0.0183  0.0066  91192.00        0.0051  0.0066  87892.00        0.0352  0.0070  91474.00        0       NA    2.55137112261234 4.72177086137641        5.09797838876236        -0.866346816134571      35.7441624448977        6.48592645802003        6.46432619657425
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.RAF.txt.gz | head -n 10
+posHg18 chr pos snp a1 a2 raf beta_LDL se_LDL n_LDL beta_HDL se_HDL n_HDL beta_TG se_TG n_TG beta_TC se_TC n_TC annot gene Z.tg Z.tc Z.ldl Z.hdl mvstat mvp unip
+chr2:27647654   2       27794150        rs4260197       g       c       0.4723  0.0014  0.0036  172858.00       0.0034  0.0034  186895.00       0.0226  0.0033  177617.00       0.0063  0.0035  187085.00       2       NA    1.11441777795726 -0.37736819416554       -1.64791555971734       -6.72515966642187       46.041078916398 8.617110500481  10.75597041097
+chr11:122011218 11      122506008       rs6589938       t       g       0.3958  0.0239  0.0053  89888.00        0.0217  0.0048  94311.00        0.0030  0.0047  91013.00        0.0315  0.0051  94595.00        2       NA    4.86999689907688 4.40070446560701        6.13816525139913        0.517653567562213       56.5330861681492        10.8096322565807        9.07841755960658
+chr11:55768424  11      56011848        rs1905053       c       t       0.872   0.0007  0.0080  84452.00        0.0351  0.0073  88834.00        0.0055  0.0077  85492.00        0.0146  0.0078  89074.00        0       NA    4.54675250180027 -0.582098998069215      2.31450568087186        0.908905519584347       37.453897736508 6.83795063746814        5.26376290109527
+chr11:116101674 11      116596464       rs60583202      a       g       0.06069 0.0684  0.0104  77810.60        0.0903  0.0098  86114.26        0.2003  0.0093  81176.36        0.0973  0.0099  85850.56        2       NA    8.32912796628562 -6.305912969167 -9.39916075941876       -19.8357217790965       422.06640802648 89.3241521253346        86.8344589232776
+chr8:126543488  8       126474306       rs2980885       g       a       0.2177  0.0313  0.0045  172989.02       0.0354  0.0042  187053.05       0.0578  0.0041  177756.98       0.0337  0.0044  187245.96       2       NA    7.66903140951649 -6.53744176280611       -7.46611048441843       -13.2806701245226       219.973486284765        45.7213645218472        39.5233132570543
+chr8:9707185    8       9669775 rs10104807      g       a       0.3456  0.0042  0.0038  172681.10       0.0098  0.0035  186722.00       0.0212  0.0035  177440.10       0.001   0.0037  186893.00       2       NA      2.26553285841545       1.13303394170561        0.336757120162384       -5.56697470766763       36.9188966062519        6.72770601364781        7.58636500280144
+chr8:19895890   8       19851610        rs17091908      c       t       0.02639 0.0109  0.0172  83107.38        0.1670  0.0163  92749.71        0.1343  0.0158  86746.33        0.0173  0.0163  92645.65        2       NA    9.26985451347923 -0.50522615781421       1.23831306836121        -7.57389399535419       133.137018473767        27.0805918929069        19.729554091982
+chr1:109597131  1       109795608       rs437444        c       t       0.96438 0.0818  0.0099  159110.00       0.0330  0.0093  172747.00       0.0186  0.0091  164020.00       0.0621  0.0096  172047.00       2       NA    3.45696292677496 -7.76746888414013       -6.23620972254678       -1.79861249151656       69.8711064154011        13.6167936453774        14.0965301714928
+chr2:136168146  2       136451676       rs12465544      t       c       0.2309  0.0333  0.0071  86806.00        0.0183  0.0066  91192.00        0.0051  0.0066  87892.00        0.0352  0.0070  91474.00        0       NA    2.55137112261234 4.72177086137641        5.09797838876236        -0.866346816134571      35.7441624448977        6.48592645802003        6.46432619657425
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/jointGwasMc_AllPheno.Annot.vs1.SignCrrct.RAF.txt.gz | head -n 10
+posHg18 chr pos snp a1 a2 raf beta_LDL se_LDL n_LDL beta_HDL se_HDL n_HDL beta_TG se_TG n_TG beta_TC se_TC n_TC annot gene
+chr6:54599910   6       54491951        rs1280728       a       t       NA      NA      NA      NA      0.0107  0.0074  94311.00        NA      NA      NA      0.0125  0.0080  94595.00        0       NA
+chr9:3746564    9       3756564 rs10814541      c       t       0.7018  0.0011  0.0064  89888.00        0.0036  0.0058  94311.00        0.0119  0.0057  91013.00        0.0025  0.0062  94595.00        0       NA
+chr5:133405061  5       133377162       rs4958172       g       a       0.8813  0       0.0089  89817.00        0.0072  0.0082  94239.00        0.0029  0.0080  90938.00        0.0029  0.0087  94520.00        0       NA
+chr12:69055675  12      70769408        rs2053102       c       g       NA      NA      NA      NA      0.0075  0.0069  94311.00        NA      NA      NA      0.0009  0.0073  94595.00        0       NA
+chr5:155873914  5       155941336       rs256837        c       a       0.7995  0.0016  0.0066  88199.00        0.0002  0.0061  92620.00        0.0013  0.0060  89323.00        0.0031  0.0065  92905.00        2       NA
+chr3:60337349   3       60362309        rs1569354       a       t       NA      NA      NA      NA      0.0060  0.0050  94311.00        NA      NA      NA      0.0025  0.0053  94595.00        0       NA
+chr4:65034366   4       65351771        rs6851961       a       g       0.5369  0.0003  0.0053  89877.00        0.0041  0.0049  94300.00        0.0025  0.0048  91002.00        0.0022  0.0052  94584.00        0       NA
+chr7:62372905   7       62735470        rs11560217      c       a       0.96966 0.0126  0.0161  83513.00        0.0236  0.0147  88983.00        0.0041  0.0148  81387.00        0.0008  0.0157  88090.00        0       NA
+chr17:6058839   17      6118115 rs17803227      a       g       0.1016  0.0046  0.0094  88422.00        0.0055  0.0086  92809.00        0.0081  0.0084  89474.00        0.0013  0.0092  93056.00        0       NA
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.txt | head -n 10
+rs,Z.HDL,Z.LDL,Z.TC,Z.TG,mvstat,mvp,unip
+chr10:101902054,4.84175096013916,0.54246240431255,3.65960938616346,2.45906343998997,48.768882385891,9.18546064700021,5.89042145309562
+chr10:101902184,4.28996658928395,0.741979097659704,3.31897041855539,2.04241886517916,36.3776853917822,6.61626523237262,4.74787544749436
+chr10:101914408,4.16769148760827,0.694450074537328,3.21159569456144,2.34730043800811,35.6324406198061,6.46295377959646,4.51187250375254
+chr10:101950956,3.49559840808192,2.98132929795538,4.80442095262784,1.89987138538418,34.3755765844435,6.2047817211044,5.80910828307783
+chr10:101989736,3.87804325071873,2.03680088096434,4.15303118888146,1.89426382584585,33.651359603728,6.05625379108408,4.48399376961395
+chr10:113892408,4.80727691171168,5.40513388872724,5.94718082470692,-2.54333468717218,68.150118444231,13.2536117777103,8.56415563401556
+chr10:113900711,8.38226223514305,7.38382982844603,8.0385200273586,-5.79780128305849,175.072295946929,36.069345409152,16.2846653162077
+chr10:113903212,4.76030564571111,5.5312813228826,6.04447208869014,-2.04932853694305,65.6788629080588,12.7325608116026,8.82419836715172
+chr10:113906292,4.92644305955787,5.60832002246494,6.01116043492249,-2.27626756787699,68.3490493954776,13.2955792602323,8.73471037413917
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/dtlesssignif.txt | head -n 10
+rs,Z.tg,Z.tc,Z.ldl,Z.hdl,mvstat,mvp,unip
+chr10:101902054,-2.19925212246208,-3.47798404219811,0.221118712997571,-4.70217875377794,43.9274041593846,8.17767271147827,5.58939145743163
+chr10:101998159,-1.87859364172538,-4.64921546125538,-2.85913347775579,-3.29494769718191,33.6897163071804,6.06411584439104,5.47729500726525
+chr10:107242452,Inf,1.29303197614424,1.9497996777359,0.528143126468276,NA,NA,Inf
+chr10:1081195,0.932651371845857,Inf,0.451540558796654,-0.0298333012789937,NA,NA,Inf
+chr10:113892408,-2.29105902640745,-5.83263142306766,-5.27952387879639,-4.66675085358473,62.5066384973055,12.0645696755321,8.26312563835158
+chr10:113900711,-5.68040012829455,-7.95312818670872,-7.29102748537499,-8.30031009432857,160.378697998669,32.9162927187097,15.9836353205437
+chr10:113903212,-1.74571780292366,-5.93170769988567,-5.40842895118219,-4.61845918556053,62.2754393895005,12.0159247839646,8.52316837148774
+chr10:113903542,-1.71459230796557,-5.89284606552626,-5.40108236790352,-4.53159500164139,61.0931696686151,11.7672608841947,8.42067379624475
+chr10:113906292,-1.99852289798056,-5.89779108321291,-5.48709388302838,-4.78916108555607,64.574092320775,12.499810726148,8.43368037847519
+>
+>         bmassOutput4 <- list()
+>         bmassOutput4$MergedDataSources <- NULL
+>         if (!is.null(MergedDataSources)) {
++                 bmassOutput4$MergedDataSources <- MergedDataSources
++         }
+Error: object 'MergedDataSources' not found
+>         bmassOutput4$ZScoresCorMatrix <- NULL
+>         bmassOutput4$MarginalSNPs <- list()
+>         bmassOutput4$Models <- NULL
+>         bmassOutput4$ModelPriors <- NULL
+>         bmassOutput4$PreviousSNPs <- list()
+>         bmassOutput4$NewSNPs <- list()
+>         bmassOutput4$GWASlogBFMinThreshold <- NULL
+>         #LogFile <- c()
+>         bmassOutput4$LogFile <- c()
+>
+>         bmassOutput4$LogFile <- rbind(bmassOutput4$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
+>
+>         bmassOutput5 <- bmassOutput4
+>
+>         bmassOutput5$MergedDataSources <- bmassOutput5$MergedDataSources[bmassOutput5$MergedDataSources$MAF > 0 & !is.na(bmassOutput5$MergedDataSources$MAF),]
+>         bmassOutput5$ZScoresCorMatrix <- as.matrix(read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GlobalLipids2013.RSS0.vs1.SignCrrct.vs1.txt", header=TRUE, sep=","))
+>         GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+>         names(GWASsnps) <- c("Chr", "BP")
+>         #Z.LDL,Z.HDL,Z.TC,Z.TG
+>         DataSources = c("LDL", "HDL", "TC", "TG"); NminThreshold = 50000; bmassSeedValue=150;
+>         ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+>         bmassOutput5$MergedDataSources$ChrBP <- paste(bmassOutput5$MergedDataSources$Chr, "_", bmassOutput5$MergedDataSources$BP, sep="")
+>         
+>         bmassOutput5$MarginalSNPs$SNPs <- bmassOutput5$MergedDataSources[bmassOutput5$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput5$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+>         
+>         bmassOutput5[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput5$MarginalSNPs, bmassOutput5$ZScoresCorMatrix, SigmaAlphas, bmassOutput5$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+>         
+>         bmassOutput5[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput5$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput5$Models, bmassOutput5$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput5$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+>         
+>         bmassOutput5[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput5$MarginalSNPs, bmassOutput5$PreviousSNPs, GWASsnps, bmassOutput5$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput5$Models, bmassOutput5$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput5$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+> 
+> 
+> dim(bmassOutput5$NewSNPs$SNPs)
+[1] 87 31
+> 
+> quantile(bmassOutput5$NewSNPs$SNPs$logBFWeightedAvg)
+       0%       25%       50%       75%      100% 
+ 4.080139  4.586978  5.210187  6.742220 37.734890 
+> bmassOutput5$GWASlogBFMinThreshold
+[1] 4.078411
+> bmassOutput1$GWASlogBFMinThreshold
+[1] 4.28084
+> quantile(bmassOutput1$NewSNPs$SNPs$logBFWeightedAvg)
+       0%       25%       50%       75%      100% 
+ 4.289660  4.703371  5.427240  7.501618 33.345835 
+> dim(bmassOutput1$MarginalSNPs$SNPs)
+[1] 252  29
+> dim(bmassOutput1$MarginalSNPs$SNPs[bmassOutput1$MarginalSNPs$SNPs$logBFWeightedAvg > 4,])
+[1] 232  29
+> dim(bmassOutput1$MarginalSNPs$SNPs[bmassOutput1$MarginalSNPs$SNPs$logBFWeightedAvg > 4 & bmassOutput1$MarginalSNPs$SNPs$GWASannot == 0,])
+[1] 76 29
+> dim(bmassOutput5$MarginalSNPs$SNPs[bmassOutput5$MarginalSNPs$SNPs$logBFWeightedAvg > 4.2 & bmassOutput5$MarginalSNPs$SNPs$GWASannot == 0,])
+[1] 82 31
+> bmassOutput5$NewSNPs$SNPs[bmassOutput5$NewSNPs$SNPs$logBFWeightedAvg > 20,]
+                 SNP Chr       BP      SNP.1 A1 A2     MAF LDL_Beta LDL_SE
+5780  chr19:50709959  19 46018119  rs7255743  g  a 0.02639   0.1647 0.0156
+6449   chr6:31373469   6 31265490  rs2247056  c  t 0.21770   0.0248 0.0043
+10243 chr11:47251202  11 47294626 rs10501321  t  c 0.31400   0.0087 0.0039
+         LDL_N HDL_Beta HDL_SE    HDL_N TG_Beta  TG_SE     TG_N TC_Beta  TC_SE
+5780  123958.8   0.0027 0.0146 137200.5  0.0323 0.0138 127634.9  0.1066 0.0150
+6449  169288.0   0.0121 0.0040 183368.0  0.0378 0.0039 174062.0  0.0391 0.0041
+10243 172916.0   0.0483 0.0036 186984.0  0.0216 0.0035 177680.0  0.0060 0.0038
+          TC_N GWASannot Gene  HDL_ZScore LDL_ZScore TC_ZScore TG_ZScore
+5780  135895.3         0   NA  -0.6782708  10.453779  7.135980 -2.624603
+6449  183557.0         0   NA  -2.8949657  -5.671080 -9.252015 -9.436320
+10243 187172.0         0   NA -12.9184728   2.029671 -1.512133  5.671927
+        mvstat mvstat_log10pVal unistat_log10pVal       ChrBP     Nmin
+5780  129.0127         26.19846          24.85140 19_46018119 123958.8
+6449  147.2293         30.09762          20.41330  6_31265490 169288.0
+10243 195.7057         40.50196          37.45087 11_47294626 172916.0
+      logBFWeightedAvg
+5780          22.98328
+6449          27.95503
+10243         37.73489
+> bmassOutput1$NewSNPs$SNPs[bmassOutput1$NewSNPs$SNPs$logBFWeightedAvg > 20,]
+              ChrBP Chr       BP     MAF A1 HDL_A2 HDL_Direction HDL_pValue
+233267  11_47251202  11 47251202 0.31400  t      c             +  3.541e-38
+234096  11_47857845  11 47857845 0.14780  c      t             +  2.705e-27
+1026499 19_50709959  19 50709959 0.02639  g      a             +  4.976e-01
+1964137  6_31373469   6 31373469 0.21770  t      c             +  3.792e-03
+           HDL_N  HDL_ZScore LDL_Direction LDL_pValue    LDL_N LDL_ZScore
+233267  186984.0 -12.9184728             -  4.239e-02 172916.0   2.029671
+234096  178710.0 -10.8221024             +  2.521e-01 164709.0  -1.145264
+1026499 137200.5  -0.6782708             -  1.408e-25 123958.8  10.453779
+1964137 183368.0   2.8949657             +  1.419e-08 169288.0   5.671080
+        TG_Direction TG_pValue     TG_N TG_ZScore TC_Direction TC_pValue
+233267             - 1.412e-08 177680.0  5.671927            + 1.305e-01
+234096             - 2.279e-02 169360.0  2.276937            + 1.080e-05
+1026499            + 8.675e-03 127634.9 -2.624603            - 9.610e-13
+1964137            + 3.861e-21 174062.0  9.436320            + 2.203e-20
+            TC_N TC_ZScore GWASannot   mvstat mvstat_log10pVal   unistat
+233267  187172.0 -1.512133         0 169.9167         34.96265 166.88694
+234096  178854.3 -4.400503         0 125.5053         25.44864 117.11790
+1026499 135895.3  7.135980         0 130.5222         26.52128 109.28150
+1964137 183557.0  9.252015         0 160.9693         33.04297  89.04414
+        unistat_log10pVal     Nmin logBFWeightedAvg
+233267           37.45087 172916.0         33.34583
+234096           26.56783 164709.0         23.91387
+1026499          24.85140 123958.8         23.33516
+1964137          20.41330 169288.0         30.99773
+> bmassOutput3.2 <- bmass(c("HDL3", "LDL3", "TG3", "TC3"), GWASsnps=GWASsnps3, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=34987435);
+Warning message:
+In ProcessMergedAndAnnotatedDataSources(DataSources, bmassOutput$MergedDataSources,  :
+  2016-12-28 00:39:31 -- One of your datafiles has p-values less than the threshold which R can properly convert them to log-scale, meaning their log-values return as 'Infinite'. bmass automatically replaces these 'Infinite' values with the max, non-infinite Z-scores available, but it is recommended you self-check this as well.
+> 
+> dim(bmassOutput3.2$NewSNPs$SNPs)
+[1] 65 29
+> head(sort(bmassOutput3$ModelPriors, decreasing=TRUE))
+[1] 0.28186232 0.13024238 0.12325361 0.06253280 0.04978415 0.03813073
+> head(sort(bmassOutput5$ModelPriors, decreasing=TRUE))
+[1] 0.23906274 0.09421731 0.08242790 0.07670760 0.07123819 0.04993153
+>
+>         bmassOutput4 <- list()
+>         bmassOutput4$MergedDataSources <- NULL
+>         if (!is.null(MergedDataSources)) {
++                 bmassOutput4$MergedDataSources <- MergedDataSources
++         }
+Error: object 'MergedDataSources' not found
+>         bmassOutput4$ZScoresCorMatrix <- NULL
+>         bmassOutput4$MarginalSNPs <- list()
+>         bmassOutput4$Models <- NULL
+>         bmassOutput4$ModelPriors <- NULL
+>         bmassOutput4$PreviousSNPs <- list()
+>         bmassOutput4$NewSNPs <- list()
+>         bmassOutput4$GWASlogBFMinThreshold <- NULL
+>         #LogFile <- c()
+>         bmassOutput4$LogFile <- c()
+>
+>         bmassOutput4$LogFile <- rbind(bmassOutput4$LogFile, paste(format(Sys.time()), " -- beginning bmass.", sep=""))
+>
+>         bmassOutput5 <- bmassOutput4
+>         bmassOutput5.2 <- bmassOutput5
+.
+.
+.
+>         bmassOutput5.2$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz", header=TRUE)
+>         bmassOutput5.2$MergedDataSources <- bmassOutput5.2$MergedDataSources[bmassOutput5.2$MergedDataSources$MAF > 0 & !is.na(bmassOutput5.2$MergedDataSources$MAF),]
+>         bmassOutput5.2$ZScoresCorMatrix <- bmassOutput1$ZScoresCorMatrix
+>         GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+>         names(GWASsnps) <- c("Chr", "BP")
+>         #Z.LDL,Z.HDL,Z.TC,Z.TG
+>         DataSources = c("HDL", "LDL", "TC", "TG"); NminThreshold = 50000; bmassSeedValue=150;
+>         ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+>         bmassOutput5.2$MergedDataSources$ChrBP <- paste(bmassOutput5.2$MergedDataSources$Chr, "_", bmassOutput5.2$MergedDataSources$BP, sep="")
+>
+>         bmassOutput5.2$MarginalSNPs$SNPs <- bmassOutput5.2$MergedDataSources[bmassOutput5.2$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput5.2$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+>
+>         bmassOutput5.2[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput5.2$MarginalSNPs, bmassOutput5.2$ZScoresCorMatrix, SigmaAlphas, bmassOutput5.2$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+>
+>         bmassOutput5.2[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput5.2$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput5.2$Models, bmassOutput5.2$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput5.2$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+>
+>         bmassOutput5.2[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput5.2$MarginalSNPs, bmassOutput5.2$PreviousSNPs, GWASsnps, bmassOutput5.2$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput5.2$Models, bmassOutput5.2$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput5.2$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+>
+> dim(bmassOutput5.2$NewSNPs$SNPs)
+[1] 84 31
+> write.table(bmassOutput3$PreviousSNPs$SNPs, file="nanana3.txt", quote=FALSE, row.names=FALSE)
+> write.table(bmassOutput5.2$PreviousSNPs$SNPs, file="nanana5.2.txt", quote=FALSE, row.names=FALSE)
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/nanana3.txt | perl -lane 'print $F[0], "\t", $F[9], "\t", $F[13], "\t", $F[17], "\t", $F[21], "\t", join("\t", @F[22..26]), "\t", $F[28]; ' | sort -k 1,1 | head -n 10
+10_113923876    8.47494035962306        7.40464678868388        -6.02377044685236       8.07929924807389        1       162.407222586343        33.3513893982575        71.8246140991678        16.6285626825959        30.4230894747641
+10_17300296     3.64750418481346        5.11514502107085        2.68495302878402        6.66755500152202        1       57.8527371818585        11.0865082398778        44.4562896983213        10.5848596478041        9.22681814814558
+10_45333283     6.38571362584799        3.40373996191713        0.739835195937606       5.75960700206589        1       66.9017971256983        12.9903401067078        40.7773385113407        9.76802097316849        11.5562865653172
+10_5244847      -1.58002998406243       -1.6159736979577        -7.05564655784335       -4.568213009728 1       73.0575763928857        14.2898866030454        49.7821483492066        11.7649768405048        12.4930006165342
+10_94829632     4.7387882766992 -4.11421453385679       -6.73126008177982       -3.76105236579225       1       60.4465330338601        11.6313195372535        45.3098622885624        10.7741740085381        9.84491786890623
+11_10345358     -5.45060058651368       2.35807461854458        2.74931480194631        0.00626661170175034     1       37.2682722275453        6.79969069182732        29.7090467537033        7.29929628285498        4.80578085033094
+11_117991277    3.05361771166883        4.33194182314675        0.569377474575075       5.7068294621188 1       37.4902470996644        6.84544386472414        32.5679025097072        7.93892467637021        5.62681215613522
+11_122027585    7.72483309131196        4.70513340698104        -0.986271298702238      7.62747295996659        1       102.58526432914 20.5576666086493        59.6730462886284        13.9507819773298        19.3029965699057
+11_125749162    -2.62167043158378       9.37981274181744        3.21268593453459        7.81521337484289        1       92.9016234537775        18.4970875667416        87.9808870715607        20.1798642481296        16.820865295778
+11_18589560     -1.1947109058546        -7.14189934068621       -2.29244461575788       -6.79879200526399       1       58.1681080551622        11.1527078156039        51.0067261924942        12.03597620716  9.37021161205544
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/nanana5.2.txt | perl -lane 'print $F[28], "\t", $F[19], "\t", join("\t", @F[21..27]), "\t", $F[30];' | sort -k 1,1 | head -n 10
+10_113933886    1       8.47494035962306        7.40464678868388        8.07929924807389        -6.02377044685236       180.500977544004        37.2350540633722        16.6285626825959        346.86843701254
+10_17260290     1       3.64750418481346        5.11514502107085        6.66755500152202        2.68495302878402        55.4858725775983        10.5900730097836        10.5848596478041        38.5412265937624
+10_46013277     1       6.38571362584799        3.40373996191713        5.75960700206589        0.739835195937606       68.7674948655753        13.3838679508119        9.76802097316849        55.5550837078421
+10_5254847      1       -1.58002998406243       -1.6159736979577        -4.568213009728 -7.05564655784335       66.2079133047116        12.8440609356507        11.7649768405048        19.4444693208997
+10_94839642     1       -4.7387882766992        4.11421453385679        3.76105236579225        6.73126008177982        66.5673303570534        12.9198248795096        10.7741740085381        19.5301684395352
+11_10388782     1       5.45060058651368        -2.35807461854458       -0.00626661170175034    -2.74931480194631       46.721487072851 8.75875147136635        7.29929628285498        11.6969505021368
+11_118486067    1       3.05361771166883        4.33194182314675        5.7068294621188 0.569377474575075       39.7092386839387        7.30354935340201        7.93892467637021        43.2152554732928
+11_122522375    1       7.72483309131196        4.70513340698104        7.62747295996659        -0.986271298702238      115.855453436528        23.3873723754993        13.9507819773298        129.4346518154
+11_126243952    1       2.62167043158378        -9.37981274181744       -7.81521337484289       -3.21268593453459       94.6719391878239        18.8734799554428        20.1798642481296        55.6299080973941
+11_18632984     1       -1.1947109058546        -7.14189934068621       -6.79879200526399       -2.29244461575788       56.3664410241416        10.7746839339184        12.03597620716  51.2044261282904
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/nanana3.txt | perl -lane 'print $F[0], "\t", $F[9], "\t", $F[13], "\t", $F[17], "\t", $F[21], "\t", join("\t", @F[22..26]), "\t", $F[28]; ' | head -n 1 
+ChrBP   HDL3_ZScore     LDL3_ZScore     TG3_ZScore      TC3_ZScore      GWASannot       mvstat  mvstat_log10pVal        unistat unistat_log10pVal       logBFWeightedAvg
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/nanana5.2.txt | perl -lane 'print $F[28], "\t", $F[19], "\t", join("\t", @F[21..27]), "\t", $F[30];' | head -n 1 
+ChrBP   GWASannot       HDL_ZScore      LDL_ZScore      TC_ZScore       TG_ZScore       mvstat  mvstat_log10pVal        unistat_log10pVal       logBFWeightedAvg
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz | sed 's/:/ /g' | awk '{ print $2 "\t" $4 }' | R -q -e "Data1 <- read.table(file('stdin'), header=T); quantile(Data1[,1] - Data1[,2]);"
+> Data1 <- read.table(file('stdin'), header=T); quantile(Data1[,1] - Data1[,2]);
+      0%      25%      50%      75%     100% 
+-2975874  -566586  -146496    35757  4691840 
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.Hg18vsHg19GWASProxTest.gz | awk '{ print $6 }' | sort | uniq -c
+   1783 0
+    148 1
+   9642 2
+      1 Gene
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.Hg18vsHg19GWASProxTest.gz | awk '{ print $7 }' | sort | uniq -c
+   1784 0
+    146 1
+   9644 2
+> write.table(bmassOutput3.4$MarginalSNPs$SNPs, "20161228.bmassOutput3.4.NotPruned.MaringalSNPs.txt", quote=FALSE, row.names=FALSE)
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161228.bmassOutput3.4.NotPruned.MaringalSNPs.txt | awk '{ print $1 "\t" $10 }' | sort -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz | sed 's/chr//g' | sed 's/:/_/g ' | sort -k 1,1) | wc
+  10888  315752 3071885
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161228.bmassOutput3.4.NotPruned.MaringalSNPs.txt | awk '{ print $1 "\t" $10 "\t" $14 "\t" $18 "\t" $22 }' | sort -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz | sed 's/chr//g' | sed 's/:/_/g ' | awk '{ print $1 "\t" $22 "\t" $23 "\t" $24 "\t" $25 }' | sort -k 1,1) | awk '{ if ($2 != $6) { print $0 } }' | wc  
+   5401   48609  824008
+[  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161228.bmassOutput3.4.NotPruned.MaringalSNPs.txt | awk '{ print $1 "\t" $10 }' | sort -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.txt.gz | sed 's/chr//g' | sed 's/:/_/g ' | sort -k 1,1) | perl -lane 'if ($F[1] != $F[22]) { print "yaya2"; }' | sort | uniq -c
+   5401 yaya2
+.
+.
+.
+
+>         bmassOutput5.4$MergedDataSources <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/20161227_edits_GlobalLipids2013.dtlesssignif.vs1.SignCrrct.vs1.annot.MAF.bmassOutput3.4_ZScoreSignMatch.txt.gz", header=TRUE)
+old = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+        bmassOutput5.4$MergedDataSources$ChrBP <- paste(bmassOutput5.4$MergedDataSources$Chr, "_", bmassOutput5.4$MergedDataSources$BP, sep="")
+
+        bmassOutput5.4$MarginalSNPs$SNPs <- bmassOutput5.4$MergedDataSources[bmassOutput5.4$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput5.4$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+
+        bmassOutput5.4[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput5.4$MarginalSNPs, bmassOutput5.4$ZScoresCorMatrix, SigmaAlphas, bmassOutput5.4$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+
+        bmassOutput5.4[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput5.4$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput5.4$Models, bmassOutput5.4$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput5.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+
+        bmassOutput5.4[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput5.4$MarginalSNPs, bmassOutput5.4$PreviousSNPs, GWASsnps, bmassOutput5.4$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput5.4$Models, bmassOutput5.4$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput5.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+
+
+>         bmassOutput5.4$MergedDataSources <- bmassOutput5.4$MergedDataSources[bmassOutput5.4$MergedDataSources$MAF > 0 & !is.na(bmassOutput5.4$MergedDataSources$MAF),]
+>         bmassOutput5.4$ZScoresCorMatrix <- bmassOutput3$ZScoresCorMatrix
+>         GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt", header=F);
+>         names(GWASsnps) <- c("Chr", "BP")
+>         #Z.LDL,Z.HDL,Z.TC,Z.TG
+>         DataSources = c("HDL", "LDL", "TC", "TG"); NminThreshold = 50000; bmassSeedValue=150;
+>         ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
+>         bmassOutput5.4$MergedDataSources$ChrBP <- paste(bmassOutput5.4$MergedDataSources$Chr, "_", bmassOutput5.4$MergedDataSources$BP, sep="")
+>
+>         bmassOutput5.4$MarginalSNPs$SNPs <- bmassOutput5.4$MergedDataSources[bmassOutput5.4$MergedDataSources$mvstat_log10pVal > -log10(SNPMarginalUnivariateThreshold) | bmassOutput5.4$MergedDataSources$unistat_log10pVal > -log10(SNPMarginalMultivariateThreshold),]
+>
+>         bmassOutput5.4[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources, bmassOutput5.4$MarginalSNPs, bmassOutput5.4$ZScoresCorMatrix, SigmaAlphas, bmassOutput5.4$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
+>
+>         bmassOutput5.4[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput5.4$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput5.4$Models, bmassOutput5.4$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput5.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+> 
+>         bmassOutput5.4[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput5.4$MarginalSNPs, bmassOutput5.4$PreviousSNPs, GWASsnps, bmassOutput5.4$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput5.4$Models, bmassOutput5.4$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput5.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
+> dim(bmassOutput5.4$NewSNPs$SNPs)
+[1] 72 31
+~~~
+
 
 
 
@@ -4245,10 +5554,6 @@ join <(zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | awk '{ pr
 join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/LDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
 join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TG_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
 join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] ne $F[5]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } print join("\t", @F[2..$#F]);' | gzip > /data/external_public/GlobalLipids2010/TC_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.MatchedToHDL.tbl.gz
-
-
-
-
 
 
 
@@ -4653,36 +5958,37 @@ cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/V
 #20161109
 #Vs2 -- Running things through version of bmass() code
 
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2
+cd /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2
 
+zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | awk '{ print $7 "\t" $$4 "\t" $2 "\t" $3 "\t+\t" $5 $7 }' | grep -v Freq | sed 's/_/ /g' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz 
+zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | awk '{ print $7 "\t" $$4 "\t" $2 "\t" $3 "\t+\t" $5 $7 }' | grep -v Freq | sed 's/_/ /g' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz
+zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | awk '{ print $7 "\t" $$4 "\t" $2 "\t" $3 "\t+\t" $5 $7 }' | grep -v Freq | sed 's/_/ /g' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz
 
+join <(zcat 
 
+join <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | awk '{ print $1, "\t", $2 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz) | perl -lane 'if ($F[1] ne $F[2]) { $F[5] = -1 * $F[5]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_BMI_Speliotes2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.txt.gz
+join <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | awk '{ print $1, "\t", $2 }' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz) | perl -lane 'if ($F[1] ne $F[2]) { $F[5] = -1 * $F[5]; } splice(@F, 1, 1); print join("\t", @F);' | gzip > /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_WHRadjBMI_Heid2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.txt.gz
 
-
-
-
-
-
-
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2010/GIANT_HEIGHT_LangoAllen2010_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | head -n 10
+MarkerName      Allele1 Allele2 Freq.Allele1.HapMapCEU  p       N       ChrBP
+rs10 a  c       0.0333  0.8826  78380   7_92221823
+rs1000000       a       g       0.3667  0.1858  133822  12_125456932
+rs10000010      t       c       0.575   0.8947  132858  4_21227771
+rs10000012      c       g       0.8083  0.1312  133785  4_1347324
+rs10000013      a       c       0.8333  0.628   133843  4_36901463
+rs10000017      t       c       0.2333  0.3073  133174  4_84997148
+rs1000002       t       c       0.525   0.221   133711  3_185118461
+rs10000023      t       g       0.5917  0.354   131895  4_95952928
+rs10000029      c       t       0.025   0.9831  116885  4_138905073
 
 #Chr BP  MAF     A1      A2      Direction       pValue  N
 #ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N")
-
-1) Expand/Correct/Make format of files
-2) Match to a phenotype
-3) Extra steps such as drop no allele matches or 0dir step (latter maybe specific to GlobalLipids 2010)
-
 zcat /data/external_public/GlobalLipid/jointGwasMc_HDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz
-zcat /data/external_public/GlobalLipid/jointGwasMc_LDL.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.txt.gz
-zcat /data/external_public/GlobalLipid/jointGwasMc_TG.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.txt.gz
-zcat /data/external_public/GlobalLipid/jointGwasMc_TC.txt.gz | sed 's/:/ /g' | sed 's/chr//g' | awk '{ print $1 "\t" $2 "\t" $12 "\t" $6 "\t" $7 "\t" $8 "\t" $11 "\t" $10 }' | grep -v hg | grep -v rs | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.txt.gz
 
 join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.txt.gz 
-join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.txt.gz 
-join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_HDL.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $4 }' | grep -v NA | sort -g -k 1,1) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.txt.gz | awk '{ print $1 "_" $2 "\t" $0 }' | grep -v NA | sort -g -k 1,1) | perl -lane 'if ($F[1] eq $F[6]) { ($F[5], $F[6]) = ($F[6], $F[5]); $F[4] = 1 - $F[4]; if ($F[7] eq "-") { $F[7] = "+"; } elsif ($F[7] eq "+") { $F[7] = "-"; } else { $PH = 1; } } elsif ($F[1] eq $F[5]) { $PH = 1; } else { push(@F, "NoAlleleMatch"); } print join("\t", @F[2..$#F]);' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.txt.gz 
 
 zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.txt.gz | grep -v NoAlleleMatch | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_LDL.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.txt.gz | grep -v NoAlleleMatch | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TG.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
-zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.txt.gz | grep -v NoAlleleMatch | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/jointGwasMc_TC.IncAllele.bmass.formatted.MatchedToHDL.DropNoMatch.txt.gz
 
 
 
@@ -5077,9 +6383,13 @@ rs17212015      A       T       0.8583  0.0094  0.0057  0.09912 232876  X_126943
 [  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep 107486155                                                                                                                                                                                                      rs10884221      T       C       0.808   -0.0024 0.0035  0.48    249684  10_107486155,6_cox_hap1_48402                                                                                                                          
 ~~~
 
-zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | grep -v ChrBP | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz  
-zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz
-zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.txt.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.txt.gz
+#20161227 NOTE -- I was doing `...if ($F[5] == "-")...` which was causing everything to get flipped automatically, when I should have been doing `...if ($F[5] eq "-")...`. This is where the BMI/WHRadjBMI-corr-of-.6 results were coming from. So edited things below to fix  
+##zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | grep -v ChrBP | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz  
+##zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz
+##zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.txt.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] == "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.txt.gz
+zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] eq "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | grep -v ChrBP | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz  
+zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] eq "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz
+zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.txt.gz | sed 's/_/ /g' | awk '{ print $9 "\t" $10 "\t" $4 "\t" $2 "\t" $3 "\t" $5 "\t" $7 "\t" $8 }' | perl -lane 'if ($F[5] > 0) { $F[5] = "+"; } elsif ($F[5] < 0) { $F[5] = "-"; } else { $F[5] = 0;} if ($F[5] eq "-") { ($F[3], $F[4]) = ($F[4], $F[3]); $F[5] = "+"; $F[2] = 1 - $F[2]; } print join("\t", @F); ' | grep -v Freq | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | grep -v , | grep -v NA | grep -v cox | perl -lane 'if ($F[0] eq "X") { $F[0] = 23; } if ($F[0] eq "Y") { $F[0] = 24; } print join("\t", @F); ' | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.txt.gz
 
 #Chr BP  MAF     A1      A2      Direction       pValue  N
 #ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N")
@@ -5311,12 +6621,12 @@ zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_
 zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.IncAllele.gz | sed 's/_/ /g' | perl -lane 'my $dir = "+"; if ($F[6] < 0) { $dir = "-"; } print $F[$#F-1], "\t", $F[$#F], "\t", $F[3], "\t", $F[1], "\t", $F[2], "\t", $dir, "\t", abs($F[6]), "\t", $F[7];' | grep -v ChrBP | grep -v NA | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.IncAllele.gz 
 zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.MatchedToHeight.IncAllele.txt.gz | sed 's/_/ /g' | perl -lane 'my $dir = "+"; if ($F[6] < 0) { $dir = "-"; } print $F[$#F-1], "\t", $F[$#F], "\t", $F[3], "\t", $F[1], "\t", $F[2], "\t", $dir, "\t", abs($F[6]), "\t", $F[7];' | grep -v ChrBP | grep -v NA | cat <(echo -e "Chr\tBP\tMAF\tA1\tA2\tDirection\tpValue\tN") - | gzip > /mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.MatchedToHeight.IncAllele.txt.gz
       
+mv ../../../../blahblah1.txt ../../../../GIANT2014_5/Vs2/20161227.Troubleshooting.bmassOutput1.MergedDataSources.txt
+mv ../../../../blahblah2.txt ../../../../GIANT2014_5/Vs2/20161227.Troubleshooting.bmassOutput1.1.MergedDataSources.txt
+gzip ../../../../GIANT2014_5/Vs2/20161227.Troubleshooting.bmassOutput1.MergedDataSources.txt ../../../../GIANT2014_5/Vs2/20161227.Troubleshooting.bmassOutput1.1.MergedDataSources.txt
 
-
-
-
-
-
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMIWHRadjBMI.NewSNPs.SNPs.vs1.txt | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMIWHRadjBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.txt | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt
 
 #In R
 ```
@@ -5328,6 +6638,10 @@ WHRadjBMI <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/GIAN
 Height2 <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz", header=T)
 BMI2 <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.MatchedToHeight.IncAllele.gz", header=T)
 WHRadjBMI2 <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/20161227edits.GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.MatchedToHeight.IncAllele.txt.gz", header=T)
+
+Height <- Height[Height$Direction != 0,]
+BMI <- BMI[BMI$Direction != 0,]
+WHRadjBMI <- WHRadjBMI[WHRadjBMI$Direction != 0,]
 
 #GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.AllPheno.MarkerChrBP.txt", header=F);
 GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt", header=F);
@@ -5341,7 +6655,10 @@ names(GWASsnps2) <- c("Chr", "BP");
 
 bmassOutput1 <- bmass(c("Height", "BMI", "WHRadjBMI"), GWASsnps=GWASsnps, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
 bmassOutput1.1 <- bmass(c("Height2", "BMI2", "WHRadjBMI2"), GWASsnps=GWASsnps, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
-#bmassOutput2 <- bmass(c("Height", "BMI"), GWASsnps=GWASsnps2, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+bmassOutput2 <- bmass(c("Height", "BMI"), GWASsnps=GWASsnps2, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+
+write.table(bmassOutput1$NewSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMIWHRadjBMI.NewSNPs.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
+write.table(bmassOutput2$NewSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
 
         bmassOutput1.2 <- list()
         bmassOutput1.2$MergedDataSources <- NULL
@@ -5400,11 +6717,6 @@ bmassOutput1.1 <- bmass(c("Height2", "BMI2", "WHRadjBMI2"), GWASsnps=GWASsnps, N
 	GWASsnps1.4[,2] <- GWASsnps1.4[,2] - 1
 	names(GWASsnps1.4) <- c("Chr", "BP");
 	
-	#Print new results too... 
-	#Come up with way to recalculate ZSoresCorMatrix....
-	#Compare merged files, print out new one and create files with Chr BP A1 ZScore1 ZScore2 ZScore3 for both and see how they differ/compare on a per SNP basis....is there something systemic going on? Are ZScores the same? They should be...
-	#Do halfRan version of files?
- 
 	DataSources1.4 = c("Height", "BMI", "WHRadjBMI"); NminThreshold = 50000; bmassSeedValue=150;
         ExpectedColumnNames=c("Chr", "BP", "MAF", "Direction", "pValue", "N"); GWASsnps_AnnotateWindow = 5e5; SNPMarginalUnivariateThreshold = 1e-6; SNPMarginalMultivariateThreshold = 1e-6; SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15); ProvidedPriors=NULL; UseFlatPriors=FALSE; PruneMarginalSNPs=TRUE; PruneMarginalSNPs_bpWindow=5e5;
         bmassOutput1.4$MergedDataSources$ChrBP <- paste(bmassOutput1.4$MergedDataSources$Chr, "_", bmassOutput1.4$MergedDataSources$BP, sep="")
@@ -5413,17 +6725,9 @@ bmassOutput1.1 <- bmass(c("Height2", "BMI2", "WHRadjBMI2"), GWASsnps=GWASsnps, N
 
         bmassOutput1.4[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")] <- GetLogBFsFromData(DataSources1.4, bmassOutput1.4$MarginalSNPs, bmassOutput1.4$ZScoresCorMatrix, SigmaAlphas, bmassOutput1.4$LogFile)[c("MarginalSNPs", "Models", "ModelPriors", "LogFile")]
 
-#       Nmins <- apply(bmassOutput1.4$MarginalSNPs$SNPs[,c("TC_N", "TG_N", "LDL_N", "HDL_N")], 1, min)
-#       ZScores <- bmassOutput1.4$MarginalSNPs$SNPs[,c("TC_ZScore", "TG_ZScore", "HDL_ZScore", "LDL_ZScore")]
-#       MarginalSNPs_logBFs <- compute.allBFs.fromZscores(ZScores, bmassOutput1.4$ZScoresCorMatrix, Nmins, bmassOutput1.4$MarginalSNPs$SNPs$MAF, SigmaAlphas)
-
         bmassOutput1.4[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources1.4, bmassOutput1.4$MarginalSNPs, GWASsnps1.4, SigmaAlphas, bmassOutput1.4$Models, bmassOutput1.4$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput1.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
 
         bmassOutput1.4[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources1.4, bmassOutput1.4$MarginalSNPs, bmassOutput1.4$PreviousSNPs, GWASsnps1.4, bmassOutput1.4$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput1.4$Models, bmassOutput1.4$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput1.4$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
-
-        
-
-
 ```
 
 ~~~
@@ -5581,8 +6885,8 @@ FALSE  TRUE
 > NewSNPs$SNPs <- MarginalSNPs_Pruned[MarginalSNPs_Pruned$GWASanno == 0 & MarginalSNPs_Pruned$logBFWeightedAvg >= 2.953744,]
 > dim(NewSNPs$SNPs)
 [1] 217  26
-#[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat ../../GIANT2014_5/Vs1/GIANT2014_5.Orig3.newtophits.vs1.SignCrrct.vs1.MarkerChrBP.txt | wc
-#    218     654    5624
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat ../../GIANT2014_5/Vs1/GIANT2014_5.Orig3.newtophits.vs1.SignCrrct.vs1.MarkerChrBP.txt | wc
+    218     654    5624
 > summary(bmassOutput1)
                       Length Class      Mode     
 MarginalSNPs            4    -none-     list     
@@ -5605,8 +6909,101 @@ ZScoresCorMatrix        9    -none-     numeric
 Models                 81    -none-     numeric  
 ModelPriors           378    -none-     numeric  
 GWASlogBFMinThreshold   1    -none-     numeric  
+> dim(bmassOutput1$MergedDataSources)
+[1] 2489613      19
+> dim(bmassOutput1.1$MergedDataSources)
+[1] 2479684      19
+> write.table(bmassOutput1$MergedDataSources, "blahblah1.txt")
+> write.table(bmassOutput1.1$MergedDataSources, "blahblah2.txt")
+.
+.
+.
+> Height <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.txt.gz", header=T);
+> BMI <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/SNP_gwas_mc_merge_nogc.tbl.uniq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz", header=T);
+> WHRadjBMI <- read.table("/mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_2015_WHRadjBMI_COMBINED_EUR.wUCSCGenomeBrowser_dbSNP130.vs1.HeaderFix.IncAllele.bmass.formatted.MatchedToHeight.DropNoMatch.txt.gz", header=T);
+>
+> #GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.AllPheno.MarkerChrBP.txt", header=F);
+> GWASsnps <- read.table("/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt", header=F);
+> GWASsnps <- GWASsnps[,2:3]
+> GWASsnps[,2] <- GWASsnps[,2] - 1
+> GWASsnps2 <- read.table("/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMI.MarkerChrBP.txt", header=F);
+> GWASsnps2 <- GWASsnps2[,2:3]
+> GWASsnps2[,2] <- GWASsnps2[,2] - 1
+> names(GWASsnps) <- c("Chr", "BP");
+> names(GWASsnps2) <- c("Chr", "BP");
+>
+> bmassOutput1 <- bmass(c("Height", "BMI", "WHRadjBMI"), GWASsnps=GWASsnps, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+Error in CheckIndividualDataSources(DataSources, GWASsnps, ExpectedColumnNames,  :
+  2016-12-27 14:42:06 -- the following data sources have entries other than + and - in the Direction column. Please fix and rerun bmass: Height BMI WHRadjBMI
+>
+> table(Height$Direction)
 
+      +       0
+2517440   17224
+
+
+> head(Height[Height$Direction==0,])
+     Chr        BP   MAF A1 A2 Direction pValue      N
+377   10 100215646 0.350  T  C         0   0.99 253177
+426   10 100265663 0.025  T  C         0   1.00 225416
+490   10 100303552 0.333  T  C         0   0.99 244803
+835   10   1005246 0.017  T  G         0   1.00 229858
+852   10 100546415 0.192  A  G         0   0.99 253218
+1046  10 100748568 0.093  A  C         0   1.00 252700
+> table(BMI$Direction)
+
+      -       +       0 
+1314277 1176949   17949 
+> table(WHRadjBMI$Direction)
+
+      -       +       0 
+1246373 1220497   16655 
+> Height <- Height[Height$Direction != 0,] 
+> BMI <- BMI[BMI$Direction != 0,]
+> WHRadjBMI <- WHRadjBMI[WHRadjBMI$Direction != 0,]
+> 
+> table(Height$Direction)
+
+      +       0 
+2517440       0 
+> dim(bmassOutput1$NewSNPs$SNPs)
+[1] 218  25
+> bmassOutput1$ZScoresCorMatrix
+                 Height_ZScore  BMI_ZScore WHRadjBMI_ZScore
+Height_ZScore      1.000000000 -0.05115997     -0.009512951
+BMI_ZScore        -0.051159975  1.00000000      0.015944658
+WHRadjBMI_ZScore  -0.009512951  0.01594466      1.000000000
+> bmassOutput1$GWASlogBFMinThreshold
+[1] 2.899102
+>
+> bmassOutput2 <- bmass(c("Height", "BMI"), GWASsnps=GWASsnps2, NminThreshold = 50000, PrintMergedData=TRUE, bmassSeedValue=150);
+>
+> dim(bmassOutput2$NewSNPs$SNPs)
+[1] 200  21
+> bmassOutput2$GWASlogBFMinThreshold
+[1] 3.577093
+> bmassOutput2$ZScoresCorMatrix
+              Height_ZScore  BMI_ZScore
+Height_ZScore    1.00000000 -0.04949805
+BMI_ZScore      -0.04949805  1.00000000
 ~~~
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6634,6 +8031,24 @@ zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1
 zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.annot.vs1.SignCrrct.vs1.RAF.txt.gz | perl -lane 'if ($F[3] > .5) { $F[3] = 1 - $F[3]; $F[13] = $F[13] * -1; $F[14] = $F[14] * -1; $F[15] = $F[15] * -1; $F[16] = $F[16] * -1; } print join("\t", @F);' | sed 's/raf/maf/g' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/ICBP2011.dtlesssignif.vs1.annot.vs1.SignCrrct.vs1.MAF.txt.gz
 
 cp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/GLC.MTedits.ForICBP2011.vs1.R /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs1/GLC.MTedits.ForICBP2011.vs1.SignCrrct.vs1.R
+
+
+
+
+
+
+#20161227
+#Vs2 -- Running things through version of bmass() code
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs2
+cd /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ICBP2011/Vs2
+
+
+
+
+
+
+
 
 
 
@@ -12121,7 +13536,10 @@ join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Ta
 #20161007
 cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.MarkerChrBP.txt | awk '{ print $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.txt
 cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.txt | grep -v NA > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt
-
+#20170112
+#NA SNP rs9411489 manually replaced/given proper information from https://www.snpedia.com/index.php/Rs9411489, 9 133279427 (note `Merged into	rs635634`)
+cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.MarkerChrBP.txt <(echo "rs9411489 9 133279427") | grep -v NA > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.MarkerChrBP.noNA.NArplcd.txt
+cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt <(echo "9 133279427") > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.txt
 
 
 ##GlobalLipids2013
@@ -12755,6 +14173,8 @@ cat /mnt/lustre/home/mturchin20/Data/HaemgenRBC2012/HaemgenRBC2012.Table1.txt | 
 #
 ###########################
 
+###First section below are follow-up work grouped by analyses (vs. grouped by datasets as in the second-half section)
+
 ##MAF, Gene Proximity SNP matching framework/code setup
 ##20161226
 
@@ -12775,7 +14195,974 @@ for a given entry snp build the array of +/- 5% MAF entries (taken from within p
 
 cp -p /mnt/lustre/home/mturchin20/Scripts/Python/2fileTemplate.vs1.py /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataAnalysis.MatchSNPsBy.MAF_GeneProx.vs1.py 
 
+#Chr, BP, GWASannot, MAF, 20kb within gene or not
+#Remove GWASannot == 1, but keep == 2?
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | perl -lane 'print $F[1], "\t", $F[2], "\t", $F[2], "\t", uc($F[4]), "\t", uc($F[5]);' | grep -v BP > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnovarFormat 
 
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.ChrBPChrBP.txt
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+#20170105
+#File /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt was generated by going to https://genome.ucsc.edu/cgi-bin/hgTables, selecting assembly Feb. 2009 (GRCh37/hg19), group Genes and Gene Predictions, track UCSC Genes, table knownGene, output format selected fields from primary and related tables, and selecting all of hg19.knownGene except for proteinID and alignID and kgID & geneSymbol from hg19.kgXref
+#I don't see any obvious differences between the list of genes included in 20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt and those missing from UCSC_hg19_GeneInformation_wSymbols.txt, though there are clearly differences. Also have to do a bit of finageling since don't have an old, 'NoProtAlignIDs' version of the UCSC_hg19_GeneInformation_wSymbols.txt file (which is form 2013)
+
+rm /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.txt; for i in `cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); print join("\t", @F[0..11]);' | perl -lane 'print $F[$#F];' | sort | uniq | grep -v knownGene`; do cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | grep [^-a-zA-Z0-9]$i$ | perl -lane 'if ($. == 1) { $txStart = $F[3]; $txEnd = $F[4]; } else { if ($F[3] < $txStart) { $txStart = $F[3]; } if ($F[4] > $txEnd) { $txEnd = $F[4]; } } if (eof()) { print $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $txStart, "\t", $txEnd; }' | sed 's/chr//g' >> /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.txt; done
+
+R -q -e "Data1 <- read.table(\"/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.ChrBPChrBP.txt\", header=T); Data2 <- read.table(\"/mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.txt\", header=F); \
+#Data1[,3] <- as.numeric(as.character(Data1[,3])); \
+#Data2[,4] <- as.numeric(as.character(Data2[,4])); \
+#Data2[,5] <- as.numeric(as.character(Data2[,5])); \
+Data1 <- cbind(Data1, apply(Data1, 1, function(x) { NumOverlap <- nrow(Data2[x[,2] == Data2[,2] & x[,3] >= Data2[,4]+20000 & x[,3] <= Data2[,5]+20000,]); return(NumOverlap);})); \
+print(head(Data1));"
+
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/fetchChromSizes
+mkdir /mnt/lustre/home/mturchin20/Software/fetchChromSizes
+mv fetchChromSizes /mnt/lustre/home/mturchin20/Software/fetchChromSizes/.
+bash /mnt/lustre/home/mturchin20/Software/fetchChromSizes/fetchChromSizes hg19 > /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg19.chrom.sizes
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.ChrBPChrBP.txt | grep -v ChrBP | awk '{ print $2 "\t" $3 "\t" $3 }' | sort -k 1,1 -k 2,2 | awk '{ print "chr" $0 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed
+cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.txt | awk '{ print $2 "\t" $4 "\t" $5 }' | sort -k 1,1 -k 2,2 | awk '{ print "chr" $0 }' > /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.bed
+cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.txt | awk '{ print $2 "\t" $4 "\t" $5 "\t" $1 }' | sort -k 1,1 -k 2,2 | awk '{ print "chr" $0 }' > /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.wSymbol.bed
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg19.chrom.sizes -b 20000 > /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.bed
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.wSymbol.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg19.chrom.sizes -b 20000 > /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.wSymbol.bed
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.wSymbol.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg19.chrom.sizes -b 250000 > /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.250kbPadding.wSymbol.bed
+##cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.bed | awk '{ print $1 "\t" $2 - 20000 "\t" $3 + 20000 }' > /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -c -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -c -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.wSymbol.bed | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.wSymbol.bed | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.txt.gz
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.250kbPadding.wSymbol.bed | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.txt.gz
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -c -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.wSymbol.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -c -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.wSymbol.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -c -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.250kbPadding.wSymbol.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt
+
+#20170106
+#Found some duplicate entries in the original 2010 files due to use of HapMap references to get Chr & BP information per rsID# -- edited and dealt with this in the GlobalLipids2010 part of the code
+
+#Code here -- if first line, create variables. if not first line, check if last line. If last line, check whether coords same -- if same, add last line then print, if not same, print, then print last line. If not last line, check whether coords same -- if same, add, if not same, print, then recreate variables
+```
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 | 
+perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } 
+else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} } 
+else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz
+```
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 | perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} } else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 | perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} } else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz
+zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 | perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} } else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz
+
+join <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+join <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+join <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+
+#join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | join - <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | perl -lane 'my $prox1 = 0; my $prox2 = 0; if ($F[4] > 0) { $prox1 = 1; } if ($F[6] > 0) { $prox2 = 1; } print $F[0], "\t", $F[1], "\t", $F[2], "\t", $F[3], "\t", $prox1, "\t", $F[4], "\t", $prox2, "\t", $F[6]; ' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.vs1.txt.gz
+join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | join - <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | join - <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | perl -lane 'my $prox1 = 0; my $prox2 = 0; my $prox3 = 0; if ($F[4] > 0) { $prox1 = 1; } if ($F[6] > 0) { $prox2 = 1; } if ($F[8] > 0) { $prox3 = 1; } print $F[0], "\t", $F[1], "\t", $F[2], "\t", $F[3], "\t", $prox1, "\t", $F[4], "\t", $prox2, "\t", $F[6], "\t", $prox3, "\t", $F[8]; ' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.250kbPad.vs1.txt.gz
+
+cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.txt | awk '{ print "chr"$1 "\t" $2 "\t" $2 }' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bed
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg19.chrom.sizes -b 20000 > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.20kbPadding.bed
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg19.chrom.sizes -b 250000 > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.250kbPadding.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wb -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.wSymbol.bed | gzip > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wb -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.wSymbol.bed | gzip > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.txt.gz
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wb -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.250kbPadding.wSymbol.bed | gzip > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.txt.gz
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -c -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.wSymbol.bed > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -c -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.wSymbol.bed > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -c -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.250kbPadding.wSymbol.bed > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt
+
+zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 | perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} } else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | gzip > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz
+zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 | perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} } else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | gzip > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz
+zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 | perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} } else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | gzip > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz
+
+join <(cat <(zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+join <(cat <(zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+join <(cat <(zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+
+
+
+
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.txt
+or
+/mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.txt
+
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.vs1.GWASSNPs.txt.gz
+
+
+dfg
+
+
+join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt | awk '{ print $1 "_" $2 }' | sort) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.vs1.txt.gz | sort -k 1,1) | wc
+
+join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt | awk '{ print $1 "_" $2 }' | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.No0Dir.tbl.gz | awk '{ print $1 "_" $2 "\t" $3 }' | perl -lane 'if ($F[1] > .5) { $F[1] = 1 - $F[5]; } print join("\t", @F);' | sort -k 1,1) 
+
+
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataAnalysis.MatchSNPsBy.MAF_GeneProx.vs1.py --file1  
+--file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.vs1.txt.gz
+
+~~~
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $#F;' | sort | uniq -c
+  82930 11
+     11 12
+      9 13
+      6 14
+      4 16
+      1 17
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane 'if ($#F == 12) { print join("\t", @F);}' | head -n 10
+uc002stj.1      chr2    -       89156708        89165653        89156708        89156708        3       89156708,89161397,89165130,     89157196,89161595,89165653,     uc002stj.1      Ig      kappa
+uc021zil.1      chr6    +       168265223       168265426       168265223       168265223       1       168265223,      168265426,      uc021zil.1      MLL/AF6 fusion
+uc003tfw.3      chr7    -       38288826        38295990        38288826        38288826        2       38288826,38295937,      38289173,38295990,      uc003tfw.3      TCR     V3-JP2-Cgamma2
+uc022bqu.2      chrM    +       10059   10404   10059   10059   1       10059,  10404,  uc022bqu.2      AD      1
+uc022bqw.1      chrM    +       14856   15888   14856   14856   1       14856,  15888,  uc022bqw.1      cytochrome      b
+uc022bqx.1      chrM    -       15959   16024   15959   15959   1       15959,  16024,  uc022bqx.1      tRNA    Pro
+uc001rmp.1      chr12   +       41289751        41289889        41289751        41289751        1       41289751,       41289889,       uc001rmp.1      contactin       1
+uc009zme.2      chr12   +       52473479        52502034        52473479        52473479        3       52473479,52477677,52501162,     52473965,52477752,52502034,     uc009zme.2      bpl     41-16
+uc010axp.1      chr14   -       106064027       106064317       106064027       106064027       2       106064027,106064195,    106064111,106064317,    uc010axp.1      epsilon IgE
+uc001ysd.1      chr14   -       106185758       106186048       106185758       106185758       2       106185758,106185926,    106185842,106186048,    uc001ysd.1      epsilon IgE
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); if ($#F > 11) { print join("\t", @F[0..11]); }' | wc
+     31     372    3812
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); if ($#F > 11) { print join("\t", @F[0..11]); }' | head -n 10
+uc002stj.1      chr2    -       89156708        89165653        89156708        89156708        3       89156708,89161397,89165130,     89157196,89161595,89165653,     uc002stj.1      Ig_kappa
+uc021zil.1      chr6    +       168265223       168265426       168265223       168265223       1       168265223,      168265426,      uc021zil.1      MLL/AF6_fusion
+uc003tfw.3      chr7    -       38288826        38295990        38288826        38288826        2       38288826,38295937,      38289173,38295990,      uc003tfw.3      TCR_V3-JP2-Cgamma2
+uc003vxl.2      chr7    +       142028196       142028611       142028196       142028196       2       142028196,142028315,    142028226,142028611,    uc003vxl.2      T-cell_receptor_IGR_b_14_Vbeta_13
+uc022ani.1      chr7    -       142161932       142162280       142161932       142161932       1       142161932,      142162280,      uc022ani.1      T-cell_receptor_IGR_b_16_Vbeta
+uc022bqu.2      chrM    +       10059   10404   10059   10059   1       10059,  10404,  uc022bqu.2      AD_1
+uc022bqw.1      chrM    +       14856   15888   14856   14856   1       14856,  15888,  uc022bqw.1      cytochrome_b
+uc022bqx.1      chrM    -       15959   16024   15959   15959   1       15959,  16024,  uc022bqx.1      tRNA_Pro
+uc011nad.1      chrX    -       155255322       155257848       155255322       155255322       3       155255322,155257000,155257494,  155256502,155257109,155257848,  uc011nad.1      DDX11L_family_member
+uc011ncc.1      chrY    -       59358328        59360854        59358328        59358328        3       59358328,59360006,59360500,     59359508,59360115,59360854,     uc011ncc.1      DDX11L_family_member
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); print join("\t", @F[0..11]);' | perl -lane 'print $F[$#F];' | sort | uniq | grep uc
+RNaseP_nuc
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); print join("\t", @F[0..11]);' | perl -lane 'print $F[$#F];' | sort | uniq | wc     
+  28518   28518  210135
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); print join("\t", @F[0..11]);' | perl -lane 'print $F[$#F];' | sort | uniq) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | perl -lane 'print $F[$#F];' | sort | uniq) | head -n 10
+A1BG
+A1BG-AS1
+A2M
+A2M-AS1
+A2ML1
+A2MP1
+A4GALT
+AA06
+AAAS
+AACS
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | grep AA06
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | grep AAAS
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); print join("\t", @F[0..11]);' | perl -lane 'print $F[$#F];' | sort | uniq) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | perl -lane 'print $F[$#F];' | sort | uniq) | wc        
+  12655   12655   94260
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$for i in `cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); print join("\t", @F[0..11]);' | perl -lane 'print $F[$#F];' | sort | uniq | head -n 10`; do cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | grep $i | perl -lane 'if ($. == 1) { $txStart = $F[3]; $txEnd = $F[4]; } else { if ($F[3] < $txStart) { $txStart = $F[3]; } if ($F[4] > $txEnd) { $txEnd = $F[4]; } } if (eof()) { print $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $txStart, "\t", $txEnd; }'; done
+5_8S_rRNA       chr9    -       111754688       111754849
+5S_rRNA chr22   +       327954  242524490
+6M1-18  chr6_ssto_hap7  -       698397  29424848
+7M1-2   chr7    +       143656156       143657063
+7SK chr22       -       1323794 237284409
+A1BG-AS1        chr19   +       58858171        58874214
+A1BG-AS1        chr19   +       58859116        58866549
+A1CF chr10      -       52559168        52645435
+A2MP1   chr12   -       8975149 9386803
+A2M-AS1 chr12   +       9217772 9220651
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$for i in `cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); print join("\t", @F[0..11]);' | perl -lane 'print $F[$#F];' | sort | uniq | head -n 10`; do cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | grep -w $i | perl -lane 'if ($. == 1) { $txStart = $F[3]; $txEnd = $F[4]; } else { if ($F[3] < $txStart) { $txStart = $F[3]; } if ($F[4] > $txEnd) { $txEnd = $F[4]; } } if (eof()) { print $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $txStart, "\t", $txEnd; }'; done
+5_8S_rRNA       chr9    -       111754688       111754849
+5S_rRNA chr22   +       327954  242524490
+6M1-18  chr6_ssto_hap7  -       698397  29424848
+7M1-2   chr7    +       143656156       143657063
+7SK chr22       -       1323794 237284409
+A1BG-AS1        chr19   +       58858171        58874214
+A1BG-AS1        chr19   +       58859116        58866549
+A1CF chr10      -       52559168        52645435
+A2M chr12       -       9217772 9268558
+A2M-AS1 chr12   +       9217772 9220651
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$for i in `cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); print join("\t", @F[0..11]);' | perl -lane 'print $F[$#F];' | sort | uniq | head -n 10`; do cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | grep [^-a-zA-Z0-9]$i[^-a-zA-Z0-9] | perl -lane 'if ($. == 1) { $txStart = $F[3]; $txEnd = $F[4]; } else { if ($F[3] < $txStart) { $txStart = $F[3]; } if ($F[4] > $txEnd) { $txEnd = $F[4]; } } if (eof()) { print $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $txStart, "\t", $txEnd; }'; done
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | grep [^-_a-zA-Z0-9]A1BG$
+uc002qsd.4      chr19   -       58858171        58864865        58858387        58864803        8       58858171,58858718,58861735,58862756,58863648,58864293,58864657,58864769,        58858395,58859006,58862017,58863053,58863921,58864563,58864693,58864865,        uc002qsd.4      A1BG
+uc002qsf.2      chr19   -       58859831        58874214        58859831        58859831        11      58859831,58860933,58862756,58863648,58864293,58864657,58868950,58869317,58869854,58870562,58874042,     58860494,58862017,58863053,58863921,58864563,58864693,58869015,58869652,58869951,58870689,58874214,     uc002qsf.2      A1BG
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$for i in `cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); print join("\t", @F[0..11]);' | perl -lane 'print $F[$#F];' | sort | uniq | head -n 10`; do cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | grep [^-a-zA-Z0-9]$i$ | perl -lane 'if ($. == 1) { $txStart = $F[3]; $txEnd = $F[4]; } else { if ($F[3] < $txStart) { $txStart = $F[3]; } if ($F[4] > $txEnd) { $txEnd = $F[4]; } } if (eof()) { print $F[$#F], "\t", $F[1], "\t", $F[2], "\t", $txStart, "\t", $txEnd; }'; done
+5_8S_rRNA       chr9    -       111754688       111754849
+5S_rRNA chr22   +       327954  242524490
+6M1-18  chr6_ssto_hap7  -       698397  29424848
+7M1-2   chr7    +       143656156       143657063
+7SK chr22       -       1323794 237284409
+A1BG chr19      -       58858171        58874214
+A1BG-AS1        chr19   +       58859116        58866549
+A1CF chr10      -       52559168        52645435
+A2M chr12       -       9220303 9268558
+A2M-AS1 chr12   +       9217772 9220651
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | grep A1BG$
+uc002qsd.4      chr19   -       58858171        58864865        58858387        58864803        8       58858171,58858718,58861735,58862756,58863648,58864293,58864657,58864769,        58858395,58859006,58862017,58863053,58863921,58864563,58864693,58864865,        uc002qsd.4      A1BG
+uc002qsf.2      chr19   -       58859831        58874214        58859831        58859831        11      58859831,58860933,58862756,58863648,58864293,58864657,58868950,58869317,58869854,58870562,58874042,     58860494,58862017,58863053,58863921,58864563,58864693,58869015,58869652,58869951,58870689,58874214,     uc002qsf.2 A1BG
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | grep -v Known | perl -lane 'for (my $i = $#F-1; $i > 0; $i--) { if ($F[$i] =~ m/uc/) { $F[$i+1] = join("_", @F[$i+1..$#F]); print join("\t", @F[0..$i+1]); last;} }' | perl -lane 'print $#F;' | sort | uniq -c
+  11409 12
+  33585 13
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | perl -lane 'print $#F;' | sort | uniq -c
+  11397 12
+  33592 13
+      3 14
+      2 17
+      1 18
+      1 8
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | perl -lane 'if ($#F == 18) { print join("\t", @F); }'
+uc003vxl.2      chr7    +       142028196       142028611       142028196       142028196       2       142028196,142028315,    142028226,142028611,    uc003vxl.2      uc003vxl.2      T-cell  receptor        IGR     b       14      Vbeta   13
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | grep -v Known | perl -lane 'for (my $i = $#F-1; $i > 0; $i--) { if ($F[$i] =~ m/uc/) { $F[$i+1] = join("_", @F[$i+1..$#F]); print join("\t", @F[0..$i+1]); last;} }' | grep Vbeta
+uc003vxl.2      chr7    +       142028196       142028611       142028196       142028196       2       142028196,142028315,    142028226,142028611,    uc003vxl.2      uc003vxl.2      T-cell_receptor_IGR_b_14_Vbeta_13
+uc022ani.1      chr7    -       142161932       142162280       142161932       142161932       1       142161932,      142162280,      uc022ani.1      uc022ani.1      T-cell_receptor_IGR_b_16_Vbeta
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); print join("\t", @F[0..11]);' | perl -lane 'print $F[$#F];' | sort | uniq) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | grep -v Known | perl -lane 'for (my $i = $#F-1; $i > 0; $i--) { if ($F[$i] =~ m/uc/) { $F[$i+1] = join("_", @F[$i+1..$#F]); print join("\t", @F[0..$i+1]); last;} }' | perl -lane 'print $F[$#F];' | sort | uniq ) | wc
+  12645   12645   94065
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[11] = join("_", @F[11..$#F]); print join("\t", @F[0..11]);' | perl -lane 'print $F[$#F];' | sort | uniq) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | grep -v Known | perl -lane 'for (my $i = $#F-1; $i > 0; $i--) { if ($F[$i] =~ m/uc/) { $F[$i+1] = join("_", @F[$i+1..$#F]); print join("\t", @F[0..$i+1]); last;} }' | perl -lane 'print $F[$#F];' | sort | uniq ) | head -n 10
+A1BG
+A1BG-AS1
+A2M
+A2M-AS1
+A2ML1
+A2MP1
+A4GALT
+AA06
+AAAS
+AACS
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | grep AAAS
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | grep AACS
+uc011dgk.2      chr5    -       178191863       178203277       178191863       178191863       7       178191863,178194130,178195470,178199429,178201498,178202267,178203142,  178193176,178194336,178195665,178199632,178201549,178202337,178203277,          uc011dgk.2      uc011dgk.2      AACSP1
+uc011dgl.2      chr5    -       178191863       178245436       178191863       178191863       11      178191863,178194130,178195470,178199429,178201498,178202267,178203142,178224531,178238174,178241898,178245094,  178193176,178194336,178195668,178199632,178201549,178202337,178203277,178224612,178238287,178242009,178245436,             uc011dgl.2      uc011dgl.2      AACSP1
+uc003mjk.3      chr5    -       178191863       178245436       178191863       178191863       11      178191863,178194130,178195470,178199429,178201498,178202267,178203142,178224531,178238174,178241898,178245094,  178193176,178194336,178195665,178199632,178201549,178202337,178203277,178224612,178238287,178242009,178245436,             uc003mjk.3      uc003mjk.3      AACSP1
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Data/UCSC/UCSC_hg19_GeneInformation_wSymbols.txt | grep -w AACS
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnovarFormat.genome_summary.csv | perl -F, -lane 'my $flag1 = 0; if ($F[0] !~ m/(intergenic|ncRNA)/) { $flag1 = 1; } elsif ($F[0] =~ m/intergenic/) { if ($F[2] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } if ($F[3] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } } else { $PH = 1; } print $F[$#F-4], "\t", $F[$#F-3], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[0], "\t", $F[1], "\t", $F[2], "\t", $flag1;' | perl -lane 'print $#F;' | sort | uniq -c
+1117066 6
+1456967 7
+  26715 8
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnovarFormat.genome_summary.csv | perl -F, -lane 'my $flag1 = 0; if ($F[0] !~ m/(intergenic|ncRNA)/) { $flag1 = 1; } elsif ($F[0] =~ m/intergenic/) { if ($F[2] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } if ($F[3] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } } else { $PH = 1; } print $F[$#F-4], "\t", $F[$#F-3], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[0], "\t", $F[1], "\t", $F[2], "\t", $flag1;' | perl -lane 'if ($#F == 8) { print join("\t", @F); }' | head -n 10
+10      100020758       C       T       "exonic"        "LOXL4" "nonsynonymous  SNV"    1
+10      100146980       A       T       "exonic"        "PYROXD2"       "nonsynonymous  SNV"    1
+10      100150389       C       T       "exonic"        "PYROXD2"       "nonsynonymous  SNV"    1
+10      100152753       A       G       "exonic"        "PYROXD2"       "synonymous     SNV"    1
+10      100154979       T       C       "exonic"        "PYROXD2"       "synonymous     SNV"    1
+10      100177443       G       A       "exonic"        "HPS1"  "nonsynonymous  SNV"    1
+10      100183516       A       C       "exonic"        "HPS1"  "nonsynonymous  SNV"    1
+10      100189612       C       T       "exonic"        "HPS1"  "nonsynonymous  SNV"    1
+10      100219496       G       C       "exonic"        "HPSE2" "synonymous     SNV"    1
+10      100374669       T       C       "exonic"        "HPSE2" "nonsynonymous  SNV"    1
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnovarFormat.genome_summary.csv | perl -F, -lane 'my $flag1 = 0; if ($F[0] !~ m/(intergenic|ncRNA)/) { $flag1 = 1; } elsif ($F[0] =~ m/intergenic/) { if ($F[2] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } if ($F[3] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } } else { $PH = 1; } print $F[$#F-4], "\t", $F[$#F-3], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[0], "\t", $F[1], "\t", $F[2], "\t", $flag1;' | perl -lane 'if ($#F == 7) { print join("\t", @F); }' | head -n 10
+Start   End     Obs     Otherinfo       Func    Gene    ExonicFunc      1
+10      10000135        G       A       "intergenic"    "LINC00709(dist=671116) SFTA1P(dist=826267)"    0
+10      10000265        T       C       "intergenic"    "LINC00709(dist=671246) SFTA1P(dist=826137)"    0
+10      10000459        T       G       "intergenic"    "LINC00709(dist=671440) SFTA1P(dist=825943)"    0
+10      100006186       C       G       "intergenic"    "R3HCC1L(dist=1532)     LOXL4(dist=1257)"       1
+10      100006303       T       A       "intergenic"    "R3HCC1L(dist=1649)     LOXL4(dist=1140)"       1
+10      100006329       T       C       "intergenic"    "R3HCC1L(dist=1675)     LOXL4(dist=1114)"       1
+10      10000897        T       C       "intergenic"    "LINC00709(dist=671878) SFTA1P(dist=825505)"    0
+10      10001617        A       G       "intergenic"    "LINC00709(dist=672598) SFTA1P(dist=824785)"    0
+10      10001673        G       T       "intergenic"    "LINC00709(dist=672654) SFTA1P(dist=824729)"    0
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnovarFormat.genome_summary.csv | perl -F, -lane 'my $flag1 = 0; if ($F[0] !~ m/(intergenic|ncRNA)/) { $flag1 = 1; } elsif ($F[0] =~ m/intergenic/) { if ($F[2] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } if ($F[3] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } } else { $PH = 1; } print $F[$#F-4], "\t", $F[$#F-3], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[0], "\t", $F[1], "\t", $F[2], "\t", $flag1;' | perl -lane 'if ($#F == 6) { print join("\t", @F); }' | head -n 10
+10      100002729       G       A       "intronic"      "R3HCC1L"       1
+10      100002880       G       A       "intronic"      "R3HCC1L"       1
+10      100003553       T       C       "intronic"      "R3HCC1L"       1
+10      100003805       T       C       "intronic"      "R3HCC1L"       1
+10      100003967       A       T       "UTR3"  "R3HCC1L"       1
+10      100005553       C       G       "downstream"    "R3HCC1L"       1
+10      100005593       G       T       "downstream"    "R3HCC1L"       1
+10      100007443       G       T       "UTR3"  "LOXL4" 1
+10      100008579       G       T       "UTR3"  "LOXL4" 1
+10      100009029       T       G       "intronic"      "LOXL4" 1
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnovarFormat.genome_summary.csv | perl -F, -lane 'my $flag1 = 0; if ($F[0] !~ m/(intergenic|ncRNA)/) { $flag1 = 1; } elsif ($F[0] =~ m/intergenic/) { if ($F[2] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } if ($F[3] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } } else { $PH = 1; } print $F[$#F-4], "\t", $F[$#F-3], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[0], "\t", $F[1], "\t", $F[2], "\t", $flag1;' | grep dist | perl -lane 'my $val1 = join("_", @F); if ($val1 =~ m/.*dist=.*dist=(\d+).*/) { if (($1 < 20000) && ($1 > 15000)) { print join("\t", @F); } }' | head -n 10
+10      100123436       G       A       "intergenic"    "LOXL4(dist=95429)      PYROXD2(dist=19886)"    1
+10      100123921       C       A       "intergenic"    "LOXL4(dist=95914)      PYROXD2(dist=19401)"    1
+10      100124026       C       T       "intergenic"    "LOXL4(dist=96019)      PYROXD2(dist=19296)"    1
+10      100125512       T       C       "intergenic"    "LOXL4(dist=97505)      PYROXD2(dist=17810)"    1
+10      100127818       T       C       "intergenic"    "LOXL4(dist=99811)      PYROXD2(dist=15504)"    1
+10      101069132       G       A       "intergenic"    "HPSE2(dist=73500)      CNNM1(dist=19724)"      1
+10      101069378       A       G       "intergenic"    "HPSE2(dist=73746)      CNNM1(dist=19478)"      1
+10      101069484       T       A       "intergenic"    "HPSE2(dist=73852)      CNNM1(dist=19372)"      1
+10      101069486       A       G       "intergenic"    "HPSE2(dist=73854)      CNNM1(dist=19370)"      1
+10      101069780       T       C       "intergenic"    "HPSE2(dist=74148)      CNNM1(dist=19076)"      1
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnovarFormat.genome_summary.csv | perl -F, -lane 'my $flag1 = 0; if ($F[0] !~ m/(intergenic|ncRNA)/) { $flag1 = 1; } elsif ($F[0] =~ m/intergenic/) { if ($F[2] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } if ($F[3] =~ m/dist=(\d+)/) { if ($1 <= 20000) { $flag1 = 1; } } } else { $PH = 1; } print $F[$#F-4], "\t", $F[$#F-3], "\t", $F[$#F-1], "\t", $F[$#F], "\t", $F[0], "\t", $F[1], "\t", $F[2], "\t", $flag1;' | grep dist | perl -lane 'my $val1 = join("_", @F); if ($val1 =~ m/.*dist=(\d+).*dist=.*/) { if (($1 < 20000) && ($1 > 15000)) { print join("\t", @F); } }' | head -n 10
+10      100045634       C       T       "intergenic"    "LOXL4(dist=17627)      PYROXD2(dist=97688)"    0
+10      100046035       T       C       "intergenic"    "LOXL4(dist=18028)      PYROXD2(dist=97287)"    0
+10      100047451       G       A       "intergenic"    "LOXL4(dist=19444)      PYROXD2(dist=95871)"    0
+10      100047697       T       C       "intergenic"    "LOXL4(dist=19690)      PYROXD2(dist=95625)"    0
+10      100047807       C       T       "intergenic"    "LOXL4(dist=19800)      PYROXD2(dist=95515)"    0
+10      101205892       A       T       "intergenic"    "GOT1(dist=15362)       NKX2-3(dist=86798)"     0
+10      101208688       C       T       "intergenic"    "GOT1(dist=18158)       NKX2-3(dist=84002)"     0
+10      101208889       C       T       "intergenic"    "GOT1(dist=18359)       NKX2-3(dist=83801)"     0
+10      101209202       C       T       "intergenic"    "GOT1(dist=18672)       NKX2-3(dist=83488)"     0
+10      101210050       C       T       "intergenic"    "GOT1(dist=19520)       NKX2-3(dist=82640)"     0
+.
+.
+.
+> system.time(Data1b <- cbind(head(Data1,n=1000), apply(head(Data1,n=1000), 1, function(x) { NumOverlap <- nrow(Data2[x[2] == Data2[,2] & x[3] >= Data2[,4]-20000 & x[3] <= Data2[,5]+20000,]); return(NumOverlap);})))
+   user  system elapsed
+100.034   0.000 100.041
+> system.time(Data1b <- cbind(head(Data1,n=10000), apply(head(Data1,n=10000), 1, function(x) { NumOverlap <- nrow(Data2[x[2] == Data2[,2] & x[3] >= Data2[,4]-20000 & x[3] <= Data2[,5]+20000,]); return(NumOverlap);})))
+
+
+Timing stopped at: 585.509 0 585.551
+> Data1b <- cbind(head(Data1,n=10000), apply(head(Data1,n=10000), 1, function(x) { NumOverlap <- nrow(Data2[x[2] == Data2[,2] & x[3] >= Data2[,4]-20000 & x[3] <= Data2[,5]+20000,]); return(NumOverlap);}))
+> head(Data1b)
+         ChrBP Chr        BP apply(head(Data1, n = 10000), 1, function(x) {
+1  10_10000135  10  10000135                                              0
+2  10_10000265  10  10000265                                              0
+3 10_100002729  10 100002729                                              0
+4 10_100002880  10 100002880                                              0
+5 10_100003553  10 100003553                                              0
+6 10_100003805  10 100003805                                              0
+.
+.
+.
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.bed | awk '{ print $1 }' | sort | uniq -c
+   2644 1
+   1136 10
+   1777 11
+   1347 12
+    540 13
+    998 14
+   1407 15
+   1121 16
+   1603 17
+     26 17_ctg5_hap1
+      1 17_gl000204_random
+      1 17_gl000205_random
+    441 18
+   1853 19
+     10 19_gl000209_random
+      3 1_gl000191_random
+      7 1_gl000192_random
+   1703 2
+    747 20
+    352 21
+    726 22
+   1434 3
+   1021 4
+      5 4_ctg9_hap1
+      1 4_gl000193_random
+      3 4_gl000194_random
+   1192 5
+   1304 6
+      1 6_apd_hap1
+      7 6_cox_hap2
+      2 6_dbb_hap3
+     25 6_mann_hap4
+      4 6_mcf_hap5
+     20 6_qbl_hap6
+    182 6_ssto_hap7
+   1421 7
+      3 7_gl000195_random
+    970 8
+   1185 9
+      1 9_gl000201_random
+     14 M
+      2 Un_gl000211
+      2 Un_gl000212
+      3 Un_gl000213
+      1 Un_gl000214
+      2 Un_gl000218
+      3 Un_gl000219
+      6 Un_gl000220
+      2 Un_gl000221
+      4 Un_gl000222
+      7 Un_gl000223
+      1 Un_gl000227
+      7 Un_gl000228
+      1 Un_gl000229
+      1 Un_gl000237
+      1 Un_gl000241
+      1 Un_gl000243
+   1090 X
+    117 Y
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.bed | awk '{ print $1 }' | sort | uniq -c
+   2644 chr1
+   1136 chr10
+   1777 chr11
+   1347 chr12
+    540 chr13
+    998 chr14
+   1407 chr15
+   1121 chr16
+   1603 chr17
+     26 chr17_ctg5_hap1
+      1 chr17_gl000204_random
+      1 chr17_gl000205_random
+    441 chr18
+   1853 chr19
+     10 chr19_gl000209_random
+      3 chr1_gl000191_random
+      7 chr1_gl000192_random
+   1703 chr2
+    747 chr20
+    352 chr21
+    726 chr22
+   1434 chr3
+   1021 chr4
+      5 chr4_ctg9_hap1
+      1 chr4_gl000193_random
+      3 chr4_gl000194_random
+   1192 chr5
+   1304 chr6
+      1 chr6_apd_hap1
+      7 chr6_cox_hap2
+      2 chr6_dbb_hap3
+     25 chr6_mann_hap4
+      4 chr6_mcf_hap5
+     20 chr6_qbl_hap6
+    182 chr6_ssto_hap7
+   1421 chr7
+      3 chr7_gl000195_random
+    970 chr8
+   1185 chr9
+      1 chr9_gl000201_random
+     14 chrM
+      2 chrUn_gl000211
+      2 chrUn_gl000212
+      3 chrUn_gl000213
+      1 chrUn_gl000214
+      2 chrUn_gl000218
+      3 chrUn_gl000219
+      6 chrUn_gl000220
+      2 chrUn_gl000221
+      4 chrUn_gl000222
+      7 chrUn_gl000223
+      1 chrUn_gl000227
+      7 chrUn_gl000228
+      1 chrUn_gl000229
+      1 chrUn_gl000237
+      1 chrUn_gl000241
+      1 chrUn_gl000243
+   1090 chrX
+    117 chrY
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.bed | head -n 10                         
+chr1 10003485   10045556
+chr1 100111430  100160097
+chr1 100174258  100231349
+chr1 100178485  100178513
+chr1 100178485  100178513
+chr1 100315639  100389579
+chr1 100434000  100435404
+chr1 100435344  100492534
+chr1 100503788  100548929
+chr1 100549101  100598511
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.bed | head -n 10
+chr1 9983485    10065556
+chr1 100091430  100180097
+chr1 100154258  100251349
+chr1 100158485  100198513
+chr1 100158485  100198513
+chr1 100295639  100409579
+chr1 100414000  100455404
+chr1 100415344  100512534
+chr1 100483788  100568929
+chr1 100529101  100618511
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.bed | head -n 20000 | tail -n 10
+chr4 118004709  118006736
+chr4 118954772  119179789
+chr4 1189570    1202750
+chr4 119199916  119200978
+chr4 119200344  128433548
+chr4 119201192  119273922
+chr4 1193485    1195204
+chr4 119412048  243352032
+chr4 119434236  119435886
+chr4 119437494  119475359
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.bed | head -n 20000 | tail -n 10
+chr4 117984709  118026736
+chr4 118934772  119199789
+chr4 1169570    1222750
+chr4 119179916  119220978
+chr4 119180344  128453548
+chr4 119181192  119293922
+chr4 1173485    1215204
+chr4 119392048  191154276
+chr4 119414236  119455886
+chr4 119417494  119495359
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.bed | tail -n 10
+chrY 9167488    9172441
+chrY 9175072    9347389
+chrY 9175072    9368285
+chrY 9175118    9218486
+chrY 9187188    9362885
+chrY 9195451    9198202
+chrY 9207465    9322271
+chrY 9225730    9233425
+chrY 9448329    9452762
+chrY 9638761    9650854
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.bed | tail -n 10
+chrY 9147488    9192441
+chrY 9155072    9367389
+chrY 9155072    9388285
+chrY 9155118    9238486
+chrY 9167188    9382885
+chrY 9175451    9218202
+chrY 9187465    9342271
+chrY 9205730    9253425
+chrY 9428329    9472762
+chrY 9618761    9670854
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt | awk '{ print $4 }' | sort | uniq -c | head -n 50
+ 210611 0
+ 421840 1
+  69700 10
+      5 101
+      8 102
+      6 103
+      5 104
+      3 105
+      4 106
+      3 107
+      4 108
+      5 109
+  61554 11
+      9 110
+      1 111
+      3 112
+      1 113
+      1 114
+      1 118
+      1 119
+  41382 12
+      1 121
+      2 123
+      4 124
+      2 125
+      2 126
+      3 128
+      1 129
+  41742 13
+      2 130
+      2 131
+      1 132
+      1 134
+      2 135
+      1 137
+  41219 14
+      1 143
+  41052 15
+  31319 16
+  19402 17
+  10988 18
+   4412 19
+ 335202 2
+   2311 20
+   2034 21
+   6355 22
+   6261 23
+   3620 24
+   4869 25
+  10179 26
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $1 "\t" $2 "\t" $4 }' | sort -k 1,1) | wc
+3096191 21673337 135247332
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $1 "\t" $2 "\t" $4 }' | awk '{ print $1 }' | wc
+2600747 2600747 30283888
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $1 "\t" $2 "\t" $4 }' | awk '{ print $1 }' | sort | uniq | wc
+2596774 2596774 30237669
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $1 "\t" $2 "\t" $4 }' | awk '{ print $1 }' | sort | uniq -d | head -n 10
+10_107974310
+10_44190021
+1_151269919
+1_181792961
+1_181801167
+1_181822914
+1_243218867
+1_244679662
+13_104850499
+13_27851104
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | grep 10_107974310 | wc
+    128    2944   21440
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz | awk '{ print $1 "_" $2 }' | sort | uniq | wc
+2627727 2627727 30597828
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz | awk '{ print $1 "_" $2 }' | sort | wc       
+2692298 2692298 30985457
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz | awk '{ print $1 "_" $2 }' | sort | uniq -d | head -n 10
+10_107974310
+10_44190021
+1_151269919
+1_181792961
+1_181801167
+1_181822914
+1_243218867
+1_244679662
+13_104850499
+13_27851104
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.tbl.gz | head -n 10
+MarkerName      Allele1 Allele2 Weight  GC.Zscore       GC.Pvalue       Overall Direction       Effect  StdErr  ChrBPAFInfo
+rs10 a  c       85853   -0.096  0.9232  -       ---+-+++-+?+--??--++??+++       -0.0019 0.0147  chr7_92221824_A_0.033_C_0.967
+rs1000000       a       g       99900   -0.937  0.349   -       ---+-+---++-+---+++-++++-       -0.0056 0.0058  chr12_125456933_G_0.627_A_0.373
+rs10000010      t       c       99900   0.185   0.8532  +       -+++-+-+--+++-++++--+----       0.0013  0.0049  chr4_21227772_T_0.575_C_0.425
+rs10000012      c       g       99843   -0.752  0.4523  -       +-+-+-+--+----+--+++++-++       -0.0065 0.0071  chr4_1347325_C_0.808_G_0.192
+rs10000013      a       c       99900   0.642   0.5209  +       +++-++--+--++--+---+-++--       3e-04   0.0058  chr4_36901464_C_0.167_A_0.833
+rs10000017      t       c       99900   2.043   0.04106 +       +-++++++---++++---++--+++       0.0105  0.0062  chr4_84997149_C_0.777_T_0.223
+rs1000002       t       c       99797   2.249   0.02453 +       -+-+---+-+-+++--++-+-+-++       0.0101  0.0049  chr3_185118462_C_0.475_T_0.525
+rs10000023      t       g       99900   -0.008  0.9935  -       -+-+--+--+++++--++------+       4e-04   0.005   chr4_95952929_G_0.408_T_0.592
+rs10000027      c       g       7807    -0.686  0.4925  -       ?????????????-???????????       -0.0141 0.0205  chr4_156533822_T_0_G_0.267
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.tbl.gz | grep 107974310
+rs35532567      t       c       7807    -0.735  0.4622  -       ?????????????-???????????       -0.0141 0.0191  chr10_107974310_C_0.308_T_0.692
+rs3861988       t       c       92001   0.118   0.9062  +       +++-++--+-+-++++++-+-+-++       -0.0022 0.0052  chr10_107974310_C_0.695_T_0.305
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz | awk '{ print $1 "_" $2 }' | sort | uniq -u | wc
+2627690 2627690 30597403
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz | awk '{ print $1 "_" $2 "\t" $0 }' | sort -k 1,1) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.No0Dir.tbl.gz | awk '{ print $1 "_" $2 }' | sort | uniq -u) | wc
+2627690 23649210 127286752
+#20170106
+#This is where I began to realize the duplication problem in the original GlobalLipids2010 files, and then dealt with it. Certain filenames remained the same afterwards, hence why different wc's for files with the same names below here.
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $1 "\t" $2 "\t" $4 }' | sort -k 1,1) | wc
+2593966 18157762 113672104
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | wc
+2593967 59661241 438572406
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | head -n 10
+ChrBP Chr BP MAF A1 HDL_A2 HDL_Direction HDL_pValue HDL_N HDL_ZScore LDL_Direction LDL_pValue LDL_N LDL_ZScore TG_Direction TG_pValue TG_N TG_ZScore TC_Direction TC_pValue TC_N TC_ZScore GWASannot
+10_10000135 10 10000135 0.449 g a + 0.411 99150 -0.822135118817414 - 0.9712 94704 0.0361032887447841 - 0.4344 95848 0.781684522266763 - 0.8399 99434 0.202021392729858 0
+10_10000265 10 10000265 0.436 t c + 0.3933 99150 0.853648097868868 + 0.9683 94704 0.039740516098603 - 0.4232 95848 -0.800881933637729 - 0.8803 99434 -0.15058892288133 0
+10_100002729 10 100002729 0.367 g a + 0.03387 99900 -2.12161597232425 - 0.03202 95454 2.14416085995566 - 0.04005 96598 2.05323284873217 - 0.1812 100184 1.33706935239798 0
+10_100002880 10 100002880 0.358 g a + 0.03461 99900 -2.11289214901574 - 0.06781 95454 1.82626735507002 - 0.05027 96598 1.95765933421239 - 0.2776 100184 1.08572652902347 0
+10_100003553 10 100003553 0.12 t c + 0.8488 99900 0.190649762933283 - 0.2675 95454 -1.1088381719739 - 0.1312 96598 -1.50938666045622 - 0.2265 100184 -1.20942398128564 0
+10_100003805 10 100003805 0.3 t c + 0.1194 99900 1.55729694674125 - 0.1734 95454 -1.3613598428411 - 0.4822 96598 -0.702768549495165 - 0.6764 100184 -0.417380658208539 0
+10_100003967 10 100003967 0.356 a t + 0.03739 99900 2.0814799219582 - 0.05586 95454 -1.91212627071685 - 0.05034 96598 -1.95706352623053 - 0.2426 100184 -1.16851274834855 0
+10_10000459 10 10000459 0.427 t g + 0.4015 99150 0.838945310119727 - 0.9956 94704 -0.00551461015479343 - 0.4362 95848 -0.778626099569515 - 0.8693 99434 -0.164547699082322 0
+10_100005553 10 100005553 0.144 c g + 0.1038 99900 1.62670390028542 + 0.4128 95454 0.818976186983752 - 0.549 96598 -0.599259276137027 + 0.3909 100184 0.857986351425547 0
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt | wc
+2593966 10375864 67617105
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $1 "\t" $2 "\t" $4 }' | sort -k 1,1) | head -n 10
+10_10000135 10 10000135 0.449 10 10000135 0
+10_10000265 10 10000265 0.436 10 10000265 0
+10_100002729 10 100002729 0.367 10 100002729 6
+10_100002880 10 100002880 0.358 10 100002880 6
+10_100003553 10 100003553 0.12 10 100003553 6
+10_100003805 10 100003805 0.3 10 100003805 6
+10_100003967 10 100003967 0.356 10 100003967 6
+10_10000459 10 10000459 0.427 10 10000459 0
+10_100005553 10 100005553 0.144 10 100005553 6
+10_100005593 10 100005593 0.217 10 100005593 6
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $1 "\t" $2 "\t" $4 }' | sort -k 1,1) | join - <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | head -n 10
+10_10000135 10 10000135 0.449 10 10000135 0 0
+10_10000265 10 10000265 0.436 10 10000265 0 0
+10_100002729 10 100002729 0.367 10 100002729 5 6
+10_100002880 10 100002880 0.358 10 100002880 5 6
+10_100003553 10 100003553 0.12 10 100003553 5 6
+10_100003805 10 100003805 0.3 10 100003805 5 6
+10_100003967 10 100003967 0.356 10 100003967 5 6
+10_10000459 10 10000459 0.427 10 10000459 0 0
+10_100005553 10 100005553 0.144 10 100005553 4 6
+10_100005593 10 100005593 0.217 10 100005593 4 6
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $1 "\t" $2 "\t" $4 }' | sort -k 1,1) | join - <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | sort -g -k 1,1 | head -n 10
+1_100002699 1 100002699 0.3 1 100002699 0 0
+1_100002785 1 100002785 0.0669999999999999 1 100002785 0 0
+1_100003455 1 100003455 0.047 1 100003455 0 0
+1_100006955 1 100006955 0.0669999999999999 1 100006955 0 0
+1_100007331 1 100007331 0.283 1 100007331 0 0
+1_100007519 1 100007519 0.0620000000000001 1 100007519 0 0
+1_100007856 1 100007856 0.0580000000000001 1 100007856 0 0
+1_100008014 1 100008014 0.217 1 100008014 0 0
+1_100008025 1 100008025 0.143 1 100008025 0 0
+1_100008439 1 100008439 0.0669999999999999 1 100008439 0 0
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $1 "\t" $2 "\t" $4 }' | sort -k 1,1) | join - <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_20kbPadding.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | sort -g -k 1,1 | wc
+Done
+2593966 20751728 119301659
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.wSymbol.bed | head -n 10
+chr1 10003485   10045556        NMNAT1
+chr1 100111430  100160097       PALMD
+chr1 100174258  100231349       FRRS1
+chr1 100178485  100178513       MIR548AA1
+chr1 100178485  100178513       MIR548D1
+chr1 100315639  100389579       AGL
+chr1 100434000  100435404       BC112312
+chr1 100435344  100492534       SLC35A3
+chr1 100503788  100548929       HIAT1
+chr1 100549101  100598511       SASS6
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.wSymbol.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg19.chrom.sizes -b 20000 > /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.wSymbol.bed
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.20kbPadding.wSymbol.bed | head -n 10
+chr1 9983485    10065556        NMNAT1
+chr1 100091430  100180097       PALMD
+chr1 100154258  100251349       FRRS1
+chr1 100158485  100198513       MIR548AA1
+chr1 100158485  100198513       MIR548D1
+chr1 100295639  100409579       AGL
+chr1 100414000  100455404       BC112312
+chr1 100415344  100512534       SLC35A3
+chr1 100483788  100568929       HIAT1
+chr1 100529101  100618511       SASS6
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170105.UCSC_hg19_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.wSymbol.bed | head -n 10
+chr1 10005008   10005008        chr1    10003485        10045556        NMNAT1
+chr1 10010658   10010658        chr1    10003485        10045556        NMNAT1
+chr1 100112098  100112098       chr1    100111430       100160097       PALMD
+chr1 100112230  100112230       chr1    100111430       100160097       PALMD
+chr1 100112247  100112247       chr1    100111430       100160097       PALMD
+chr1 100112297  100112297       chr1    100111430       100160097       PALMD
+chr1 100112394  100112394       chr1    100111430       100160097       PALMD
+chr1 100112813  100112813       chr1    100111430       100160097       PALMD
+chr1 100113375  100113375       chr1    100111430       100160097       PALMD
+chr1 100113415  100113415       chr1    100111430       100160097       PALMD
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz | awk '{ print $1 "_" $2 }' | sed 's/chr//g' | sort | uniq | wc
+2321276 2321276 27168768
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed | awk '{ print $1 "_" $2 }' | sed 's/chr//g' | sort) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz | awk '{ print $1 "_" $2 }' | sed 's/chr//g' | sort | uniq) | wc
+ 272690  272690 3040332
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bed | wc
+2593966 7781898 61963243
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$R -q -e "2321276 + 272690"
+> 2321276 + 272690
+[1] 2593966
+>
+>
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed.txt | awk '{ if ($4 == 0) { print $0 } } ' | wc
+ 272690 1090760 6878968
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed.txt | awk '{ if ($4 > 0) { print $0 } } ' | wc
+2321276 9285104 60713830
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 | gzip > pinsdfinsdinsdf.gz
+#Code here -- if first line, create variables. if not first line, check if last line. If last line, check whether coords same -- if same, add last line then print, if not same, print, then print last line. If not last line, check whether coords same -- if same, add, if not same, print, then recreate variables
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat pinsdfinsdinsdf.gz | perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} } else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | wc
+2321276 6963828 153802591
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat pinsdfinsdinsdf.gz | perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} } else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | wc
+2321276 6963828 153802591
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz | head -n 10
+chr1 10005008   10005008        chr1    10003485        10045556        NMNAT1
+chr1 10010658   10010658        chr1    10003485        10045556        NMNAT1
+chr1 100112098  100112098       chr1    100111430       100160097       PALMD
+chr1 100112230  100112230       chr1    100111430       100160097       PALMD
+chr1 100112247  100112247       chr1    100111430       100160097       PALMD
+chr1 100112297  100112297       chr1    100111430       100160097       PALMD
+chr1 100112394  100112394       chr1    100111430       100160097       PALMD
+chr1 100112813  100112813       chr1    100111430       100160097       PALMD
+chr1 100113375  100113375       chr1    100111430       100160097       PALMD
+chr1 100113415  100113415       chr1    100111430       100160097       PALMD
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz | wc
+14266648 99866536 805941198
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat pinsdfinsdinsdf.gz | wc
+14266648 99866536 720341310
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 | perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} } else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | wc
+2321276 6963828 153802591
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 | perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); }
+> else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} }
+> else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | wc
+2321276 6963828 153802591
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 |
+> perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); }
+> else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} }
+> else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz | wc
+2321276 6963828 153802591
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.txt.gz | sed 's/chr//g' | sort -g -k 1,1 -k 2,2 |
+> perl -lane 'if ($. == 1) { $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); }
+> else { $ChrBP2 = $F[0] . "_" . $F[1]; if (eof()) { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); print $ChrBP2, "\t1\t", $F[$#F];} }
+> else { if ($ChrBP1 eq $ChrBP2) { push(@loci, $F[$#F]); } else { print $ChrBP1, "\t", scalar(@loci), "\t", join(",", @loci); $ChrBP1 = $F[0] . "_" . $F[1]; @loci = ($F[$#F]); } } }' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | wc        
+2593966 10375864 163563238
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | wc
+2593966 10375864 67592798
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz | wc
+2321276 6963828 153802591
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g' | wc
+ 272690  818070 4131092
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$R -q -e "2321276 + 272690"
+> 2321276 + 272690
+[1] 2593966
+> 
+> 
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+2593966 10375864 163563238
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+2593966 10375864 163563238
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | wc
+2593966 10375864 169782577
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz | wc
+2384461 7153383 160956733
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | wc                                209505  628515 3800497
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | wc
+2593966 10375864 67617105
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$R -q -e "2384461 + 209505"
+> 2384461 + 209505
+[1] 2593966
+>
+>
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+2593966 10375864 169782577
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | join - <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | head -n 10
+10_10000135 10 10000135 0.449 0 0 0 0
+10_10000265 10 10000265 0.436 0 0 0 0
+10_100002729 10 100002729 0.367 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_100002880 10 100002880 0.358 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_100003553 10 100003553 0.12 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_100003805 10 100003805 0.3 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_100003967 10 100003967 0.356 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_10000459 10 10000459 0.427 0 0 0 0
+10_100005553 10 100005553 0.144 4 DQ596633,DQ577099,MIR1256,DQ582762 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_100005593 10 100005593 0.217 4 DQ596633,DQ577099,MIR1256,DQ582762 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | join - <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | perl -lane 'my $prox1 = 0; my $prox2 = 0; if ($F[4] > 0) { $prox1 = 1; } if ($F[6] > 0) { $prox2 = 1; } print $F[0], "\t", $F[1], "\t", $F[2], "\t", $F[3], "\t", $prox1, "\t", $F[4], "\t", $prox2, "\t", $F[6]; ' | head -n 10 
+10_10000135     10      10000135        0.449   0       0       0       0
+10_10000265     10      10000265        0.436   0       0       0       0
+10_100002729    10      100002729       0.367   1       5       1       6
+10_100002880    10      100002880       0.358   1       5       1       6
+10_100003553    10      100003553       0.12    1       5       1       6
+10_100003805    10      100003805       0.3     1       5       1       6
+10_100003967    10      100003967       0.356   1       5       1       6
+10_10000459     10      10000459        0.427   0       0       0       0
+10_100005553    10      100005553       0.144   1       4       1       6
+10_100005593    10      100005593       0.217   1       4       1       6
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | join - <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | perl -lane 'my $prox1 = 0; my $prox2 = 0; if ($F[4] > 0) { $prox1 = 1; } if ($F[6] > 0) { $prox2 = 1; } print $F[0], "\t", $F[1], "\t", $F[2], "\t", $F[3], "\t", $prox1, "\t", $F[4], "\t", $prox2, "\t", $F[6]; ' | wc
+2593966 20751728 99468423
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | join - <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | perl -lane 'my $prox1 = 0; my $prox2 = 0; if ($F[4] > 0) { $prox1 = 1; } if ($F[6] > 0) { $prox2 = 1; } print $F[0], "\t", $F[1], "\t", $F[2], "\t", $F[3], "\t", $prox1, "\t", $F[4], "\t", $prox2, "\t", $F[6]; ' | gzip > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.vs1.txt.gz
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.vs1.txt.gz | head -n 10
+10_10000135     10      10000135        0.449   0       0       0       0
+10_10000265     10      10000265        0.436   0       0       0       0
+10_100002729    10      100002729       0.367   1       5       1       6
+10_100002880    10      100002880       0.358   1       5       1       6
+10_100003553    10      100003553       0.12    1       5       1       6
+10_100003805    10      100003805       0.3     1       5       1       6
+10_100003967    10      100003967       0.356   1       5       1       6
+10_10000459     10      10000459        0.427   0       0       0       0
+10_100005553    10      100005553       0.144   1       4       1       6
+10_100005593    10      100005593       0.217   1       4       1       6
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.vs1.txt.gz | wc        
+2593966 20751728 99468423
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt | awk '{ print $1 "_" $2 }' | sort) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.vs1.txt.gz | sort -k 1,1) | wc
+     99     792    3774
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt | wc
+    101     202    1190
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt | head -n 10
+11 18589560
+2  165221337
+19 19268718
+2  21078786
+10 64697616
+6  161009807
+12 110556807
+8  145115531
+11 125749162
+12 56078847
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt | awk '{ print $1 "_" $2 }' | sort) <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.vs1.txt.gz | sort -k 1,1)     
+11_10345358
+15_42033223
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.No0Dir.tbl.gz | awk '{ print $1 "_" $2 "\t" $3 }' | head -n 10
+Chr_BP  MAF
+10_10000135     0.551
+10_10000265     0.436
+10_100002729    0.633
+10_100002880    0.642
+10_100003553    0.12
+10_100003805    0.3
+10_100003967    0.356
+10_10000459     0.427
+10_100005553    0.144
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt | awk '{ print $1 "_" $2 }' | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.No0Dir.tbl.gz | awk '{ print $1 "_" $2 "\t" $3 }' | sort -k 1,1) | wc
+    101     202    1769
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt | wc
+    101     202    1190
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt | awk '{ print $1 "_" $2 }' | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.No0Dir.tbl.gz | awk '{ print $1 "_" $2 "\t" $3 }' | sort -k 1,1) | head -n 10
+10_113923876 0.3
+10_64697616 0.536
+10_94829632 0.433
+1_109619829 0.702
+11_10345358 0.15
+11_116154127 0.108
+11_122027585 0.617
+11_125749162 0.842
+11_18589560 0.683
+11_46699823 0.964
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.txt | awk '{ print $1 "_" $2 }' | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.IncAllele.bmass.formatted.NoDups.No0Dir.tbl.gz | awk '{ print $1 "_" $2 "\t" $3 }' | perl -lane 'if ($F[1] > .5) { $F[1] = 1 - $F[5]; } print join("\t", @F);' | sort -k 1,1) | head -n 10
+10_113923876 0.3
+10_64697616 1
+10_94829632 0.433
+1_109619829 1
+11_10345358 0.15
+11_116154127 0.108
+11_122027585 1
+11_125749162 1
+11_18589560 1
+11_46699823 1
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.txt.gz | wc        
+25464348 178250436 1417704006
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.txt.gz | wc
+15128292 105898044 850069663
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz | wc
+2528918 7586754 239521166
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz | wc
+2384461 7153383 160956733
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+2593966 10375864 246652707
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz | wc
+2528918 7586754 239521166
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | wc
+  65048  195144 1184375
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$R -q -e "2528918 + 65048"
+> 2528918 + 65048
+[1] 2593966
+> 
+> 
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | join - <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | head -n 10
+10_10000135 10 10000135 0.449 0 0 0 0
+10_10000265 10 10000265 0.436 0 0 0 0
+10_100002729 10 100002729 0.367 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_100002880 10 100002880 0.358 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_100003553 10 100003553 0.12 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_100003805 10 100003805 0.3 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_100003967 10 100003967 0.356 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_10000459 10 10000459 0.427 0 0 0 0
+10_100005553 10 100005553 0.144 4 DQ596633,DQ577099,MIR1256,DQ582762 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+10_100005593 10 100005593 0.217 4 DQ596633,DQ577099,MIR1256,DQ582762 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz | awk '{ print $1 "\t" $2 "\t" $3 "\t" $4 }' | sort -k 1,1) <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | join - <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | join - <(cat <(zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) | head -n 10
+10_10000135 10 10000135 0.449 0 0 0 0 1 BC032914
+10_10000265 10 10000265 0.436 0 0 0 0 1 BC032914
+10_100002729 10 100002729 0.367 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4 12 DQ596633,DQ577099,MIR1256,DQ582762,CRTAC1,R3HCC1L,LOXL4,PYROXD2,MIR1287,HPS1,MIR4685,HPSE2
+10_100002880 10 100002880 0.358 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4 12 DQ596633,DQ577099,MIR1256,DQ582762,CRTAC1,R3HCC1L,LOXL4,PYROXD2,MIR1287,HPS1,MIR4685,HPSE2
+10_100003553 10 100003553 0.12 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4 12 DQ596633,DQ577099,MIR1256,DQ582762,CRTAC1,R3HCC1L,LOXL4,PYROXD2,MIR1287,HPS1,MIR4685,HPSE2
+10_100003805 10 100003805 0.3 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4 12 DQ596633,DQ577099,MIR1256,DQ582762,CRTAC1,R3HCC1L,LOXL4,PYROXD2,MIR1287,HPS1,MIR4685,HPSE2
+10_100003967 10 100003967 0.356 5 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4 12 DQ596633,DQ577099,MIR1256,DQ582762,CRTAC1,R3HCC1L,LOXL4,PYROXD2,MIR1287,HPS1,MIR4685,HPSE2
+10_10000459 10 10000459 0.427 0 0 0 0 1 BC032914
+10_100005553 10 100005553 0.144 4 DQ596633,DQ577099,MIR1256,DQ582762 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4 12 DQ596633,DQ577099,MIR1256,DQ582762,CRTAC1,R3HCC1L,LOXL4,PYROXD2,MIR1287,HPS1,MIR4685,HPSE2
+10_100005593 10 100005593 0.217 4 DQ596633,DQ577099,MIR1256,DQ582762 6 DQ596633,DQ577099,MIR1256,DQ582762,R3HCC1L,LOXL4 12 DQ596633,DQ577099,MIR1256,DQ582762,CRTAC1,R3HCC1L,LOXL4,PYROXD2,MIR1287,HPS1,MIR4685,HPSE2
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.250kbPad.vs1.txt.gz | awk '{ print $8 }' | sort | uniq -c | sort -g -k 2,2 | head -n 10
+ 209505 0
+ 420100 1
+ 334282 2
+ 185642 3
+ 197034 4
+ 238554 5
+ 227076 6
+ 161800 7
+  88154 8
+  65974 9
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnotatedForPerms.NoPad.20kbPad.250kbPad.vs1.txt.gz | awk '{ print $10 }' | sort | uniq -c | sort -g -k 2,2 | head -n 10
+  65048 0
+ 139030 1
+ 182023 2
+ 174516 3
+ 187751 4
+ 196234 5
+ 210428 6
+ 191264 7
+ 157318 8
+ 138202 9
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+    101     404    7762
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz | wc
+     91     273    7384
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | wc
+     10      30     181
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+    101     404    8204
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz | wc
+     94     282    7868
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | wc 
+      7      21     127
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+    101     404   13826
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz | wc
+    100     300   13550
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | wc
+      1       3      19
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }'     
+chr19_59484573  0       0
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+    102     408    7792
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Condensed.txt.gz | wc
+     92     276    7412
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | wc
+     10      30     181
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+    102     408    8234
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Condensed.txt.gz | wc
+     95     285    7896
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat  /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_20kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | wc
+      7      21     127
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat <(zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | sed 's/chr//g') | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) | awk '{ if ($2 == $4) { print $0 } }' | wc
+    102     408   13889
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Condensed.txt.gz | wc
+    101     303   13611
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.ChrBP.noNA.NArplcd.bedIntersect.20170105_UCSC_hg19_GeneInformation_wSymbols_NoProtAlignIDs_Condensed_wSymbol_250kbPadding.Counts.txt | awk '{ if ($4 == 0) { print $1 "_" $2 "\t0\t0" } }' | wc
+      1       3      19
 
 
 
@@ -12783,9 +15170,273 @@ cp -p /mnt/lustre/home/mturchin20/Scripts/Python/2fileTemplate.vs1.py /mnt/lustr
 
 ~~~
 
+
+##Checking new 'old' bmass hits replicate in new 'orig' hits
+##20161228
+
+
+#GlobalLipids2010
+#20161228
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.txt | awk '{ print $1 "\t" $2 "\t" $3 }' | grep -v SNP > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt | awk '{ print $2 "_" $3 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.ChrBPChrBP.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.MarkerChrBP.txt | awk '{ print $2 "_" $3 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBPChrBP.txt
+
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.vs1.txt
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.ChrBPChrBP.txt --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBPChrBP.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.ChrBP.vs1.txt
+
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.vs1.txt | awk '{ if ($4 == 1) { print $0 } } '
+rs10904908      10      17300296        1       rs10904908      10      17300296        1
+rs11246602      11      51368666        1       rs11246602      11      51368666        1
+rs13326165      3       52507158        1       rs13326165      3       52507158        1
+rs267733        1       149225460       1       rs267733        1       149225460       1
+rs4722551       7       25958351        1       rs4722551       7       25958351        1
+rs499974        11      75132669        1       rs499974        11      75132669        1
+rs970548        10      45333283        1       rs970548        10      45333283        1
+rs998584        6       43865874        1       rs998584        6       43865874        1
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.vs1.txt | awk '{ if ($4 == 2) { print $0 } } '
+rs10490626      2       118552311       2       rs10490632      2       118295555       2
+rs12748152      1       27010980        2       rs12739698      1       27102620        2
+rs17695224      19      57016028        2       rs10422101      19      57011927        2
+rs1832007       10      5244847 2       rs17134533      10      5237098 2
+rs1997243       7       1050303 2       rs6951245       7       1024719 2
+rs4942486       13      31851388        2       rs4942505       13      31861707        2
+rs6831256       4       3442937 2       rs762861        4       3411809 2
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.vs1.txt | awk '{ print $5 "\t" $6 "\t" $7 "\t" $4 }' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.vs1.Hits.Uniq.txt
+
+cat <(join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.vs1.Hits.Uniq.txt | sort -k 1,1) | awk '{ print $0 "\t0" }') /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.vs1.Hits.Uniq.txt | grep rs > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.vs1.Hits.Uniq.wNoHits.txt 
+
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.vs1.txt | awk '{ if ($4 == 2) { print $0 } } ' | perl -lane 'my $diff = $F[6] - $F[2]; print join("\t", @F), "\t", $diff;' | sort -g -k 9,9
+rs10490626      2       118552311       2       rs10490632      2       118295555       2       -256756
+rs6831256       4       3442937 2       rs762861        4       3411809 2       -31128
+rs1997243       7       1050303 2       rs6951245       7       1024719 2       -25584
+rs1832007       10      5244847 2       rs17134533      10      5237098 2       -7749
+rs17695224      19      57016028        2       rs10422101      19      57011927        2       -4101
+rs4942486       13      31851388        2       rs4942505       13      31861707        2       10319
+rs12748152      1       27010980        2       rs12739698      1       27102620        2       91640
+
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.vs1.Hits.Uniq.wNoHits.txt | sort -k 4,4 -gk 2,2
+rs2746150 6 29550680    0
+rs1408579 10 101902184  0
+rs11227638 11 55776161  0
+rs11229252 11 54886216  0
+rs267733        1       149225460       1
+rs13326165      3       52507158        1
+rs998584        6       43865874        1
+rs4722551       7       25958351        1
+rs10904908      10      17300296        1
+rs970548        10      45333283        1
+rs11246602      11      51368666        1
+rs499974        11      75132669        1
+rs12739698      1       27102620        2
+rs10490632      2       118295555       2
+rs762861        4       3411809 2
+rs6951245       7       1024719 2
+rs17134533      10      5237098 2
+rs4942505       13      31861707        2
+rs10422101      19      57011927        2
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt | sort -k 1,1) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | awk '{ print $1 "\t" $2 "\t" $3 }' | sort -k 1,1) | perl -lane 'print $F[1], "\t", $F[2], "\t", $F[2], "\t", uc($F[3]), "\t", uc($F[4]);' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.AnnovarFormat
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.txt | awk '{ print $1 "\t" $2 "\t" $2 "\t" $4 "\t" $6 }' | sed 's/chr//g' | sed 's/\// /g' | perl -lane 'if ($F[$#F-1] eq $F[$#F]) { ($F[4], $F[3]) = ($F[3], $F[4]); } print join("\t", @F[0..$#F-1]);' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
+
+
+
+#From Stephens 2013 PLoS ONE http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0065245
+```
+The associations reported in Table 2 were identified by first ranking SNPs by their Bayes Factor for association (), and then removing multiple associations that were likely due to LD by eliminating any SNP that was within 0.5Mb of a higher-ranked SNP. We also removed a SNP (rs2746150) on chromosome 6, which we judged likely a secondary association due to LD with previously-reported associations in the MHC region.
+```
+#Additionally Table 2 only shows 18 SNPs, not 19. So in terms of reported results, rs2746150 was not even included. So 15/18 results.
+
+#re: rs1408579 (note -- I bring up rs2862954 on my own earlier in the my work here but can't discern why I thought it mattered/why I did so before. Can probably just ignore for now)
+#here is what Matthew says in Stephens 2013 main text re: ERLIN1
+```
+ERLIN1 codes for the protein Erlin-1, which is a member of the prohibitin family of proteins that define lipid-raft-like domains of the endoplasmic reticulum [47]. SNPs near ERLIN1 have previously been associated with plasma levels of alanine-aminotransferase [48], an important liver enzyme.
+
+47-Browman DT, Resek ME, Zajchowski LD, Robbins SM (2006) Erlin-1 and erlin-2 are novel members of the prohibitin family of proteins that define lipid-raft-like domains of the er. J Cell Sci 119: 3149–60.
+48-Yuan X, Waterworth D, Perry JRB, Lim N, Song K, et al. (2008) Population-based genome-wide association studies reveal six loci inuencing plasma levels of liver enzymes. Am J Hum Genet 83: 520–8.
+```
+
+#There are two other, more recent sources connecting ERLIN1 to NAFLD
+Feitosa et al. 2013 Atherosclerosis The ERLIN1-CHUK-CWF19L1 gene cluster influences liver fat deposition and hepatic inflammation in the NHLBI Family Heart Study. https://www.ncbi.nlm.nih.gov/pubmed/23477746
+Edelman et al. 2015 Molecular Genetics & Genomic Medicine Genetic analysis of nonalcoholic fatty liver disease within a Caribbean–Hispanic population http://onlinelibrary.wiley.com/doi/10.1002/mgg3.168/full
+
+Feitosa has both rs1408579 & rs2862954, whereas Edelman only seems to refer to rs2862954 and it's unclear whether that SNP specifically is significant in their study? But they do indicate ERLIN1, as part of a complex, is related to NAFLD. The former study is more explicit in linking all these things together.
+
+#notes from earlier work on this
+```
+#rs2862954 is not within .5Mb of a hit, but it is in ERLIN1 which is upstream of BLOC1S2 and CHUK, both of which come up as 'enriched genes' in the pathway analyses. BF is on the lower end (4.8) in the Matthew paper table 2, though other loci with lower BFs did get picked up, e.g. VEGFA with 4.5 and STAB1 with 4.7
+
+#Both rs11229252 and rs11227638 are in the OR4* (olfactory receptor) region of chromosome 11 -- they are also not showing up via those rsID #s in the new dataset, but presumably they are being considered 'tagged' by being nearby any type of OR4*, which has already shown up in the 2013 paper in the form of OR4C46
+```
+
+#re: rs11227638 & rs11229252
+#See OR4* references above
+#rs11227638 11 55776161  0
+#rs11229252 11 54886216  0
+
+
+~~~
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.genome_summary.csv | perl -F, -lane 'if ($F[$#F-4] == 11) { print join(",", @F); }'
+"intronic","UEVLD",,,,,,,,,,,,,,,,,,,,11,18589560,18589560,T,C
+"intergenic","PATE4(dist=39195),HYLS1(dist=4347)",,,,,,,,,,,,,,,,,,,,11,125749162,125749162,G,A
+"intergenic","LOC646813(dist=988864),OR4A5(dist=42712)",,,,,,,,,,,,,,,,,,,,11,51368666,51368666,T,C
+"downstream","TMPRSS4",,,,,,,,,,,,,,,,,,,,11,117991277,117991277,T,C
+"intronic","SLC25A45",,,,,,,,,,,,,,,,,,,,11,65147893,65147893,G,A
+"intronic","SYT7",,,,,,,,,,,,,,,,,,,,11,61326406,61326406,C,T
+"ncRNA_intronic","CAND1.11",,,,,,,,,,,,,,,,,,,,11,10345358,10345358,A,G
+"UTR3","ARHGAP1",,,,,,,,,,,,,,,,,,,,11,46699823,46699823,T,C
+"intronic","RPS3",,,,,,,,,,,,,,,,,,,,11,75132669,75132669,C,A
+"ncRNA_intronic","MIR100HG",,,,,,,,,,,,,,,,,,,,11,122027585,122027585,T,C
+"intergenic","LINC00900(dist=523209),BUD13(dist=464759)",,,,,,,,,,,,,,,,,,,,11,116154127,116154127,G,C
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipid/jointGwasMc_*.txt.gz | grep rs11246602
+chr11:51368666  chr11:51512090  rs11246602      c       t       0.034   0.0052  176028.03       1.681e-10       0.1332
+chr11:51368666  chr11:51512090  rs11246602      c       t       0.0019  0.0056  162022.00       0.5259  0.1332
+chr11:51368666  chr11:51512090  rs11246602      c       t       0.0112  0.0054  176253.43       0.01944 0.1332
+chr11:51368666  chr11:51512090  rs11246602      t       c       0.0091  0.0052  166782.00       0.1924  0.8668
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipid/jointGwasMc_*.txt.gz | grep rs11227638
+chr11:55776161  chr11:56019585  rs11227638      t       a       0.0369  0.0074  88834.00        1.785e-06       1
+chr11:55776161  chr11:56019585  rs11227638      a       t       0.0029  0.0081  84452.00        0.754   NA
+chr11:55776161  chr11:56019585  rs11227638      t       a       0.0135  0.0079  89074.00        0.03422 1
+chr11:55776161  chr11:56019585  rs11227638      t       a       0.0007  0.0078  85492.00        0.8241  1
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /data/external_public/GlobalLipid/jointGwasMc_*.txt.gz | grep rs11229252
+chr11:54886216  chr11:55129640  rs11229252      t       c       0.0363  0.0082  91826.00        4.602e-06       0.1201
+chr11:54886216  chr11:55129640  rs11229252      t       c       0.0095  0.0090  87403.00        0.1372  0.1201
+chr11:54886216  chr11:55129640  rs11229252      t       c       0.0253  0.0087  92110.00        0.001403        0.1201
+chr11:54886216  chr11:55129640  rs11229252      t       c       0.0051  0.0086  88528.00        0.5878  0.1201
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.txt | awk '{ if ($2 == 11) { print $0 } }'
+rs11227638 11 55776161 0.118 94423 0.03701 0.007065 90018 0.001169 0.007677 94663 0.01605 0.007535 91077 0.004328 0.007456 0 n.a. rs11227638 -0.637 -2.285 -0.445 -5.026 32.5420089289469 5.82908985750609 6.30032190381785 11_55776161 90018 4.79187824293809
+rs11229252 11 54886216 0.091 97415 0.03709 0.007882 92969 0.01194 0.008648 97699 0.02784 0.00846 94113 0.006356 0.008351 0 n.a. rs11229252 0.538 3.373 1.54 4.966 33.862372338347 6.09951170574259 6.16527447867204 11_54886216 92969 4.9459696690849
+rs11246602 11 51368666 0.126 99900 -0.03649 0.00687 95454 -0.003593 0.00745 100184 -0.01722 0.007312 96598 0.001288 0.006708 0 n.a. rs11246602 -0.168 -2.536 -0.708 -5.395 35.0428664214368 6.34178716857721 7.16416012975714 11_51368666 95454 5.3070092019464
+rs499974 11 75132669 0.175 99852 0.02471 0.006034 95409 -0.002567 0.006509 100136 0.01451 0.006405 96550 0.01389 0.005872 0 n.a. rs499974 -2.098 -2.383 0.266 -4.11 34.1074338093301 6.14976851951062 4.40267882216328 11_75132669 95409 4.45521629192124
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.txt | grep rs11246602
+chr11   51368666        rs11246602      C/T     2       T
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.AnnovarFormat.genome_summary.csv | perl -F, -lane 'if ($F[$#F-4] == 11) { print join(",", @F); }'
+"intergenic","OR5F1(dist=14060),OR5AS1(dist=21734)",,,,,,,,,,,,,,,,,,,,11,55776161,55776161,A,T
+"intergenic","NONE(dist=NONE),TRIM48(dist=143442)",,,,,,,,,,,,,,,,,,,,11,54886216,54886216,T,C
+"intergenic","LOC646813(dist=988864),OR4A5(dist=42712)",,,,,,,,,,,,,,,,,,,,11,51368666,51368666,T,C
+"intronic","RPS3",,,,,,,,,,,,,,,,,,,,11,75132669,75132669,A,C
+
+~~~
+
+
+#Edit /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py 
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.2MbWindow.vs1.txt
+#Edit /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py 
+python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.4MbWindow.vs1.txt
+
+~~~
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.MarkerChrBP.txt | head -n 10
+rs10019888       4       25672088
+rs10102164       8       55584167
+rs10128711       11      18589560
+rs10401969       19      19268718
+rs10490626       2       118552311
+rs10761731       10      64697616
+rs1077514        1       23638820
+rs10904908       10      17300296
+rs11065987       12      110556807
+rs11136341       8       145115531
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.vs1.txt | awk '{ if ($4 > 0) { print $0 } } ' | wc
+     15     120     706
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.ChrBP.vs1.txt | awk '{ if ($4 > 0) { print $0 } } ' | wc
+     15     120     744
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.Hits.Uniq.vs1.txt | sort -k 1,1) | wc
+     15      90     524
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.Hits.Uniq.vs1.txt | sort -k 1,1) | wc
+      4      12      90
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.OverlapWith.ng_2797-S1_edited_vs2_carriageRemoved_rsIDs_HapMart.Marker.4MbWindow.vs1.txt | awk '{ if ($4 > 0) { print $0 } } ' | wc
+     16     128     754
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt | sort -k 1,1) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | awk '{ print $1 "\t" $2 "\t" $3 }' | sort -k 1,1) | head -n 10
+rs10422101 19 57011927 c g
+rs10490632 2 118295555 a g
+rs10904908 10 17300296 a g
+rs11227638 11 55776161 a t
+rs11229252 11 54886216 t c
+rs11246602 11 51368666 t c
+rs12739698 1 27102620 a g
+rs13326165 3 52507158 a g
+rs1408579 10 101902184 t c
+rs17134533 10 5237098 a g
+[  mturchin20@spudhead  ~/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt | sort -k 1,1) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | awk '{ print $1 "\t" $2 "\t" $3 }' | sort -k 1,1) | wc        
+     19      95     489
+
+~~~
+
+
+#GIANT2010
+#20161229
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.txt | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.MarkerChrBP.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.MarkerChrBP.txt | grep -v pos | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.OverlapWith.GIANT2014_5_AllGWASHits_HeightBMIWHRadjBMI_MarkerChrBP.vs1.txt 
+
+~~~
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.OverlapWith.GIANT2014_5_AllGWASHits_HeightBMIWHRadjBMI_MarkerChrBP.vs1.txt | awk '{ if ($4 > 0) { print $0 } } ' | awk '{ print $5 }' | sort | uniq | wc
+     19      19     192
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.OverlapWith.GIANT2014_5_AllGWASHits_HeightBMIWHRadjBMI_MarkerChrBP.vs1.txt | awk '{ if ($4 == 1) { print $0 } } ' | awk '{ print $5 }' | sort | uniq | wc
+      7       7      70
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.OverlapWith.GIANT2014_5_AllGWASHits_HeightBMIWHRadjBMI_MarkerChrBP.vs1.txt | awk '{ if ($4 == 2) { print $0 } } ' | awk '{ print $5 }' | sort | uniq | wc
+     16      16     163
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.OverlapWith.GIANT2014_5_AllGWASHits_HeightBMIWHRadjBMI_MarkerChrBP.vs1.txt | awk '{ if ($4 == 2) { print $0 } } ' | awk '{ print $5 }' | sort | uniq | grep -v -f <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.OverlapWith.GIANT2014_5_AllGWASHits_HeightBMIWHRadjBMI_MarkerChrBP.vs1.txt | awk '{ if ($4 == 1) { print $0 } } ' | awk '{ print $5 }' | sort | uniq) | wc
+     12      12     122
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.OverlapWith.GIANT2014_5_AllGWASHits_HeightBMIWHRadjBMI_MarkerChrBP.vs1.txt | awk '{ if ($4 == 1) { print $0 } } ' | awk '{ print $5 }' | sort | uniq     
+rs11835818
+rs12204421
+rs17783015
+rs1809889
+rs34651
+rs6441170
+rs648831
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.OverlapWith.GIANT2014_5_AllGWASHits_HeightBMIWHRadjBMI_MarkerChrBP.vs1.txt | awk '{ if ($4 == 2) { print $0 } } ' | awk '{ print $5 }' | sort | uniq | grep -v -f <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs1/GIANT2010.newtophits.vs1.SignCrrct.vs1.OverlapWith.GIANT2014_5_AllGWASHits_HeightBMIWHRadjBMI_MarkerChrBP.vs1.txt | awk '{ if ($4 == 1) { print $0 } } ' | awk '{ print $5 }' | sort | uniq)     
+rs10040888
+rs12534698
+rs12538581
+rs1260326
+rs2025151
+rs3747579
+rs389883
+rs4735692
+rs6824258
+rs7601531
+rs8016570
+rs8071778
+~~~
+
+
+
+
+
+
+
+
+
+
+
+#ICBP2011??
+#20161229??
+
+
+#HaemgenRBC2010
+#20161229
+
+
+
+
+###Below are analyses that are best grouped by dataset, versus above where analyses are best grouped by that analysis (eg if an analysis is particularly short or straight forward, it may be better to just clump all the runs of that analysis together in one spot than spread across disparate, study-specific sections -- somewhat subjective here).
+
 ##GlobalLipids2010
 ##20160311
 
+
+
+#Pathway work
+#20160311
 mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1/Analyses
 mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs1/Analyses/PathwayWork/
 
@@ -14407,6 +17058,334 @@ rs605203        6       31954990,6      cox     hap1    3293272,6       qbl     
 [  mturchin20@spudling07  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat bmisignificantin.txt | awk '{ print $2 }' | sed 's/"//g' | sort) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | sort -k 1,1) | perl -lane 'print $F[0], "\t", $F[$#F];' | sed 's/_/ /g' | perl -F, -lane 'print $F[0];' | perl -lane 'print $#F;' | sort | uniq -c
    4883 2
 ~~~
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.txt
+
+join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.txt | sort -k 1,1) > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.txt
+join -v 2 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.txt | sort -k 1,1) > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.txt
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.txt | sort -k 1,1) > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.txt
+
+join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.txt | sort -k 1,1) > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.txt
+join -v 2 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.txt | sort -k 1,1) > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.txt
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.txt | sort -k 1,1) > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheightbmi.MarkerChrBP.OverlapHeightBMI.txt
+
+#python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt 
+##python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt
+
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | sort -k 1,1) <(cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | awk '{ print $2 }' | sort | uniq) | wc
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | sort -k 1,1) <(cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | awk '{ print $2 }' | sort | uniq) | wc
+
+
+###Edit /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py to do 2Mb window
+##cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.2MbWindow.vs1.txt
+##cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.2MbWindow.vs1.txt
+##cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.OverlapWith.GIANT2014_5.HeightBMI.2MbWindow.vs1.txt
+##
+##cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.2MbWindow.vs1.txt
+##cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | grep -v BP | python /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/DataOrganization.AllStudies.PythonVLookUp.GWASHitProximityAnnot.vs1.py --file1 - --file2 /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.txt > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.2MbWindow.vs1.txt 
+
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($4 == 0) { print $0 } }' | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt
+ln -s /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($4 == 0) { print $0 } }' | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt
+ln -s /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($6 == 0) { print $0 } }' | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt
+ln -s /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($4 == 0) { print $0 } }' | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt
+ln -s /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($4 == 0) { print $0 } }' | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt
+ln -s /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | sort -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | perl -lane 'print $F[$#F], "\t", $F[0];' | sort -k 1,1) | awk '{ print $4 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.MarkerChrBP.txt
+ln -s /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.HeightBMI.NewSNPs.vs1.txt
+
+#On wolfy.uchicago.edu
+#mkdir /Users/mturchin20/LabMisc/StephensLab/Multivariate/ForPeople
+#mkdir /Users/mturchin20/LabMisc/StephensLab/Multivariate/ForPeople/SarahU
+#mkdir /Users/mturchin20/LabMisc/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons
+
+scp -p /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.HeightBMI.NewSNPs.vs1.txt mturchin20@wolfy.uchicago.edu:/Users/mturchin20/LabMisc/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/.
+
+#From MacBook Air
+#mkdir /Users/mturchin20/Documents/Work/LabMisc/StephensLab/Multivariate/ForPeople
+#mkdir /Users/mturchin20/Documents/Work/LabMisc/StephensLab/Multivariate/ForPeople/SarahU
+#mkdir /Users/mturchin20/Documents/Work/LabMisc/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons
+#scp -p mturchin20wolfy.uchicago.edu:/Users/mturchin20/LabMisc/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/* /Users/mturchin20/Documents/Work/LabMisc/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/.
+
+
+~~~
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.txt | sort -k 1,1) | wc
+  72592  217776 1581554
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 2 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.txt | sort -k 1,1) | wc 
+   1778    5334   38634
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.txt | sort -k 1,1) | wc      3105   15525  103375
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.txt | wc
+  80580  241740 1754954
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$R -q -e "72592 + 1778 + 3105 + 3105" 
+> 72592 + 1778 + 3105 + 3105
+[1] 80580
+> 
+> 
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.txt | wc
+  36786  110358  801516
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.txt | sort -k 1,1) | wc
+  36287  108861  790686
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 2 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.txt | sort -k 1,1) | wc
+    499    1497   10830
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.txt | sort -k 1,1) | wc
+      0       0       0
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | sort | uniq -c | wc  
+    199     397    3903
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | sort | uniq -c | awk '{ print $1 }' | R -q -e "Data1 <- read.table(file('stdin'), header=F); table(cut(Data1[,1], c(0,10,20,30,40,50,60,70,80,100))); quantile(Data1[,1]);"
+> Data1 <- read.table(file('stdin'), header=F); table(cut(Data1[,1], c(0,10,20,30,40,50,60,70,80,100))); quantile(Data1[,1]);
+
+  (0,10]  (10,20]  (20,30]  (30,40]  (40,50]  (50,60]  (60,70]  (70,80] 
+      10       19       39       31       27       31       18       14 
+(80,100] 
+       3 
+     0%     25%     50%     75%    100% 
+    3.0    26.5    41.0    57.5 67100.0 
+> 
+> 
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | sort | uniq -c | wc
+    199     397    3903
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | sort | uniq -c | head -n 10
+  64284 
+     44 10_12186863
+     20 10_125050937
+     69 10_22911128
+     38 10_30507810
+     76 10_31157363
+     36 10_63250872
+     27 10_64988771
+     44 10_79281772
+     34 10_81696303
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c | wc
+    198     396    3894
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c | head -n 10
+     44 10_12186863
+     20 10_125050937
+     69 10_22911128
+     38 10_30507810
+     76 10_31157363
+     36 10_63250872
+     27 10_64988771
+     44 10_79281772
+     34 10_81696303
+     67 10_89379557
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c | wc
+     25      50     493
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | wc                                      
+    223     446    4387
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | awk '{ print $2 }' | sort | uniq -c | wc
+    198     396    3894
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | sort -k 1,1) <(cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | awk '{ print $2 }' | sort | uniq) | wc
+    198     594    4620
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -a 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | sort -k 1,1) <(cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | awk '{ print $2 }' | sort | uniq) | wc
+    201     603    4679
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | wc
+    201     603    4679
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | sort -k 1,1) <(cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | awk '{ print $2 }' | sort | uniq) | wc
+      3       9      59
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | sort -k 1,1) <(cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | awk '{ print $2 }' | sort | uniq) 
+11_51270793 11 51270793
+2_95249470 2 95249470
+ChrBP Chr BP
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep 51270793
+rs5017948       A       T       0.212   0.026   0.0040  1.5e-10 238963  11_51270793
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep 2_95249470
+rs13007001      A       G       0.958   0.046   0.0090  2.3e-07 229695  2_95249470
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c | wc
+    194     388    3813
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c | wc
+     11      22     218
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | awk '{ print $2 }' | sort | uniq | wc
+    196     196    2285
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | awk '{ print $2 }' | sort | uniq | head -n 10
+10_12186863
+10_125050937
+10_22911128
+10_30507810
+10_31157363
+10_63250872
+10_64988771
+10_79281772
+10_81696303
+10_89379557
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | sort -k 1,1) <(cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | awk '{ print $2 }' | sort | uniq) | wc
+    196     588    4570
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | sort -k 1,1) <(cat <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ print $5 }' | grep _ | sort | uniq -c) | awk '{ print $2 }' | sort | uniq)     
+11_51270793 11 51270793
+14_104348253 14 104348253
+2_95249470 2 95249470
+4_131036509 4 131036509
+ChrBP Chr BP
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep 104348253
+rs4983559       A       G       0.633   -0.015  0.0032  2.6e-06 233438  14_104348253
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | grep 131036509
+rs2391518       T       C       0.3     0.0075  0.0032  0.017   252193  4_131036509
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($2 == 11) { if (($3 >= 49270793) && ($3 <= 53270793)) { print $0 } } }' | sort -g -k 3,3
+rs17556442      11      49282000        2       11_49264086     11      49264086        2
+rs3960835       11      49283109        2       11_49264086     11      49264086        2
+rs10501325      11      49347194        2       11_49264086     11      49264086        2
+rs10839287      11      49455498        2       11_49264086     11      49264086        2
+rs7117247       11      49503350        2       11_49264086     11      49264086        2
+rs11040421      11      49527162        2       11_49264086     11      49264086        2
+rs7925397       11      49572091        2       11_49264086     11      49264086        2
+rs17473628      11      49576942        2       11_49264086     11      49264086        2
+rs4466833       11      49590125        2       11_49264086     11      49264086        2
+rs12798376      11      49632663        2       11_49264086     11      49264086        2
+rs10839357      11      49726568        2       11_49264086     11      49264086        2
+rs4881649       11      49802135        0
+rs7120100       11      49805081        0
+rs10839398      11      49816619        0
+rs10769621      11      49817038        0
+rs11040588      11      49817337        0
+rs7928714       11      49844197        0
+rs10769630      11      49857387        0
+rs1983448       11      49890431        0
+rs4628673       11      49894154        0
+rs10839448      11      49895505        0
+rs1851869       11      49917127        2       11_50402841     11      50402841        2
+rs10769643      11      49938205        2       11_50402841     11      50402841        2
+rs4316513       11      49941290        2       11_50402841     11      50402841        2
+rs1390677       11      50026907        2       11_50402841     11      50402841        2
+rs1845861       11      50077715        2       11_50402841     11      50402841        2
+rs7928188       11      50080636        2       11_50402841     11      50402841        2
+rs1995042       11      50089949        2       11_50402841     11      50402841        2
+rs10794212      11      50128452        2       11_50402841     11      50402841        2
+rs7941169       11      50174233        2       11_50402841     11      50402841        2
+rs1826833       11      50176398        2       11_50402841     11      50402841        2
+rs7120107       11      50204907        2       11_50402841     11      50402841        2
+rs7101625       11      50205109        2       11_50402841     11      50402841        2
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($2 == 14) { if (($3 >= 103348253) && ($3 <= 105348253)) { print $0 } } }' | sort -g -k 3,3
+rs2497295       14      103721149       0
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($2 == 14) { if (($3 >= 102348253) && ($3 <= 106348253)) { print $0 } } }' | sort -g -k 3,3
+rs1190202       14      102764264       0
+rs959083        14      102892439       0
+rs10144051      14      102955683       0
+rs10148970      14      102961752       0
+rs6575988       14      102970579       0
+rs2497295       14      103721149       0
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($2 == 2) { if (($3 >= 94249470) && ($3 <= 96249470)) { print $0 } } }' | sort -g -k 3,3
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($2 == 2) { if (($3 >= 93249470) && ($3 <= 97249470)) { print $0 } } }' | sort -g -k 3,3
+rs12477963      2       96625319        2       2_96697218      2       96697218        2
+rs17636359      2       97024345        2       2_96697218      2       96697218        2
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($2 == 4) { if (($3 >= 130036509) && ($3 <= 132036509)) { print $0 } } }' | sort -g -k 3,3
+rs477926        4       130352821       0
+rs1709425       4       130358389       0
+rs1875799       4       130361130       0
+rs306373        4       131900553       0
+rs3113500       4       131914880       0
+rs306377        4       131919663       0
+rs11727622      4       131943240       0
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | wc        
+  72592  323600 1937286
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($4 == 0) { print $0 } }' | wc
+  64284  257136 1529045
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | grep -v _ | wc
+  64284  257136 1529045
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($4 == 0) { print $0 } }' | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$ln -s /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightsignificantin.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($4 == 0) { print $0 } }' | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$ln -s /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/bmisignificantin.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($6 == 0) { print $0 } }' | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$ln -s /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant/heightbmisignificantin.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat heightsignificantin.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt | wc
+  64284  257136 1529045
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat heightbmisignificantin.MarkerChrBP.OverlapHeightBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt | wc
+   2816   16896   99354
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat bmisignificantin.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt | wc
+   1639    6556   38842
+  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($4 == 0) { print $0 } }' | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$ln -s /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecheight.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | awk '{ if ($4 == 0) { print $0 } }' | awk '{ print $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$ln -s /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/traitspec/traitspecbmi.NoOverlapWith.bmass.GIANT2014_5.HeightBMI.vs1.txt
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat ../traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt | wc
+  32232   96696  702344
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat ../traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.NoHits.vs1.txt | wc
+    461    1383    9988
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat ../traitspec/traitspecheightbmi.MarkerChrBP.OverlapHeightBMI.txt | wc
+      0       0       0
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat ../traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.txt | wc
+  36287  108861  790686
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat ../traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.txt | wc
+    499    1497   10830
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat ../traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | wc
+  36287  161368  965834
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat ../traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | wc
+    499    2148   12818
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat ../traitspec/traitspecheight.MarkerChrBP.NoOverlapBMI.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | grep _ | wc
+   4055   32440  199026
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat ../traitspec/traitspecbmi.MarkerChrBP.NoOverlapHeight.OverlapWith.GIANT2014_5.HeightBMI.vs1.txt | grep _ | wc
+     38     304    1908
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | perl -lane 'print $F[$#F], "\t", $F[0];' | head -n 10
+ChrBP   MarkerName
+10_10000134     rs4747841
+10_10000264     rs4749917
+10_100002728    rs737656
+10_100002879    rs737657
+10_100003552    rs7086391
+10_100003804    rs878177
+10_100003966    rs878178
+10_10000458     rs12219605
+10_100005552    rs3763688
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | head -n 10
+ChrBP   Chr     BP
+10_12186863     10      12186863
+10_125050937    10      125050937
+10_22911128     10      22911128
+10_30507810     10      30507810
+10_31157363     10      31157363
+10_63250872     10      63250872
+10_64988771     10      64988771
+10_79281772     10      79281772
+10_81696303     10      81696303
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | sort -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | perl -lane 'print $F[$#F], "\t", $F[0];' | sort -k 1,1) | head -n 10
+10_12186863 10 12186863 rs9424148
+10_125050937 10 125050937 rs10510128
+10_22911128 10 22911128 rs12770214
+10_30507810 10 30507810 rs2488003
+10_31157363 10 31157363 rs11008282
+10_63250872 10 63250872 rs1470374
+10_64988771 10 64988771 rs10761785
+10_79281772 10 79281772 rs1248690
+10_81696303 10 81696303 rs721917
+10_89379557 10 89379557 rs4934353
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | sort -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.txt.gz | perl -lane 'print $F[$#F], "\t", $F[0];' | sort -k 1,1) | wc
+    202     808    6757
+[  mturchin20@bigmem03  ~/Lab_Stuff/StephensLab/Multivariate/ForPeople/SarahU/MASHComparisons/significant]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/GIANT2014_5.Vs2.HeightBMI.NewSNPs.SNPs.vs1.ChrBPChrBP.txt | wc
+    201     603    4679
+
+
+~~~
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
