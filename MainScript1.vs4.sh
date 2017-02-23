@@ -2872,6 +2872,7 @@ cd /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/bmass
 git fetch --all
 
 git reset --hard origin/master
+#20170218 NOTE -- using the above command will remove any differences/changes in current directory from what you're pulling. It's less a merge than just a rewrite of the current directory's state with what you pulled. If looking for a merge, where say if the current directory has files that should be unaffected by the pull (eg changes in files that are not involved with the pull), then should figure out/use different command otherwise you're  going to lose those untracked/changed files in the current working directory so far
 
 #While in R, can load a package using an absolute path via devtools like so:
 ~~~
@@ -3449,10 +3450,15 @@ R code to use below
 #	MarginalSNPs_logBFs <- compute.allBFs.fromZscores(ZScores, bmassOutput$ZScoresCorMatrix, Nmins, bmassOutput$MarginalSNPs$SNPs$MAF, SigmaAlphas)
 
         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")] <- DetermineAndApplyPriors(DataSources, bmassOutput$MarginalSNPs, GWASsnps, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, ProvidedPriors, UseFlatPriors, bmassSeedValue, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "ModelPriors", "GWASlogBFMinThreshold", "LogFile")]
+	
+	write.table(bmassOutput$MarginalSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.MarginalSNPs.NotPruned.SNPs.vs1.txt", quote=FALSE, row.names=FALSE) #20170222
 
         bmassOutput[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")] <- FinalizeAndFormatResults(DataSources, bmassOutput$MarginalSNPs, bmassOutput$PreviousSNPs, GWASsnps, bmassOutput$GWASlogBFMinThreshold, SigmaAlphas, bmassOutput$Models, bmassOutput$ModelPriors, NminThreshold, PruneMarginalSNPs, PruneMarginalSNPs_bpWindow, bmassOutput$LogFile)[c("MarginalSNPs", "PreviousSNPs", "NewSNPs", "LogFile")]
 
 	write.table(bmassOutput$NewSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
+	#20170222
+	write.table(bmassOutput$PreviousSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.PreviousSNPs.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
+	write.table(bmassOutput$MarginalSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.MarginalSNPs.Pruned.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
 	
 
 ~~~
@@ -3631,6 +3637,10 @@ bmassOutput3 <- bmass(c("HDL", "LDL", "TG", "TC"), GWASsnps=GWASsnps, NminThresh
  
 write.table(bmassOutput1$NewSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
 write.table(bmassOutput3$MergedDataSources, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt", quote=FALSE, row.names=FALSE) 
+#2017022
+write.table(bmassOutput1$PreviousSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.PreviousSNPs.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
+write.table(bmassOutput1$MarginalSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MarginalSNPs.Pruned.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
+write.table(bmassOutput3$MarginalSNPs$SNPs, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MarginalSNPs.NotPruned.SNPs.vs1.txt", quote=FALSE, row.names=FALSE)
 
 system("gzip /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt")
 
@@ -4051,9 +4061,71 @@ TC_ZScore   0.16844842  0.83914088  0.3255277 1.0000000
 [1] 102   2
 ```
 
+#20170221
+#Extras added to main script after done with bmassOutput1$...etc
+
+```
+#GetModelPriorMatrix(bmassOutput1$Models, bmassOutput1$ModelPriors, bmassOutput1$LogFile)$ModelPriorMatrix
+#
+#GetTopModelsPerSNPViaPosteriors(DataSources, bmassOutput1$PreviousSNPs, GetModelPriorMatrix(bmassOutput1$Models, bmassOutput1$ModelPriors, bmassOutput1$LogFile)$ModelPriorMatrix, bmassOutput1$LogFile)
+#GetTopModelsPerSNPViaPosteriors(DataSources, bmassOutput1$NewSNPs, GetModelPriorMatrix(bmassOutput1$Models, bmassOutput1$ModelPriors, bmassOutput1$LogFile)$ModelPriorMatrix, bmassOutput1$LogFile)
+#
+##marginal.postprobs(bmassOutput1$NewSNPs$Posteriors[,5:ncol(bmassOutput1$NewSNPs$Posteriors)], bmassOutput1$Models, 1)
+#
+#nana2 <- GetMarginalPosteriors(DataSources, bmassOutput1$NewSNPs, bmassOutput1$Models, SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15), bmassOutput1$LogFile)
+#nana2$ListSNPs$Marginals$pU[,1:10]
+#
+##Make 'Analysis folder for marginal stuff?'
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.MarginalHeatplots.DirectAssoc.vs1.jpg", width=4000, height=2000, res=300)
+##	NewSNPs.Marginals.DirectAssoc.Clustered <- PlotMarginalPosteriors(DataSources, nana2$ListSNPs, "D", Main="BlahBlah")
+#	NewSNPs.Marginals.DirectAssoc.Clustered <- PlotMarginalPosteriors(DataSources, bmassOutput1$NewSNPs, "D", Main="BlahBlah")
+#	#PlotMarginalPosteriors <- function (DataSources, ListSNPs, Marginal) {
+#dev.off()
+#
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.MarginalHeatplots.DirectAssoc.wDirection.vs1.jpg", width=4000, height=2000, res=300)
+#	NewSNPs.Marginals.DirectAssoc.Clustered <- PlotMarginalPosteriors.withDirection(DataSources, bmassOutput1$NewSNPs, "D", Main="BlahBlah")
+#dev.off()
+
+bmassOutput4$ModelPriorMatrix <- GetModelPriorMatrix(bmassOutput1$Models, bmassOutput1$ModelPriors, bmassOutput1$LogFile)$ModelPriorMatrix
+
+bmassOutput4[c("PreviousSNPs", "LogFile")] <- GetTopModelsPerSNPViaPosteriors(DataSources, bmassOutput1$PreviousSNPs, bmassOutput4$ModelPriorMatrix, bmassOutput1$LogFile)
+bmassOutput4[c("NewSNPs", "LogFile")] <- GetTopModelsPerSNPViaPosteriors(DataSources, bmassOutput1$NewSNPs, bmassOutput4$ModelPriorMatrix, bmassOutput1$LogFile)
+
+bmassOutput4[c("NewSNPs", "LogFile")] <- GetMarginalPosteriors(DataSources, bmassOutput4$NewSNPs, bmassOutput1$Models, SigmaAlphas, bmassOutput1$LogFile)
+
+write.table(bmassOutput4$ModelPriorMatrix, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.ModelPriorMatrix.vs1.txt", quote=FALSE, row.names=FALSE)
+write.table(bmassOutput4$PreviousSNPs$TopModels, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.PreviousSNPs.TopModels.vs1.txt", quote=FALSE, row.names=FALSE)
+write.table(bmassOutput4$NewSNPs$TopModels, file="/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.TopModels.vs1.txt", quote=FALSE, row.names=FALSE)
+
+jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.MarginalHeatplots.DirectAssoc.vs1.jpg", width=4000, height=2000, res=300)
+	bmassOutput1$NewSNPs$HeatPlotOutput <- PlotMarginalPosteriors(DataSources, bmassOutput4$NewSNPs, "D", Main="GlobalLipids2010 NewSNPs DirAssoc")
+dev.off()
+jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.MarginalHeatplots.DirectAssoc.wDirection.vs1.jpg", width=4000, height=2000, res=300)
+	NewSNPs.Marginals.DirectAssoc.Clustered <- PlotMarginalPosteriors.withDirection(DataSources, bmassOutput4$NewSNPs, "D", Main="GlobalLipids2010 NewSNPs DirAssoc")
+dev.off()
 
 
 
+
+print out now before moving/going on?
+
+print/or copy-paste ModelPriorMatrix? 
+print top models 
+print marginals? do plots? w/out and w/ direction?
+
+
+
+
+
+
+
+
+
+```
+
+~~~
+
+~~~
 
 
 
@@ -16389,50 +16461,46 @@ perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lust
 #See things like https://www.biostars.org/p/93011/ and https://www.biostars.org/p/19029/, as well as http://www.psytky03.com/2015/04/difference-between-refseq-ensembl-ucsc.html & http://www.biomedcentral.com/1471-2164/16/97
 #Including space below as reminder for when come back to here. May also do work related to this below, see section regarding annotating Previous, New and MergedDataSources
 #Have decided to just go with refSeq as resources such as http://www.psytky03.com/2015/04/difference-between-refseq-ensembl-ucsc.html point out, refSeq is a bit more 'standardized' using more metrics vs. say UCSC knownGenes. Also going to use the refSeq data pulled from the UCSC GenomeBrowser versus the refSeq dataset pulled from Annovar. This may be better since I can more clearly account for where the refSeq information is coming from vs. not knowing was assumptions/alterations went into the Annovar version one.
+#20170214 NOTE -- realized the reason why `20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt` appeared to have less entries than either the Annovar refSeq files or even directly downloading the refSeq hg18 via `wget -c -O 20170210DL_hg18.refGene.txt.gz http://hgdownload.soe.ucsc.edu/goldenPath/hg18/database/refGene.txt.gz` is because by linking the main refSeq table in the table browser to `hg18.kgXref` in order to get the column `geneSymbol`, many entries were being dropped out (eg if they didn't link to `hg18.kgXref` they were just not included in the final output`). However there's a default column in the original `refGene` track/table that includes `name2	Alternate name (e.g. gene_id from GTF)` which appears to often include the gene symbole name/HUGO name? Either way, it's this column that Annovar is likely using to annotate so might as well also use it to help with 1-to-1 correspondences? Also leaning towards using the copy of the hg18_refSeq file that is the default UCSC table browser `refGene` output so I have a papertrail on how I've worked with/altered the file (I don't imagine the annovar file has been preprocessed too much? but just not sure and don't think there's an obvious explanation for anything like this on the Annovar website). 
 
 mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses
 mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration
 
 cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | perl -lane 'print $F[$#F-3];' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.GeneIDs.uniq.txt
+cat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/hg18_refGene.txt | perl -lane 'print $F[$#F-3];' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.GeneIDs.uniq.txt
 
-#Got below, eg 20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt, from https://genome.ucsc.edu/cgi-bin/hgTables, selecting assembly Mar. 2006 (NCBI36/hg18), group Genes and Gene Predictions, track refSeq Genes, table refGene, output format selected fields from primary and related tables, and selecting bin, name, chrom, strand, txStart, txEnd, cdsStart, cdsEnd, exonCount from hg18.refGene and kgID, geneSymbol, refseq from hg18.kgXref
+#Got below, eg 20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt, from https://genome.ucsc.edu/cgi-bin/hgTables, selecting assembly Mar. 2006 (NCBI36/hg18), group Genes and Gene Predictions, track refSeq Genes, table refGene, output format selected fields from primary and related tables, and selecting bin, name, chrom, strand, txStart, txEnd, cdsStart, cdsEnd, exonCount from hg18.refGene and kgID, geneSymbol, refseq from hg18.kgXref
 #Below from MacBook Air
-#scp -p /Users/mturchin20/Documents/Work/LabMisc/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt mturchin20@wolfy.uchicago.edu:/Users/mturchin20/LabMisc/Data/UCSC/.
-#scp -p mturchin20@wolfy.uchicago.edu:/Users/mturchin20/LabMisc/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt /mnt/lustre/home/mturchin20/Data/UCSC/.
+#scp -p /Users/mturchin20/Documents/Work/LabMisc/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt mturchin20@wolfy.uchicago.edu:/Users/mturchin20/LabMisc/Data/UCSC/.
+#scp -p mturchin20@wolfy.uchicago.edu:/Users/mturchin20/LabMisc/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt /mnt/lustre/home/mturchin20/Data/UCSC/.
 
-rm /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.vs2.txt; for i in `cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | uniq | grep -v n/a`; do echo $i; cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[$#F-1] =~ s/,//; print join("\t", @F);' | grep [^-a-zA-Z0-9]$i[^-a-zA-Z0-9] | perl -lane 'if ($. == 1) { @refIDs = ($F[1]); $txStart = $F[4]; $txEnd = $F[5]; } else { if ($F[4] < $txStart) { $txStart = $F[4]; } if ($F[5] > $txEnd) { $txEnd = $F[5]; } push(@refIDs, $F[1]); } if (eof()) { print $F[$#F-1], "\t", $., "\t", $F[2], "\t", $F[3], "\t", $txStart, "\t", $txEnd, "\t", join(",", @refIDs); }' | sed 's/chr//g' >> /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.vs2.txt; done 
+rm /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt; for i in `cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | uniq | grep -v n/a | grep -v kgXref`; do echo $i; cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane '$F[$#F-1] =~ s/,//; print join("\t", @F);' | grep [^-a-zA-Z0-9]$i[^-a-zA-Z0-9] | perl -lane 'if ($. == 1) { @refIDs = ($F[1]); $txStart = $F[4]; $txEnd = $F[5]; } else { if ($F[4] < $txStart) { $txStart = $F[4]; } if ($F[5] > $txEnd) { $txEnd = $F[5]; } push(@refIDs, $F[1]); } if (eof()) { print $F[$#F-1], "\t", $., "\t", $F[2], "\t", $F[3], "\t", $txStart, "\t", $txEnd, "\t", join(",", @refIDs); }' | sed 's/chr//g' >> /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt; done 
+#mv /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.vs2.txt /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt
 
+cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | awk '{ print "chr" $3 "\t" $5 "\t" $6; }' > /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.bed
 
+cd /mnt/lustre/home/mturchin20/Data/UCSC
+wget -c -O 20170210.wgetDirect.refSeq_hg18.refGene.txt.gz http://hgdownload.soe.ucsc.edu/goldenPath/hg18/database/refGene.txt.gz
 
+#The below file `20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.txt.gz` was downloaded from https://genome.ucsc.edu/cgi-bin/hgTables, selecting assembly Mar. 2006 (NCBI36/hg18), group Genes and Gene Predictions, track refSeq Genes, table refGene, and output format 'all fields from selected table' 
+#From MacBook Air
+#scp -p /Users/mturchin20/Documents/Work/LabMisc/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.txt.gz mturchin20@wolfy.uchicago.edu:/Users/mturchin20/LabMisc/Data/UCSC/.
+scp -p mturchin20@wolfy.uchicago.edu:/Users/mturchin20/LabMisc/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.txt.gz /mnt/lustre/home/mturchin20/Data/UCSC/.   
 
-mv /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.vs2.txt /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt
+rm /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.vs2.txt; for i in `cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.GeneIDs.uniq.txt`; do echo $i; cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | grep [^-a-zA-Z0-9.]$i[^-a-zA-Z0-9.] | perl -lane 'if ($. == 1) { @refIDs = ($F[1]); $txStart = $F[4]; $txEnd = $F[5]; } else { if ($F[4] < $txStart) { $txStart = $F[4]; } if ($F[5] > $txEnd) { $txEnd = $F[5]; } push(@refIDs, $F[1]); } if (eof()) { print $F[$#F-3], "\t", $., "\t", $F[2], "\t", $F[3], "\t", $txStart, "\t", $txEnd, "\t", join(",", @refIDs); }' | sed 's/chr//g' >> /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.vs2.txt; done 
+rm /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.vs2.txt; for i in `cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.GeneIDs.uniq.txt`; do echo $i; cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | grep [^-a-zA-Z0-9.]$i[^-a-zA-Z0-9.] | perl -lane 'if ($. == 1) { @refIDs = ($F[1]); $txStart = $F[4]; $txEnd = $F[5]; } else { if ($F[4] < $txStart) { $txStart = $F[4]; } if ($F[5] > $txEnd) { $txEnd = $F[5]; } push(@refIDs, $F[1]); } if (eof()) { print $F[$#F-3], "\t", $., "\t", $F[2], "\t", $F[3], "\t", $txStart, "\t", $txEnd, "\t", join(",", @refIDs); }' | sed 's/chr//g' >> /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.vs2.txt; done 
 
+rm /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.vs2.txt; for i in `zcat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.txt.gz | perl -lane 'print $F[$#F-3];' | sort | uniq`; do echo $i; zcat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.txt.gz | grep [^-a-zA-Z0-9.]$i[^-a-zA-Z0-9.] | perl -lane 'if ($. == 1) { @refIDs = ($F[1]); $txStart = $F[4]; $txEnd = $F[5]; } else { if ($F[4] < $txStart) { $txStart = $F[4]; } if ($F[5] > $txEnd) { $txEnd = $F[5]; } push(@refIDs, $F[1]); } if (eof()) { print $F[$#F-3], "\t", $., "\t", $F[2], "\t", $F[3], "\t", $txStart, "\t", $txEnd, "\t", join(",", @refIDs); }' | sed 's/chr//g' >> /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.vs2.txt; done 
+rm /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.vs2.txt; for i in `zcat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.txt.gz | perl -lane 'print $F[$#F-3];' | sort | uniq`; do echo $i; zcat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.txt.gz | grep [^-a-zA-Z0-9.]$i[^-a-zA-Z0-9.] | perl -lane 'if ($. == 1) { @refIDs = ($F[1]); $txStart = $F[4]; $txEnd = $F[5]; } else { if ($F[4] < $txStart) { $txStart = $F[4]; } if ($F[5] > $txEnd) { $txEnd = $F[5]; } push(@refIDs, $F[1]); } if (eof()) { print $F[$#F-3], "\t", $., "\t", $F[2], "\t", $F[3], "\t", $txStart, "\t", $txEnd, "\t", join(",", @refIDs); }' | sed 's/chr//g' >> /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.vs2.txt; done 
 
-#Manually removed line of 'hg18.kgXref.geneSymbol  hg18.knownGene.om       hg18.knownGene.strand   hg18.knownGene.txStart  hg18.knownGene.txEnd' from /mnt/lustre/home/mturchin20/Data/UCSC/20170118.UCSC_hg18_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.txt
+#20170214 NOTE -- Comparisons between /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt` & `/mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt` show that `/mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt` has a little more information than `/mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt`. Mostly the same (like 98%/99%), but probably makes more sense to use the Table Browser output as well since that has been my normal course of action thus far (eg more consistent with current practices), vs. directly downloading a file from their webservers via wget.
+#20170214 NOTE -- There does seem to be more differences though between the Annovar refSeq file and refSeq files directly from UCSC. The UCSC file `/mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt` has more entries overall, and among overlapping entries (per-gene), has wider ranges for genes and more transcripts per-gene. There are about ~500 genes that do not show up in the UCSC files that show up in the Annovar ones. Maybe just have to deal with this for the moment? Going to be using the UCSC-based files moving forward I believe, specifically still the `/mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt` one.
 
-
-
-
-
-
-rm /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt; for i in `cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.GeneIDs.uniq.txt`; do echo $i; cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | grep [^-a-zA-Z0-9]$i[^-a-zA-Z0-9] | perl -lane 'if ($. == 1) { @refIDs = ($F[1]); $txStart = $F[4]; $txEnd = $F[5]; } else { if ($F[4] < $txStart) { $txStart = $F[4]; } if ($F[5] > $txEnd) { $txEnd = $F[5]; } push(@refIDs, $F[1]); } if (eof()) { print $F[$#F-3], "\t", $., "\t", $F[2], "\t", $F[3], "\t", $txStart, "\t", $txEnd, "\t", join(",", @refIDs); }' | sed 's/chr//g' >> /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt; done 
-
-#See how often per gene the results are different? differences between starts and ends? Also check if different between number of entries per gene 
-
-
-
-
-
-
-grep [^-a-zA-Z0-9]$i[^-a-zA-Z0-9] | perl -lane 'if ($. == 1) { $txStart = $F[4]; $txEnd = $F[5]; } else { if ($F[4] < $txStart) { $txStart = $F[4]; } if ($F[5] > $txEnd) { $txEnd = $F[5]; } } if (eof()) { print $F[$#F-3], "\t", $., "\t", $F[2], "\t", $F[3], "\t", $txStart, "\t", $txEnd; }' | sed 's/chr//g' >>
-
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | perl -lane 'print $F[$#F-3];' | sort | grep , | wc
-      0       0       0
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | head -n 10                                 
-1071 NM_005762  chr19   +  63747647     63753894        63747936        63753732        17      63747647,63748603,63748942,63750554,63750775,63750970,63751212,63751472,63751664,63751918,63752040,63752166,63752509,63752915,63753127,63753325,63753555,       63748276,63748716,63749075,63750690,63750892,63751085,63751359,63751587,63751771,63751955,63752089,63752419,63752829,63753039,63753214,63753463,63753894,  0   TRIM28 cmpl cmpl  0,1,0,1,2,2,0,0,1,0,1,2,0,2,0,0,0,
-608 NR_033488   chr6_cox_hap1 - 3100851 3116975 3116975 3116975 20      3100851,3101400,3101544,3101726,3101943,3102151,3102625,3102917,3103483,3103980,3104441,3105481,3105706,3106929,3107261,3110849,3114845,3115177,3115975,3116513,        3101198,3101447,3101643,3101803,3102006,3102208,3102689,3103022,3103607,3104030,3104505,3105583,3105821,3107052,3107335,3110935,3114932,3115244,3116032,3116975,   0       ABHD16A unk    unk    -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-607 NR_033488   chr6_qbl_hap2 - 2902315 2918448 2918448 2918448 20      2902315,2902864,2903008,2903190,2903407,2903615,2904089,2904381,2904947,2905444,2905905,2906945,2907170,2908393,2908725,2912321,2916318,2916650,2917448,2917986,        2902662,2902911,2903107,2903267,2903470,2903672,2904153,2904486,2905071,2905494,2905969,2907047,2907285,2908516,2908799,2912407,2916405,2916717,2917505,2918448,   0       
-
+(20170214 notes/thoughts below)
+then see if bedtools intersect can get all genes within 1bp, 20kb or 1Mb of a previous GWAS snp somehow -- can also compare annovar results to 1bp results and see if getting same correspondence, should be
+do bedtools stuff before annovar annotating stuff?
+- so two things here, do bedtools intersect stuff, do annovar, and be sure to compare 1bp bedtools intersect stuff to annovar results
+include cadd score for now and liftOver, or not? probably include...
 
 
 
@@ -16492,7 +16560,7 @@ A26B1   15      -       19305252        19336667
 PEG8/IGF2AS
 [  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.GeneIDs.uniq.txt | sort) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170118.UCSC_hg18_GeneInformation_wSymbols.NoProtAlignIDs.Condensed.txt | awk '{ print $1 }' | sort | uniq) | wc
   17475   17475  113194
-[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | head -n 10                 
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | head -n 10                 
 #hg18.refGene.bin       hg18.refGene.name       hg18.refGene.chrom      hg18.refGene.strand     hg18.refGene.txStart    hg18.refGene.txEnd      hg18.refGene.cdsStart   hg18.refGene.cdsEnd     hg18.refGene.exonCount  hg18.kgXref.kgID       hg18.kgXref.geneSymbol  hg18.kgXref.refseq
 0       NM_207014       chr1    -       67075869        67163158        67075923        67163102        10      uc001dcy.1,uc009wax.1,uc001dcz.1,       WDR78,  NM_207014,
 0       NM_024763       chr1    -       67051159        67163158        67052400        67163102        17      uc001dcx.1,uc009waw.1,  WDR78,  NM_024763,
@@ -16503,9 +16571,9 @@ PEG8/IGF2AS
 1       NM_001042681    chr1    -       8335050 8800286 8337733 8638943 23      uc001apf.1      RERE    NM_001042681
 1       NM_001080438    chr1    -       33544953        33559286        33544953        33559286        5       uc001bxd.1      A3GALT2 NM_001080438
 1       NM_001042682    chr1    -       8335050 8406334 8337733 8346780 13      uc001apd.1      RERE    NM_001042682
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $#F;' | sort | uniq -c
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $#F;' | sort | uniq -c
   61197 11
-[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | head -n 10
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | head -n 10
 hg18.kgXref.geneSymbol
 WDR78,
 WDR78,
@@ -16516,11 +16584,11 @@ n/a
 RERE
 A3GALT2
 RERE
-[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | wc 
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | wc 
   61197   61197  321339
-[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | uniq | wc
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | uniq | wc
   21070   21070  147554
-[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.GeneIDs.uniq.txt | sort) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | uniq) | wc
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.GeneIDs.uniq.txt | sort) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | uniq) | wc
   10663   10663   68994
 [  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | awk '{ print $13 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | head -n 10
 TRIM28  NM_005762       chr19   +       63747647        63753894        63747936        63753732        17
@@ -16533,7 +16601,7 @@ PPIP5K1 NM_001190214    chr15   -       41612951        41669743        41614163
 C1QB    NM_000491       chr1    +       22852268        22860616        22858536        22860466        3
 MBD4    NM_003925       chr3    -       130632476       130641712       130633033       130641366       8
 TPT1    NM_003295       chr13   -       44805605        44813419        44809520        44813204        6
-[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | awk '{ print $11 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | head -n 10
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | awk '{ print $11 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | head -n 10
 hg18.kgXref.geneSymbol  hg18.refGene.name       hg18.refGene.chrom      hg18.refGene.strand     hg18.refGene.txStart    hg18.refGene.txEnd      hg18.refGene.cdsStart   hg18.refGene.cdsEnd     hg18.refGene.exonCount
 WDR78,  NM_207014       chr1    -       67075869        67163158        67075923        67163102        10
 WDR78,  NM_024763       chr1    -       67051159        67163158        67052400        67163102        17
@@ -16544,7 +16612,7 @@ n/a     NM_001324208    chr1    +       50286272        50442044        50286423
 RERE    NM_001042681    chr1    -       8335050 8800286 8337733 8638943 23
 A3GALT2 NM_001080438    chr1    -       33544953        33559286        33544953        33559286        5
 RERE    NM_001042682    chr1    -       8335050 8406334 8337733 8346780 13
-[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | awk '{ print $11 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) <(cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | awk '{ print $13 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) | head -n 10
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | awk '{ print $11 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) <(cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | awk '{ print $13 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) | head -n 10
 A1BG NM_130786 chr19 - 63549983 63556677 63550199 63556615 8 NM_130786 chr19 - 63549983 63556677 63550199 63556615 8
 A1CF NM_138932 chr10 - 52229174 52315441 52236494 52289706 13 NM_001198818 chr10 - 52229174 52315441 52236494 52289706 14
 A1CF NM_138932 chr10 - 52229174 52315441 52236494 52289706 13 NM_001198819 chr10 - 52229174 52315441 52236494 52280553 15
@@ -16555,19 +16623,19 @@ A1CF NM_138932 chr10 - 52229174 52315441 52236494 52289706 13 NM_138933 chr10 - 
 A1CF NM_138933 chr10 - 52229174 52315441 52236494 52280553 13 NM_001198818 chr10 - 52229174 52315441 52236494 52289706 14
 A1CF NM_138933 chr10 - 52229174 52315441 52236494 52280553 13 NM_001198819 chr10 - 52229174 52315441 52236494 52280553 15
 A1CF NM_138933 chr10 - 52229174 52315441 52236494 52280553 13 NM_001198820 chr10 - 52229174 52315441 52236494 52280553 14
-[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | awk '{ print $11 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) <(cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | awk '{ print $13 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) | wc
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | awk '{ print $11 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) <(cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | awk '{ print $13 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) | wc
   39625  673625 4819811
-[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | awk '{ print $11 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) <(cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | awk '{ print $13 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) | uniq | wc
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | awk '{ print $11 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) <(cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | awk '{ print $13 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 }' | sort -k 1,1) | uniq | wc
   39625  673625 4819811
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | wc     
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | wc     
   61197   61197  321339
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | uniq | wc
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | uniq | wc
   21070   21070  147554
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | wc
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | wc
   61197   61197  310556
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | uniq | wc
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | uniq | wc
   19021   19021  125540
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | uniq -c | sort -k 1,1 | awk '{ print $1 }' | sort | uniq -c
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | uniq -c | sort -k 1,1 | awk '{ print $1 }' | sort | uniq -c
   14664 1
       5 10
       1 11
@@ -16589,7 +16657,7 @@ A1CF NM_138933 chr10 - 52229174 52315441 52236494 52280553 13 NM_001198820 chr10
      26 7
      26 8
      14 9
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | uniq -c | sort -k 1,1 | awk '{ if ($1 == 4) { print $0 } }' | head -n 10
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | uniq -c | sort -k 1,1 | awk '{ if ($1 == 4) { print $0 } }' | head -n 10
       4 A2BP1
       4 ABI1
       4 ABLIM1
@@ -16600,12 +16668,12 @@ A1CF NM_138933 chr10 - 52229174 52315441 52236494 52280553 13 NM_001198820 chr10
       4 ADAR
       4 ADD1
       4 ADRA1A
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep ABLIM1
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep ABLIM1
 22 NM_002313    chr10   -  116180858    116408048       116186008       116407949       22      uc009xyi.1,uc009xyj.1,  ABLIM1, NM_002313,
 22 NM_001003408 chr10   -  116180858    116434404       116186008       116434102       23      uc009xyk.1,uc009xyp.1,  ABLIM1, NM_001003408,
 22 NM_001003407 chr10   -  116180858    116434404       116186008       116434102       22      uc009xyl.1,uc009xym.1,uc009xyo.1,       ABLIM1, NM_001003407,
 183 NM_006720   chr10   -  116180858    116276675       116186008       116241573       17      uc009xyh.1,uc009xyg.1,uc009xyn.1,       ABLIM1, NM_006720,
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep \- | head -n 10
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep \- | head -n 10
 mifr-1,MMP21/22B,
 mifr-1,MMP21/22B,
 SNHG3-RCC1
@@ -16616,17 +16684,17 @@ ARPP-21
 ARPP-21
 NKX3-2
 NKX6-1
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep STON1 | head -n 10
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep STON1 | head -n 10
 STON1,
 STON1-GTF2A1L
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep STON1 | head -n 10
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep STON1 | head -n 10
 119 NM_006873   chr2    +  48610811     48679158        48661276        48675945        4       uc002rwq.1,uc002rwo.2,uc010fbm.1,       STON1,  NM_006873,
 119 NM_172311   chr2    +  48649662     48760252        48661276        48760085        11      uc002rwp.1 STON1-GTF2A1L        NM_172311
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep [^-a-zA-Z0-9]STON1[^-a-zA-Z0-9] | head -n 10
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep [^-a-zA-Z0-9]STON1[^-a-zA-Z0-9] | head -n 10
 119 NM_006873   chr2    +  48610811     48679158        48661276        48675945        4       uc002rwq.1,uc002rwo.2,uc010fbm.1,       STON1,  NM_006873,
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep \_ | sort | uniq | wc
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep \_ | sort | uniq | wc
       7       7      94
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep \_ | sort | uniq     
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep \_ | sort | uniq     
 RPL13A_6_816
 RPL13A_9_1211
 RPL23A_20_869
@@ -16634,10 +16702,10 @@ RPL23A_25_1182
 RPL23A_9_220
 RPL31_1_108
 tmp_locus_39
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sed 's/,/ /g' | perl -lane 'print $#F;' | sort | uniq -c | head -n 10
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sed 's/,/ /g' | perl -lane 'print $#F;' | sort | uniq -c | head -n 10
   61190 0
       7 1
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sed 's/,/ /g' | perl -lane 'if ($#F == 1) { print join("\t", @F); }' 
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sed 's/,/ /g' | perl -lane 'if ($#F == 1) { print join("\t", @F); }' 
 mifr-1  MMP21/22B
 mifr-1  MMP21/22B
 HLA-A   HLA-H
@@ -16645,10 +16713,10 @@ HLA-DRB1    HLA-DRB6
 HLA-A   HLA-H
 HLA-A   HLA-H
 HLA-DRB1    HLA-DRB6
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep HLA-A | sort | uniq
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep HLA-A | sort | uniq
 HLA-A,
 HLA-A,HLA-H,
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep HLA | sort | uniq
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep HLA | sort | uniq
 HHLA2,
 HHLA3
 HLA-A,
@@ -16673,9 +16741,9 @@ HLA-DRB5,
 HLA-E,
 HLA-F,
 HLA-G,
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep mifr | sort | uniq
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep mifr | sort | uniq
 mifr-1,MMP21/22B,
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep MMP | sort | uniq
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep MMP | sort | uniq
 IMMP1L,
 IMMP2L,
 MMP1
@@ -16704,11 +16772,11 @@ MMP7,
 MMP8
 MMP9
 mifr-1,MMP21/22B,
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep MMP21\/ | sort | uniq
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | grep MMP21\/ | sort | uniq
 mifr-1,MMP21/22B,
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | uniq -c | sort -k 1,1 | awk '{ if ($1 == 24) { print $0 } }' | head -n 10
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | perl -lane 'print $F[$#F-1];' | sort | sed 's/,//g' | uniq -c | sort -k 1,1 | awk '{ if ($1 == 24) { print $0 } }' | head -n 10
      24 MOG
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep -w MOG | head -n 10
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep -w MOG | head -n 10
 811 NM_002433   chr6    +  29732736     29748128        29732965        29747206        8       uc003nne.1,uc003qzr.1,uc003rrw.1,       MOG,    NM_002433,
 811 NM_206812   chr6    +  29732736     29748128        29732965        29746941        7       uc003nnj.1,uc003qzw.1,uc003rsb.1,       MOG,    NM_206812,
 811 NM_206810   chr6    +  29732736     29748128        29732965        29747206        7       uc003nnh.1,uc003qzu.1,uc003rrz.1,       MOG,    NM_206810,
@@ -16719,9 +16787,9 @@ mifr-1,MMP21/22B,
 811 NM_001008229   chr6 +  29732736     29748128        29732965        29747206        6       uc003nnk.1,uc003qzx.1,uc003qzk.1,uc003rsc.1,uc003rrp.1, MOG,    NM_001008229,
 593 NM_206810   chr6_cox_hap1 + 1080065 1095458 1080294 1094528 7       uc003nnh.1,uc003qzu.1,uc003rrz.1,  MOG, NM_206810,
 593 NM_001008228   chr6_cox_hap1        +       1080065 1095458 1080294 1094263 8       uc003nni.1,uc003qzv.1,uc003rsa.1,       MOG,    NM_001008228,
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep -w MOG | wc        
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep -w MOG | wc        
      24     288    2865
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.vs2.txt | awk '{ if ($2 >= 4) { print $0 } }' | head -n 10
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.vs2.txt | awk '{ if ($2 >= 4) { print $0 } }' | head -n 10
 A2BP1   4   16  +  6009132 7703341
 ABCF1   6   6_qbl_hap2  +  1786022      30667288
 ABCG1   6   21  +  42492867   42590423
@@ -16732,31 +16800,31 @@ ACOT7   4   1   -  6246918 6376413
 ACP5 4  19  -   11546474   11550823
 ACRV1   4   11  -  125047438  125056003
 ACVR1C  4   2   -  158091524  158193645
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep ABCG1
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep ABCG1
 909 NM_207627   chr21   +  42492867     42590423        42494854        42589571        16      uc002zan.1 ABCG1 NM_207627
 909 NM_207629   chr21   +  42509255     42590423        42509334        42589571        15      uc002zao.1 ABCG1 NM_207629
 909 NM_016818   chr21   +  42512335     42590423        42512441        42589571        15      uc002zap.1 ABCG1 NM_016818
 909 NM_004915   chr21   +  42512335     42590423        42512441        42589571        15      uc002zaq.1 ABCG1 NM_004915
 909 NM_207628   chr21   +  42492990     42590423        42518873        42589571        17      uc002zam.1 ABCG1 NM_207628
 909 NM_207174   chr21   +  42513076     42590423        42513150        42589571        15      uc002zar.1 ABCG1 NM_207174
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep ACVR1C
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep ACVR1C
 1791 NM_145259  chr2    -  158091524    158193645       158098675       158193402       9       uc002tzk.2 ACVR1C     NM_145259
 1791 NM_001111031  chr2 -  158091524    158162318       158098675       158152098       9       uc010foe.1 ACVR1C     NM_001111031
 1791 NM_001111033  chr2 -  158091524    158193645       158098675       158193402       7       uc010fof.1 ACVR1C     NM_001111033
 1791 NM_001111032  chr2 -  158091524    158193645       158098675       158193402       8       uc002tzl.2 ACVR1C     NM_001111032
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep -w ACVRV1
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep -w ACRV1
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep -w ACVRV1
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep -w ACRV1
 1539 NM_020107  chr11   -  125047438    125056003       125047697       125055885       5       uc001qcn.1 ACRV1 NM_020107
 1539 NM_020069  chr11   -  125047438    125056003       125047697       125055885       4       uc001qcr.1 ACRV1 NM_020069
 1539 NM_001612  chr11   -  125047438    125056003       125047697       125055885       4       uc001qcs.1 ACRV1 NM_001612
 1539 NM_020108  chr11   -  125047438    125056003       125047697       125055885       5       uc001qcl.1 ACRV1 NM_020108
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep -w ACACA
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep -w ACACA
 104 NM_198839   chr17   -  32516039     32841015        32518363        32761452        60      uc002hnn.1 ACACA NM_198839
 104 NM_198837   chr17   -  32516039     32730805        32518363        32730370        54      uc002hnl.1 ACACA NM_198837
 104 NM_198836   chr17   -  32516039     32790172        32518363        32761452        56      uc002hnm.1 ACACA NM_198836
 104 NM_198838   chr17   -  32516039     32730805        32518363        32715977        55      uc002hnk.1,uc010cuy.1,  ACACA,  NM_198838,
 104 NM_198834   chr17   -  32516039     32841015        32518363        32840502        56      uc002hno.1,uc010cuz.1,  ACACA,  NM_198834,
-[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.fromUCSC_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep ACOT7   
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.txt | grep ACOT7   
 9  NM_007274    chr1    -  6246918      6376413 6247243 6376046 9       uc001amt.1      ACOT7   NM_007274
 9  NM_181866    chr1    -  6246918      6341591 6247243 6341492 9       uc001amq.1      ACOT7   NM_181866
 9  NM_181865    chr1    -  6246918      6343351 6247243 6343299 9       uc001amr.1      ACOT7   NM_181865
@@ -16807,8 +16875,361 @@ A4GNT   1   3   -  139325249  139333919 NM_016161
       1 77
     158 8
     127 9
+[  mturchin20@spudhead  ~]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | awk '{ print "chr" $3 "\t" $5 "\t" $6; }' | head -n 10
+chr19   63549983        63556677
+chr10   52229174        52315441
+chr16   6009132 7703341
+chr13   99980418        99984057
+chr12   9111570 9160092
+chr12   8866334 8920644
+chr1    33544953        33559286
+chr22   41418064        41446860
+chr3    139325249       139333919
+chr7    34724998        34840468
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | wc
+  26453  185171 1446264
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | wc
+  19019  133133  875931
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | head -n 10
+A1BG    1       19      -       63549983        63556677        NM_130786
+A1BG-AS1        1       19      +       63555147        63558361        NR_015380
+A1CF    6       10      -       52229174        52315441        NM_001198820,NM_001198819,NM_001198818,NM_014576,NM_138933,NM_138932
+A2M     1       12      -       9111570 9159825 NM_000014
+A2M-AS1 1       12      +       9109039 9111918 NR_026971
+A2ML1   2       12      +       8866334 8920644 NM_001282424,NM_144670
+A2MP1   1       12      -       9272395 9278070 NR_040112
+A3GALT2 1       1       -       33544953        33559286        NM_001080438
+A4GALT  1       22      -       41418070        41446820        NM_017436
+A4GNT   1       3       -       139325249       139333919       NM_016161
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | head -n 10
+A1BG    1       19      -       63549983        63556677        NM_130786
+A1CF    3       10      -       52229174        52315441        NM_138933,NM_138932,NM_014576
+A2BP1   4       16      +       6009132 7703341 NM_018723,NM_145892,NM_145891,NM_145893
+A2LD1   1       13      -       99980418        99984057        NM_033110
+A2M     1       12      -       9111570 9160092 NM_000014
+A2ML1   1       12      +       8866334 8920644 NM_144670
+A3GALT2 1       1       -       33544953        33559286        NM_001080438
+A4GALT  1       22      -       41418064        41446860        NM_017436
+A4GNT   1       3       -       139325249       139333919       NM_016161
+AAA1    1       7       -       34724998        34840468        NR_015356
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | wc
+  19019  133133  875931
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | wc
+  26453  185171 1446264
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | head -n 10
+A1BG 1 19 - 63549983 63556677 NM_130786 1 19 - 63549983 63556677 NM_130786
+A1CF 6 10 - 52229174 52315441 NM_001198820,NM_001198819,NM_001198818,NM_014576,NM_138933,NM_138932 3 10 - 52229174 52315441 NM_138933,NM_138932,NM_014576
+A2M 1 12 - 9111570 9159825 NM_000014 1 12 - 9111570 9160092 NM_000014
+A2ML1 2 12 + 8866334 8920644 NM_001282424,NM_144670 1 12 + 8866334 8920644 NM_144670
+A3GALT2 1 1 - 33544953 33559286 NM_001080438 1 1 - 33544953 33559286 NM_001080438
+A4GALT 1 22 - 41418070 41446820 NM_017436 1 22 - 41418064 41446860 NM_017436
+A4GNT 1 3 - 139325249 139333919 NM_016161 1 3 - 139325249 139333919 NM_016161
+AAAS 2 12 - 51987506 52001679 NM_015665,NM_001173466 1 12 - 51987506 52001679 NM_015665
+AACS 1 12 + 124115877 124193824 NM_023928 1 12 + 124115865 124193832 NM_023928
+AADAC 1 3 + 153014550 153028966 NM_001086 1 3 + 153014550 153028966 NM_001086
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | wc        
+  17123  222599 1656178
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ if ($2 > $8) { print $0 } } ' | wc
+   6518   84734  758697
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ if ($2 < $8) { print $0 } } ' | wc
+     20     260    2616
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ if ($2 == $8) { print $0 } } ' | wc
+  10585  137605  894865
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ if ($5 == $11) { print $0 } } ' | wc
+  15501  201513 1489379
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ if ($5 < $11) { print $0 } } ' | wc
+    839   10907   98550
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ if ($5 > $11) { print $0 } } ' | wc
+    783   10179   68249
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAl
+ignIDs.Condensed.txt | sort -k 1,1) | awk '{ print $5 - $11 } ' | head -n 10
+0
+0
+0
+0
+0
+6
+0
+0
+12
+0
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ val1 = sqrt(($5 - $11)^2); if (val1 > 10000000) { print $0 } } ' | head -n 10
+ARHGDIA 10 17 - 2385026 77422571 NM_001301240,NM_001185077,NM_001185077,NM_001185078,NM_004309,NM_001301242,NM_001301241,NM_001301241,NM_001301243,NR_125441 1 17 - 77418883 77422571 NM_004309
+HLA-DQB1 4 6 - 3812911 32742444 NM_002123,NM_001243962,NM_001243962,NM_001243961 1 6 - 32735218 32742444 NM_002123
+LOC283788 1 4 + 191098993 191120081 NR_027436 1 20 + 28225500 28247672 NR_003579
+PRG2 4 11 - 56910835 56914706 NM_002728,NM_001302927,NM_001243245,NM_001302926 2 19 - 763487 56914706 NM_002728,NM_024888
+RPL13A 3 19 + 54682622 54687376 NM_001270491,NM_012423,NR_073024 3 19 + 12919677 77826706 NR_003680,NR_003932,NM_012423
+WASH2P 1 2 + 114057699 114073083 NR_024077 1 15 + 100318538 100334331 NR_003659
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ val1 = $5 - $11; if (val1 > 10000000) { print $0 } } '     
+LOC283788 1 4 + 191098993 191120081 NR_027436 1 20 + 28225500 28247672 NR_003579
+PRG2 4 11 - 56910835 56914706 NM_002728,NM_001302927,NM_001243245,NM_001302926 2 19 - 763487 56914706 NM_002728,NM_024888
+RPL13A 3 19 + 54682622 54687376 NM_001270491,NM_012423,NR_073024 3 19 + 12919677 77826706 NR_003680,NR_003932,NM_012423
+WASH2P 1 2 + 114057699 114073083 NR_024077 1 15 + 100318538 100334331 NR_003659
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ val1 = $5 - $11; if (val1 > 10000000) { print $0 } } ' | wc
+      4      52     403
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ val1 = sqrt(($6 - $12)^2); if (val1 > 10000000) { print $0 } } '     
+KIF22 4 16_random + 89350 29724207 NM_007317,NM_001256270,NM_001256270,NM_001256269 1 16_random + 89350 104032 NM_007317
+LOC283788 1 4 + 191098993 191120081 NR_027436 1 20 + 28225500 28247672 NR_003579
+RPL13A 3 19 + 54682622 54687376 NM_001270491,NM_012423,NR_073024 3 19 + 12919677 77826706 NR_003680,NR_003932,NM_012423
+RPL31 3 2 + 100985122 101002587 NM_001098577,NM_001099693,NM_000993 4 2 + 100985122 159921666 NR_002595,NM_000993,NM_001098577,NM_001099693
+WASH2P 1 2 + 114057699 114073083 NR_024077 1 15 + 100318538 100334331 NR_003659
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ print $5 - $11 } ' | R -q -e "Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); table(cut(Data1[,1], c(-1e6, -1e5, -1e4, -1e3, -1e2, 0, 1e2, 1e3, 1e4, 1e5, 1e6)));"
+> Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); table(cut(Data1[,1], c(-1e6, -1e5, -1e4, -1e3, -1e2, 0, 1e2, 1e3, 1e4, 1e5, 1e6)));
+       0%       25%       50%       75%      100%
+-75033857         0         0         0 162873493
 
+(-1e+06,-1e+05] (-1e+05,-1e+04] (-1e+04,-1e+03]   (-1e+03,-100]        (-100,0]
+             32             205             237             218           15643
+        (0,100]     (100,1e+03]   (1e+03,1e+04]   (1e+04,1e+05]   (1e+05,1e+06]
+            476             155             134              12               2
+>
+>
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ print $5 - $11 } ' | R -q -e "Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); table(cut(Data1[,1], c(-1e7, -1e6, -1e5, -1e4, -1e3, -1e2, 0, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7)));"
+> Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); table(cut(Data1[,1], c(-1e7, -1e6, -1e5, -1e4, -1e3, -1e2, 0, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7)));
+       0%       25%       50%       75%      100%
+-75033857         0         0         0 162873493
+
+(-1e+07,-1e+06] (-1e+06,-1e+05] (-1e+05,-1e+04] (-1e+04,-1e+03]   (-1e+03,-100]
+              3              32             205             237             218
+       (-100,0]         (0,100]     (100,1e+03]   (1e+03,1e+04]   (1e+04,1e+05]
+          15643             476             155             134              12
+  (1e+05,1e+06]   (1e+06,1e+07]
+              2               0
+>
+>
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ print $6 - $12 } ' | R -q -e "Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); table(cut(Data1[,1], c(-1e7, -1e6, -1e5, -1e4, -1e3, -1e2, 0, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7)));"
+> Data1 <- read.table(file('stdin'), header=F); quantile(Data1[,1]); table(cut(Data1[,1], c(-1e7, -1e6, -1e5, -1e4, -1e3, -1e2, 0, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7)));
+       0%       25%       50%       75%      100% 
+-58919079         0         0         0 162872409 
+
+(-1e+07,-1e+06] (-1e+06,-1e+05] (-1e+05,-1e+04] (-1e+04,-1e+03]   (-1e+03,-100] 
+              1               3               9             135             153 
+       (-100,0]         (0,100]     (100,1e+03]   (1e+03,1e+04]   (1e+04,1e+05] 
+          16027             116             235             199             196 
+  (1e+05,1e+06]   (1e+06,1e+07] 
+             43               1 
+> 
+> 
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ if ($3 == $9) { print $0 } } ' | wc
+  17033  221429 1639533
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ if ($3 != $9) { print $0 } } ' | wc
+     90    1170   16645
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ if ($3 != $9) { print $0 } } ' | head -n 10
+ABCF1 6 6_cox_hap1 + 1786022 30667288 NM_001025091,NM_001025091,NM_001025091,NM_001090,NM_001090,NM_001090 6 6_qbl_hap2 + 1786022 30667288 NM_001025091,NM_001090,NM_001025091,NM_001090,NM_001025091,NM_001090
+ANAPC11 15 17 + 2409115 77451701 NM_001002248,NM_001289417,NM_001289416,NM_001289415,NM_001289414,NM_001002247,NM_001002246,NM_001002245,NM_001002244,NM_001002244,NM_016476,NM_001002249,NM_001289419,NM_001289420,NM_001289418 8 17_random + 2409115 77451701 NM_001002249,NM_016476,NM_001002248,NM_001002247,NM_001002246,NM_001002245,NM_001002244,NM_001002244
+ASMT 6 X + 1674347 1721974 NM_004043,NM_001171039,NM_001171039,NM_001171038,NM_001171038,NM_004043 2 Y + 1674347 1721974 NM_004043,NM_004043
+ATG4B 4 2 + 54821 242261944 NM_178326,NM_178326,NM_013325,NM_013325 4 2_random + 54821 242261944 NM_013325,NM_178326,NM_178326,NM_013325
+BRD2 15 6 + 4122527 33057260 NM_001199455,NM_005104,NM_001199456,NM_001199456,NM_005104,NM_001113182,NM_005104,NM_001199455,NM_001113182,NM_001199455,NM_001113182,NM_001291986,NM_001199456,NM_001291986,NM_001291986 6 6_qbl_hap2 + 4122527 33057260 NM_005104,NM_001113182,NM_005104,NM_001113182,NM_005104,NM_001113182
+C16orf54 2 16 - 41077 29664841 NM_175900,NM_175900 2 16_random - 41077 29664841 NM_175900,NM_175900
+C2 18 6_cox_hap1 + 3113299 32021430 NM_000063,NM_001178063,NM_001282459,NM_001282459,NM_001282459,NM_001282458,NM_001282458,NM_001282458,NM_001282457,NM_001282457,NM_001282457,NM_001178063,NM_001145903,NM_000063,NM_000063,NM_001145903,NM_001145903,NM_001178063 3 6_qbl_hap2 + 3142993 32021430 NM_000063,NM_000063,NM_000063
+C4A 6 6_cox_hap1 + 3197570 32111173 NM_001252204,NM_007293,NM_001252204,NM_001252204,NM_007293,NM_007293 3 6_qbl_hap2 + 3197570 32111173 NM_007293,NM_007293,NM_007293
+C4B 8 6 + 3197570 32111174 NM_001242823,NM_001002029,NM_001242823,NM_001242823,NM_001002029,NM_001242823,NM_001002029,NM_001002029 4 6_qbl_hap2 + 3197570 32111174 NM_001002029,NM_001002029,NM_001002029,NM_001002029
+C6orf25 18 6 + 2938697 31802464 NM_025260,NM_025260,NM_025260,NM_138277,NM_138277,NM_138277,NM_138275,NM_138272,NM_138273,NM_138273,NM_138273,NM_138272,NM_138272,NM_138275,NM_138274,NM_138274,NM_138275,NM_138274 18 6_qbl_hap2 + 2938697 31802464 NM_138273,NM_138274,NM_138277,NM_138272,NM_025260,NM_138275,NM_138275,NM_138274,NM_138273,NM_138272,NM_025260,NM_138277,NM_138275,NM_138274,NM_025260,NM_138272,NM_138273,NM_138277
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ if ($3 != $9) { print $0 } } ' | grep -v random | grep -v cox | grep -v hap | head -n 10
+ASMT 6 X + 1674347 1721974 NM_004043,NM_001171039,NM_001171039,NM_001171038,NM_001171038,NM_004043 2 Y + 1674347 1721974 NM_004043,NM_004043
+DHRSX 2 X - 2147552 2429015 NM_145177,NM_145177 2 Y - 2147552 2429015 NM_145177,NM_145177
+IL3RA 4 X + 1415508 1461582 NM_001267713,NM_002183,NM_002183,NM_001267713 2 Y + 1415508 1461582 NM_002183,NM_002183
+LOC283788 1 4 + 191098993 191120081 NR_027436 1 20 + 28225500 28247672 NR_003579
+OR4F16 3 1 + 357521 180727832 NM_001005277,NM_001005277,NM_001005277 3 5 + 357521 180727832 NM_001005277,NM_001005277,NM_001005277
+PPP2R3B 2 X - 214667 267690 NM_013239,NM_013239 2 Y - 214667 267690 NM_013239,NM_013239
+PRG2 4 11 - 56910835 56914706 NM_002728,NM_001302927,NM_001243245,NM_001302926 2 19 - 763487 56914706 NM_002728,NM_024888
+SLC25A6 2 X - 1465044 1471039 NM_001636,NM_001636 2 Y - 1465044 1471039 NM_001636,NM_001636
+SPRY3 3 X + 57509790 154665313 NM_005840,NM_005840,NM_001304990 2 Y + 57509790 154665313 NM_005840,NM_005840
+VAMP7 10 X + 57623336 154826627 NM_005638,NM_005638,NM_001145149,NM_001145149,NR_033715,NR_033714,NR_033714,NM_001185183,NM_001185183,NR_033715 2 Y + 57623336 154826627 NM_005638,NM_005638
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170208.UCSCTableBrowser_refSeq_hg18_GeneAnnots_wSymbols.NoProtAlignIDs.Condensed.txt | sort -k 1,1) | awk '{ if ($3 != $9) { print $0 } } ' | grep -v random | grep -v cox | grep -v hap | wc        
+     11     143    1239
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) | wc
+  26455  343915 2698450
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | wc
+  26453  185171 1446264
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | wc
+  26453  185171 1446264
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) | awk '{ print $1 }' | sort | uniq -d
+CAND1.11
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) | grep CAND1.11
+CAND1.11 1 11 + 10286435 10408796 NR_103765 1 11 + 10286435 10408796 NR_103765
+CAND1.11 1 11 + 10286435 10408796 NR_103765 2 11 + 10286435 65994739 NM_018448,NR_103765
+CAND1.11 2 11 + 10286435 65994739 NM_018448,NR_103765 1 11 + 10286435 10408796 NR_103765
+CAND1.11 2 11 + 10286435 65994739 NM_018448,NR_103765 2 11 + 10286435 65994739 NM_018448,NR_103765
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | grep CAND1.11
+CAND1.11        2       11      +       10286435        65994739        NM_018448,NR_103765
+CAND1.11        1       11      +       10286435        10408796        NR_103765
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene. | grep CAND1.11
+20130911_annnovar.hg18_refGene.Condensed.txt     20130911_annnovar.hg18_refGene.GeneIDs.uniq.txt
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | grep CAND1.11
+82      NR_103765       chr11   +       10286435        10408796        10408796        10408796        4       10286435,10308692,10388879,10408498,    10286796,10308832,10389099,10408796,    0       CAND1.11        unk   unk      -1,-1,-1,-1,
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | grep CAND1   
+844     NM_033630       chr20   -       34004952        34005962        34005080        34005917        2       34004952,34005783,      34005675,34005962,      0       SCAND1  cmpl    cmpl    2,0,
+1088    NM_018448       chr12   +       65949327        65994739        65949764        65992877        15      65949327,65961956,65972668,65975079,65977453,65977794,65978996,65982369,65984651,65985150,65987443,65989947,65990198,65991739,65992652,        65949832,65962100,65972823,65975203,65977710,65977900,65979142,65982662,65984793,65986644,65987539,65990117,65990363,65991847,65994739, 0       CAND1   cmpl    cmpl    0,2,2,1,2,1,2,1,0,1,1,1,0,0,0,
+844     NM_016558       chr20   -       34004952        34006695        34005080        34005620        3       34004952,34005783,34006087,     34005675,34005823,34006695,     0       SCAND1  cmpl    cmpl    0,-1,-1,
+82      NR_103765       chr11   +       10286435        10408796        10408796        10408796        4       10286435,10308692,10388879,10408498,    10286796,10308832,10389099,10408796,    0       CAND1.11        unk   unk      -1,-1,-1,-1,
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | grep [^-a-zA-Z0-9.]CAND1[^-a-zA-Z0-9\.]
+1088    NM_018448       chr12   +       65949327        65994739        65949764        65992877        15      65949327,65961956,65972668,65975079,65977453,65977794,65978996,65982369,65984651,65985150,65987443,65989947,65990198,65991739,65992652,        65949832,65962100,65972823,65975203,65977710,65977900,65979142,65982662,65984793,65986644,65987539,65990117,65990363,65991847,65994739, 0       CAND1   cmpl    cmpl    0,2,2,1,2,1,2,1,0,1,1,1,0,0,0,
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | grep [^-a-zA-Z0-9.]CAND1[^-a-zA-Z0-9.]
+1088    NM_018448       chr12   +       65949327        65994739        65949764        65992877        15      65949327,65961956,65972668,65975079,65977453,65977794,65978996,65982369,65984651,65985150,65987443,65989947,65990198,65991739,65992652,        65949832,65962100,65972823,65975203,65977710,65977900,65979142,65982662,65984793,65986644,65987539,65990117,65990363,65991847,65994739, 0       CAND1   cmpl    cmpl    0,2,2,1,2,1,2,1,0,1,1,1,0,0,0,
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | grep [^-a-zA-Z0-9\.]CAND1[^-a-zA-Z0-9.]
+1088    NM_018448       chr12   +       65949327        65994739        65949764        65992877        15      65949327,65961956,65972668,65975079,65977453,65977794,65978996,65982369,65984651,65985150,65987443,65989947,65990198,65991739,65992652,        65949832,65962100,65972823,65975203,65977710,65977900,65979142,65982662,65984793,65986644,65987539,65990117,65990363,65991847,65994739, 0       CAND1   cmpl    cmpl    0,2,2,1,2,1,2,1,0,1,1,1,0,0,0,
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/gluster/home/mturchin20/Software/20130911_annovar/humandb/hg18_refGene.txt | grep [^-a-zA-Z0-9\.]CAND1[^-a-zA-Z0-9\.]
+1088    NM_018448       chr12   +       65949327        65994739        65949764        65992877        15      65949327,65961956,65972668,65975079,65977453,65977794,65978996,65982369,65984651,65985150,65987443,65989947,65990198,65991739,65992652,        65949832,65962100,65972823,65975203,65977710,65977900,65979142,65982662,65984793,65986644,65987539,65990117,65990363,65991847,65994739, 0       CAND1   cmpl    cmpl    0,2,2,1,2,1,2,1,0,1,1,1,0,0,0,
+[  mturchin20@bigmem01  ~/TempStuff]$echo -e "nana.1\nnana1" | grep a. 
+nana.1
+nana1
+[  mturchin20@bigmem01  ~/TempStuff]$echo -e "nana.1\nnana1" | grep a\.
+nana.1
+nana1
+[  mturchin20@bigmem01  ~/TempStuff]$echo -e "nana.1\nnana1" | grep a\\.
+nana.1
+[  mturchin20@bigmem01  ~/TempStuff]$echo -e "nana.1\nnana1" | grep a[^.]
+nana.1
+nana1
+[  mturchin20@bigmem01  ~/TempStuff]$echo -e "nana.1\nnana1" | grep a[^\.]
+nana.1
+nana1
+[  mturchin20@bigmem01  ~/TempStuff]$echo -e "nana.1\nnana1" | grep a[^\\.]
+nana.1
+nana1
+[  mturchin20@bigmem01  ~/TempStuff]$echo -e "nana.1\nnana1" | grep ana[^\\.]
+nana1
+[  mturchin20@bigmem01  ~/TempStuff]$echo -e "nana.1\nnana1" | grep ana[^.]
+nana1
+[  mturchin20@bigmem01  ~/TempStuff]$echo -e "nana.1\nnana1" | grep ana. 
+nana.1
+nana1
+[  mturchin20@bigmem01  ~/TempStuff]$echo -e "nana.1\nnana1" | grep ana\.
+nana.1
+nana1
+[  mturchin20@bigmem01  ~/TempStuff]$echo -e "nana.1\nnana1" | grep ana\\.
+nana.1
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) | awk '{ if ($2 == $8) { print $0 } } ' | wc
+  26453  343889 2698272
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) | awk '{ if ($5 == $11) { print $0 } } ' | wc
+  26455  343915 2698450
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) | awk '{ if ($6 == $12) { print $0 } } ' | wc
+  26453  343889 2698272
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) | awk '{ if ($2 != $8) { print $0 } } '     
+CAND1.11 1 11 + 10286435 10408796 NR_103765 2 11 + 10286435 65994739 NM_018448,NR_103765
+CAND1.11 2 11 + 10286435 65994739 NM_018448,NR_103765 1 11 + 10286435 10408796 NR_103765
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) | awk '{ if ($6 != $12) { print $0 } } ' 
+CAND1.11 1 11 + 10286435 10408796 NR_103765 2 11 + 10286435 65994739 NM_018448,NR_103765
+CAND1.11 2 11 + 10286435 65994739 NM_018448,NR_103765 1 11 + 10286435 10408796 NR_103765
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | wc
+  27162  353106 2939436
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | wc
+  27183  190281 1570715
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | wc
+  27293  191051 1578049
+[  mturchin20@bigmem01  ~/TempStuff]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | wc
+     21     147    1215
+[  mturchin20@bigmem01  ~/TempStuff]$join -v 2 <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | wc
+    131     917    6220
+[  mturchin20@bigmem01  ~/TempStuff]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | head -n 10
+C1QTNF9B-AS1 5 13 + 23361025 23364243 NM_001135816,NM_001014442,NM_001348113,NM_001348112,NM_001348114
+CECR5 2 22 - 15998409 16026177 NM_033070,NM_017829
+CRHR1-IT1 6 17 + 41053477 41079380 NR_027295,NR_026680,NR_138257,NR_138258,NR_138259,NR_138260
+CRHR1-IT1-CRHR1 2 17 + 41053477 41268975 NM_001256299,NM_001303016
+FAM150A 1 8 - 53609149 53640574 NM_207413
+FAM150B 1 2 - 269560 278308 NM_001002919
+FAM188A 2 10 - 15860173 15942538 NM_024948,NM_001318330
+FAM188B 1 7 + 30777557 30898527 NM_032222
+FAM63A 6 1 - 149235924 149247478 NM_001163260,NM_018379,NM_001163259,NM_001163258,NM_001319998,NM_001040217
+FAM63B 2 15 + 56850682 56941390 NM_001040450,NM_001040453
+[  mturchin20@bigmem01  ~/TempStuff]$join -v 2 <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | head -n 10
+ALKAL1 1 8 - 53609149 53640574 NM_207413
+ALKAL2 1 2 - 269560 278308 NM_001002919
+HDHD5 2 22 - 15998409 16026177 NM_033070,NM_017829
+INMT-MINDY4 1 7 + 30758275 30898527 NR_037598
+LINC02210 6 17 + 41053477 41079380 NR_027295,NR_026680,NR_138257,NR_138258,NR_138259,NR_138260
+LINC02210-CRHR1 2 17 + 41053477 41268975 NM_001303016,NM_001256299
+LINC02211 1 5 + 25226818 25338146 NR_136209
+LINC02212 1 5 - 10546638 10555840 NR_104606
+LINC02213 2 5 - 10558101 10575196 NR_134289,NR_134290
+LINC02214 1 5 - 116106896 116125804 NR_104678
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($2 == $8) { print $0 } } ' | wc
+  27140  352820 2934656
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($2 != $8) { print $0 } } ' | wc
+     22     286    4780
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($2 != $8) { print $0 } } ' | head -n 10
+AKR7L 2 1 - 19465062 19473155 NR_040289,NR_040288 3 1 - 19465062 19473203 NM_001348421,NR_040288,NR_040289
+AP3B2 3 15 - 81125087 81175714 NM_001278511,NM_004644,NM_001278512 5 15 - 81125087 81175714 NM_001278512,NM_004644,NM_001278511,NM_001348441,NM_001348440
+AR 2 X + 66680598 66867186 NM_001011645,NM_000044 5 X + 66681189 66867186 NM_001348063,NM_001348061,NM_001348064,NM_000044,NM_001011645
+CCDC85A 1 2 + 56264761 56466813 NM_001080433 6 2 + 56264761 56466813 NM_001080433,NM_001348512,NM_001348513,NM_001348514,NM_001348515,NM_001348516
+CDH26 2 20 + 57966865 58021563 NM_177980,NM_021810 4 20 + 57966845 58022979 NM_177980,NR_145482,NM_001348204,NM_021810
+CHD1L 6 1 + 145180914 145234071 NM_004284,NM_001256338,NR_046070,NM_001256337,NM_001256336,NM_024568 37 1 + 145111396 145234071 NM_001256336,NM_001256337,NM_001256338,NM_024568,NR_046070,NM_001348451,NM_001348453,NM_001348454,NM_001348455,NM_001348456,NM_001348457,NM_001348458,NM_001348459,NM_001348460,NM_001348461,NM_001348462,NM_001348463,NM_001348464,NM_001348465,NM_001348466,NM_004284,NR_145681,NR_145682,NR_145683,NR_145684,NR_145685,NR_145686,NR_145687,NR_145688,NR_145689,NR_145690,NR_145691,NR_145692,NR_145693,NR_145694,NR_145695,NM_001348452
+DDX27 1 20 + 47269238 47294021 NM_017895 2 20 + 47269238 47294021 NM_017895,NM_001348187
+DIMT1 1 5 - 61720107 61735485 NM_014473 3 5 - 61719536 61735544 NM_001348077,NM_014473,NM_001348076
+DNAJC21 2 5 + 34965454 34994826 NM_001012339,NM_194283 3 5 + 34965454 34994826 NM_194283,NM_001012339,NM_001348420
+GPR68 2 14 - 90768628 90789977 NM_001177676,NM_003485 3 14 - 90768628 90789977 NM_001177676,NM_003485,NM_001348437
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($2 < $8) { print $0 } } ' | wc        
+     22     286    4780
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($5 == $11) { print $0 } } ' | wc
+  27147  352911 2936858
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($6 == $12) { print $0 } } ' | wc
+  27153  352989 2938356
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($5 < $11) { print $0 } } ' | wc
+      2      26     811
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($5 > $11) { print $0 } } ' | wc
+     13     169    1767
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($6 > $12) { print $0 } } ' | wc
+      0       0       0
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170210.wgetDirect.refSeq_hg18.refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($6 < $12) { print $0 } } ' | wc
+      9     117    1080
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | wc
+  25935  337155 2739380
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | wc
+  26453  185171 1446264
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | wc
+  27293  191051 1578049
+[  mturchin20@bigmem01  ~/TempStuff]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | wc
+    518    3626   26893
+[  mturchin20@bigmem01  ~/TempStuff]$join -v 2 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | wc
+   1359    9513   69053
+[  mturchin20@bigmem01  ~/TempStuff]$join -v 1 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | head -n 10
+ACRC 1 X + 70714598 70750158 NM_052957
+ADCK3 1 1 + 225194560 225241869 NM_020247
+ADCK4 2 19 - 45889273 45914630 NM_001142555,NM_024876
+ADRBK1 1 11 + 66790480 66810605 NM_001619
+ADRBK2 1 22 + 24290860 24455258 NM_005160
+AOX2P 1 2 + 201268690 201367186 NR_001557
+APITD1 2 1 + 10412745 10425459 NM_199294,NR_036462
+APOA1BP 1 1 + 154828181 154830715 NM_144772
+ASUN 1 12 - 26949378 26982521 NM_018164
+ATHL1 1 11 + 279137 285688 NM_025092
+[  mturchin20@bigmem01  ~/TempStuff]$join -v 2 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | head -n 10
+ACBD7-DCLRE1CP1 1 10 - 15097076 15170781 NR_144471
+ACOD1 1 13 + 76424624 76430777 NM_001258406
+ACOXL-AS1 1 2 - 111572388 111589636 NR_122074
+ADAM3B 1 16 - 48109057 48109997 NR_144553
+AFDN 3 6 + 167970519 168115549 NM_001207008,NM_001040000,NM_001291964
+AFDN-AS1 2 6_random - 811285 167970325 NR_027906,NR_027906
+AKAIN1 2 18 - 5132909 5187751 NM_001145194,NM_001330553
+ALKAL1 1 8 - 53609149 53640574 NM_207413
+ALKAL2 1 2 - 269560 278308 NM_001002919
+ANKRD18CP 1 9 - 98957995 99040845 NR_136286
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($2 == $8) { print $0 } } ' | wc
+  23648  307424 2405919
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($2 < $8) { print $0 } } ' | wc
+   2273   29549  330855
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($2 > $8) { print $0 } } ' | wc
+     14     182    2606
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($5 == $11) { print $0 } } ' | wc
+  24659  320567 2577833
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($5 < $11) { print $0 } } ' | wc
+     64     832    7619
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($5 > $11) { print $0 } } ' | wc
+   1212   15756  153928
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($6 == $12) { print $0 } } ' | wc
+  24694  321022 2580675
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($6 < $12) { print $0 } } ' | wc
+   1194   15522  153087
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20170208DL_20160204Vs_annnovar.hg18_refGene.Condensed.txt | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | sort -k 1,1) | awk '{ if ($6 > $12) { print $0 } } ' | wc
+     47     611    5618
 ~~~
+
+
+
+
+
+
 
 
 
@@ -18613,6 +19034,8 @@ rs10422101      19      57011927        2
 join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.MarkerChrBP.txt | sort -k 1,1) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | awk '{ print $1 "\t" $2 "\t" $3 }' | sort -k 1,1) | perl -lane 'print $F[1], "\t", $F[2], "\t", $F[2], "\t", uc($F[3]), "\t", uc($F[4]);' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.AnnovarFormat
 
 cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.txt | awk '{ print $1 "\t" $2 "\t" $2 "\t" $4 "\t" $6 }' | sed 's/chr//g' | sed 's/\// /g' | perl -lane 'if ($F[$#F-1] eq $F[$#F]) { ($F[4], $F[3]) = ($F[3], $F[4]); } print join("\t", @F[0..$#F-1]);' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat
+#20170216 NOTE -- The last two entries of this file are lacking the alleles (originally lacking in the HapMart file), so manually putting them in -- rs1047891 is C/A (https://www.snpedia.com/index.php/Rs1047891) and https://www.snpedia.com/index.php/Rs635634 is G/A (https://www.snpedia.com/index.php/Rs635634)
+
 
 ##perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2012apr --verdbsnp 129 --veresp 6500 --buildver hg19 --remove
 mv /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.AnnovarFormat.genome_summary.csv /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/OLD1.WRONG1.hg19.GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.AnnovarFormat.genome_summary.csv
@@ -18860,6 +19283,10 @@ rs8071778
 
 
 
+
+
+
+
 ##Checking whether expanding out window around new hits leads to overlap with previous hits (to just check/take a look at proximity of new hits to old hits even if originally determined to be outside 1Mb window)
 ##20170123
 
@@ -19094,122 +19521,95 @@ cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/V
 
 
 
-##Annotating prev and new hits to find loci, dbl checking loci in new hits don't overlap with prev hit loci (and/or also checking how close/far away they are/may be)
-##(also going to check out varying expanding windows to see if/what get other loci too doing this)
-##(also checking if any loci that are not picked up from earlier dataset still are not picked up by 'prev' of new data)
-##20170123
 
 
 
 
+
+##20170214
+##Annotations, first set, using refSeq files as base + bedtools intersect setup; annotating previous & new snps atm; also including a bit of Annovar annotation information too
+##Also checking whether 1st set of 'new loci' completely accounted for in 2nd set 'previous + new loci', eg does first dataset contain any hits that are completely different from the 2nd dataset set
 
 #GlobalLipids2010
+#20170214
 
-Previous, New
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap
 
-#Getting NA SNP rs9411489 info from https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=635634 as before
-join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | sort) | perl -lane 'print $F[11], "\t", $F[12], "\t", $F[12], "\t", uc($F[1]), "\t", uc($F[2]);' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.AnnovarFormat
-cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.AnnovarFormat | grep -v NA | cat - <(echo "9	133279427	133279427	G	A") > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat
-ln -s /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits
+cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.txt | grep -v txStart | awk '{ print "chr" $3 "\t" $5 "\t" $6 "\t" $1 ";" $2 ";" $4 ";" $7 }' > /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed 
 
-cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.txt | awk '{ print $2 "\t" $3 "\t" $3 "\t" $5 "\t" $6 }' | grep -v Chr > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat
+cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat | awk '{ print "chr" $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.bed
 
-mv /mnt/gluster/home/mturchin20/Lab_Stuff /mnt/gluster/home/mturchin20/LabMisc
-mkdir /mnt/gluster/home/mturchin20/Software
-mv /mnt/lustre/home/mturchin20/Software/annovar /mnt/gluster/home/mturchin20/Software/20130911_annovar
-#Downloaded 'latest' annovar via a link provided in an e-mail (request page -- http://www.openbioinformatics.org/annovar/annovar_download_form.php)
-scp -p mturchin20@wolfy.uchicago.edu:/Users/mturchin20/LabMisc/Software/20170208DL_annovar.latest.tar.gz /mnt/gluster/home/mturchin20/Software
-tar -xvzf /mnt/gluster/home/mturchin20/Software/20170208DL_annovar.latest.tar.gz
-mv /mnt/gluster/home/mturchin20/Software/annovar /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 10000 > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bed
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 500000 > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bed
+#2Mb just as a positive control, not going to be normally interested in this range of output
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 2000000 > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bed
 
-#Did the below with instructions from http://stackoverflow.com/questions/2920301/clear-a-file-without-changing-its-timestamp
-cd /mnt/lustre/home/mturchin20/Software/annovar/humandb/
-for i in `ls -lrt | grep -v ^d | awk '{ print $9 }'`; do TMPFILE=`mktemp`; touch -r /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i $TMPFILE; cat /dev/null > /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i; touch -r $TMPFILE /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i; rm $TMPFILE; done
-#for i in `ls -lrt /mnt/lustre/home/mturchin20/Software/annovar/humandb/. | grep -v ^d | awk '{ print $9 }'`; do TMPFILE=`mktemp`; touch -r $i $TMPFILE; cat /dev/null > $i; touch -r $TMPFILE $i; rm $TMPFILE; done
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -wb -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -c -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
 
-#~perl /mnt/lustre/home/mturchin20/Software/annovar/20170123_ljbedits_summarize_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2010 --verdbsnp 129 --veresp 6500 --buildver hg18 --outfile /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits --remove 
-#~rm /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits*dropped /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits*hg18_phastConsElements44way /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits*genomicSuperDups
-#~perl /mnt/lustre/home/mturchin20/Software/annovar/20170123_ljbedits_summarize_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2010 --verdbsnp 129 --veresp 6500 --buildver hg18 --remove
-#perl /mnt/lustre/home/mturchin20/Software/annovar/20170123_ljbedits_summarize_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2010 --verdbsnp 129 --veresp 6500 --buildver hg18 --outfile /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits --remove
-#~perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl -filter -dbtype dbnsfp33a -buildver hg18 -out /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.dbsfp33a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb -otherinfo
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
 
-#20170209
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar refGene /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb genomicSuperDups /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb phastConsElements44way /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb tfbsConsSites /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18  
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb cytoBand /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb wgRna /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb targetScanS /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb gwasCatalog /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar snp129 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar snp138 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar avsift /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb23_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb26_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar dbnsfp33a /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar esp6500_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar esp6500siv2_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar exac03 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2012apr /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2010 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2014oct /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
 
-#hg19 only
-#clinvar_20161128
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.AnnovarFormat | awk '{ print "chr" $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bed
 
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar refGene /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb genomicSuperDups /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb phastConsElements46way /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb tfbsConsSites /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19  
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb cytoBand /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb wgRna /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb targetScanS /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb gwasCatalog /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar snp129 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar snp138 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar avsift /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-#~perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-#~perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb23_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb26_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar dbnsfp33a /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar esp6500_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar esp6500siv2_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar exac03 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2012apr /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2010 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2014oct /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar clinvar_20161128 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 10000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bed
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 500000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bed
+#2Mb just as a positive control, not going to be normally interested in this range of output
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 2000000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bed
 
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -c -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
 
-  annotate_variation.pl -filter -dbtype 1000g2012apr_eur -buildver hg19 -out ex1 example/ex1.avinput humandb/
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
 
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
 
-
-table_annovar.pl example/ex1.avinput humandb/ -buildver hg19 -out myanno -remove -protocol refGene,cytoBand,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp138,ljb23_all -operation g,r,r,f,f,f,f -nastring 
--csvout
-
-
-perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg18 -out /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar -remove -protocol refGene,genomicSuperDups,phastConsElements44way,cytoBand,tfbsConsSites,wgRna,targetScanS,gwasCatalog,snp129,snp138,1000g2014oct,espsiv2_all,exac03,dbnsfp33a -operation g,r,r,r,r,r,r,r,f,f,f,f,f,f -nastring NA
-
-
-
-refGene
-
-Conserved genomic elements annotation
-Transcription factor binding site
-Identify cytogenetic band
-disrupting microRNAs and snoRNAs
-disrupting predicted microRNA binding sites
-Identify variants located in segmental duplications
-Identify variants reported in previously published GWAS
-
-esp
-1000g
-snp138/9/whatev
-ljbsomething
+perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg18 -out /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly -remove -protocol refGene -operation g -nastring NA 
+perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg18 -out /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly -remove -protocol refGene -operation g -nastring NA
 
 
 
@@ -19220,186 +19620,1092 @@ ljbsomething
 
 
 
-/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/.
-bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.txt
-bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg18 -out /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar -remove -protocol refGene,genomicSuperDups,phastConsElements44way,cytoBand,tfbsConsSites,wgRna,targetScanS,gwasCatalog,snp129,snp138,1000g2014oct_all,esp6500siv2_all,exac03,dbnsfp33a -operation g,r,r,r,r,r,r,r,f,f,f,f,f,f -nastring NA
+#
+##/mnt/lustre/home/mturchin20/Software/liftOver/hg18ToHg19.over.chain.gz
+##
+##usage:
+##   liftOver oldFile map.chain newFile unMapped
+#
+#
+#
+#
+#
+#
+#
+#cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat | awk '{ print "chr"$1"\t"$2"\t"$3+1"\t"$1"_"$2}' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed
+#
+#/mnt/lustre/home/mturchin20/Software/liftOver/liftOver /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed /mnt/lustre/home/mturchin20/Software/liftOver/hg18ToHg19.over.chain.gz /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.bed /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.bed.dropped
+#
+#join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.bed | sed 's/chr//g' | awk '{ print $4 "\t" $1 "\t" $2 "\t" $2 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat | awk '{ print $1 "_" $2 "\t" $4 "\t" $5 }' | sort -k 1,1) | perl -lane 'push(@F, $F[0]); splice (@F,0,1); print join("\t", @F);' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.AnnovarFormat
+#
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg19 -out /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.hg19.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar -remove -protocol cadd -operation f -nastring NA -otherinfo
+#
+#
+#want to know if expand new SNPs 1Mb, 2Mb out, what additional loci do they overlap -- do loci that are now showing up already exist among the previous snps? 
+#
+#
 
 
-look at 5kb, 10kb, 20kb border windows for calling something related to a locus? or just be conservative?...probably see how different the results are
-bedtools intersect thing....slop too....
-take list from prev and doublecheck it's different from new results, and not even (hopefully?) nearby new results or vice-versa
+
+
+
+
+
+
+
+
+
+
+
+
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | awk '{ print $1 "_" $2 "\t" $7 "\t" $8}' | sort -k 1,1)
+
+#20170215 NOTE -- Find that overlap between bedtools intersect and Annovar is fairly good if not almost complete. Use of 'upstream/downstream' by annovar (I thinkkkk meaning <1kb) makes a few things appear not overlapping at first, but it mostly due to discrepancies in how the two approaches choose to output things.
 
 ~~~
-[  mturchin20@bigmem03  /mnt/gluster/data/external_private_supp/HaemgenRBC2016]$join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | sort) | perl -lane 'print $F[11], "\t", $F[12], "\t", $F[12], "\t", uc($F[1]), "\t", uc($F[2]);' | wc
-    102     510    2546
-[  mturchin20@bigmem03  /mnt/gluster/data/external_private_supp/HaemgenRBC2016]$join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | sort) | perl -lane 'print $F[11], "\t", $F[12], "\t", $F[12], "\t", uc($F[1]), "\t", uc($F[2]);' | grep -v NA | wc
-    101     505    2533
-[  mturchin20@bigmem03  /mnt/gluster/data/external_private_supp/HaemgenRBC2016]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | wc
-    102     102    1024
-[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.txt | awk '{ print $2 "\t" $3 "\t" $3 "\t" $5 "\t" $6 }' | grep -v Chr | head -n 10
-10      101902184       101902184       C       T
-10      17300296        17300296        G       A
-10      45333283        45333283        C       A
-10      5236085 5236085 A       G
-11      47215429        47215429        T       C
-1       149225460       149225460       G       A
-11      51368666        51368666        C       T
-11      54886216        54886216        T       C
-11      55776161        55776161        T       A
-11      75132669        75132669        A       C
-[  mturchin20@spudhead  ~/Software/annovar/humandb]$ls -lrt
-total 64954160
--rw-rw-r-- 1 mturchin20 mturchin20    10626173 Aug  3  2006 hg18_genomicSuperDups.txt
--rw-rw-r-- 1 mturchin20 mturchin20   193606817 Feb  2  2009 hg18_phastConsElements44way.txt
--rw-rw-r-- 1 mturchin20 mturchin20   205139082 Dec  6  2009 hg19_phastConsElements46way.txt
--rw-rw-r-- 1 mturchin20 mturchin20  2609192331 Sep 12  2011 hg19_avsift.txt
--rw-rw-r-- 1 mturchin20 mturchin20    10570294 Oct 25  2011 hg19_genomicSuperDups.txt
--rw-rw-r-- 1 mturchin20 mturchin20     6317127 Feb 22  2012 hg19_avsift.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20     5233500 Feb 22  2012 hg19_ljb_all.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    73382469 Feb 23  2012 hg18_CEU.sites.2010_03.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20   196121521 Feb 23  2012 hg18_CEU.sites.2010_03.txt
--rw-r--r-- 1 mturchin20 mturchin20    68307610 Feb 23  2012 hg18_JPTCHB.sites.2010_03.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20   158204020 Feb 23  2012 hg18_JPTCHB.sites.2010_03.txt
--rw-r--r-- 1 mturchin20 mturchin20   263387600 Feb 23  2012 hg18_YRI.sites.2010_03.txt
--rw-r--r-- 1 mturchin20 mturchin20    77895206 Feb 23  2012 hg18_YRI.sites.2010_03.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20  5795736715 Feb 24  2012 hg19_ljb_all.txt
--rw-r--r-- 1 mturchin20 mturchin20    89456008 May 25  2012 hg19_ALL.sites.2012_04.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    87006131 May 25  2012 hg19_AMR.sites.2012_04.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    85553308 May 25  2012 hg19_ASN.sites.2012_04.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    86463107 May 25  2012 hg19_EUR.sites.2012_04.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20  1372992404 May 25  2012 hg19_ALL.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20   691158224 May 25  2012 hg19_AMR.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20   502418754 May 25  2012 hg19_ASN.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20   598097961 May 25  2012 hg19_EUR.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20   894204297 May 25  2012 hg19_AFR.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20    87520670 May 25  2012 hg19_AFR.sites.2012_04.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    63392958 Jun 26  2012 hg19_esp6500_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20     5558185 Jun 26  2012 hg19_esp6500_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20  1513192372 Aug  5  2012 hg19_snp129.txt
--rw-rw-r-- 1 mturchin20 mturchin20    94950668 Aug  5  2012 hg19_snp129.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    89345455 Aug 21  2012 hg18_ALL.sites.2012_04.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20  1370830422 Aug 21  2012 hg18_ALL.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20        5965 Sep 11  2013 hg18_example_db_generic.txt
--rw-r--r-- 1 mturchin20 mturchin20       30748 Sep 11  2013 hg18_cytoBand.txt
--rw-r--r-- 1 mturchin20 mturchin20     2076545 Sep 11  2013 hg18_example_db_gff3.txt
--rw-r--r-- 1 mturchin20 mturchin20       17094 Sep 11  2013 GRCh37_MT_ensGeneMrna.fa
--rw-r--r-- 1 mturchin20 mturchin20        3131 Sep 11  2013 GRCh37_MT_ensGene.txt
-drwxr-xr-x 2 mturchin20 mturchin20        4096 Sep 11  2013 genometrax-sample-files-gff/
--rw-rw-r-- 1 mturchin20 mturchin20     5924981 Jan  7  2014 hg18_avsift.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20  2286099588 Jan  7  2014 hg18_avsift.txt
--rw-rw-r-- 1 mturchin20 mturchin20     6139175 Jan  7  2014 hg18_esp6500_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    68983971 Jan  7  2014 hg18_esp6500_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20     5243750 Jan  7  2014 hg18_ljb_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20  5795099570 Jan  7  2014 hg18_ljb_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20  1685177611 Jan  7  2014 hg18_snp129.txt
--rw-rw-r-- 1 mturchin20 mturchin20    96928355 Jan  7  2014 hg18_snp129.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20     6611074 Feb 23  2014 hg19_ljb23_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20 12073254842 Feb 23  2014 hg19_ljb23_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20   151652203 Feb 24  2014 hg19_refGeneMrna.fa
--rw-rw-r-- 1 mturchin20 mturchin20    13817961 Feb 24  2014 hg19_refGene.txt
--rw-rw-r-- 1 mturchin20 mturchin20    31869378 Feb 24  2014 hg19_refLink.txt
--rw-rw-r-- 1 mturchin20 mturchin20 12066978717 May 27  2014 hg18_ljb23_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20     6615864 May 27  2014 hg18_ljb23_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20 11045700932 Sep 25  2014 hg18_ljb26_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20    18738649 Sep 25  2014 hg18_ljb26_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    32674836 Mar 22  2015 hg18_refLink.txt
--rw-rw-r-- 1 mturchin20 mturchin20    14642615 Dec 11  2015 hg18_refGene.txt
--rw-rw-r-- 1 mturchin20 mturchin20   165910269 Dec 11  2015 hg18_refGeneMrna.fa
--rw-rw-r-- 1 mturchin20 mturchin20    18955411 Jan 23 23:57 hg18_dbnsfp33a.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20  3607350277 Jan 24 00:05 hg18_dbnsfp33a.txt.gz
--rw-rw-r-- 1 mturchin20 mturchin20        5601 Feb  8 16:53 annovar_downdb.log
-[  mturchin20@spudhead  ~/Software/annovar/humandb]$for i in `ls -lrt | grep -v ^d | awk '{ print $9 }'`; do TMPFILE=`mktemp`; touch -r /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i $TMPFILE; cat /dev/null > /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i; touch -r $TMPFILE /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i; rm $TMPFILE; done
-[  mturchin20@spudhead  ~/Software/annovar/humandb]$ls -lrt                                                                                                                                                                                                                                                                total 4
--rw-rw-r-- 1 mturchin20 mturchin20    0 Feb  2  2009 hg18_phastConsElements44way.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Dec  6  2009 hg19_phastConsElements46way.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Sep 12  2011 hg19_avsift.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Oct 25  2011 hg19_genomicSuperDups.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 22  2012 hg19_avsift.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 22  2012 hg19_ljb_all.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_CEU.sites.2010_03.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_CEU.sites.2010_03.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_JPTCHB.sites.2010_03.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_JPTCHB.sites.2010_03.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_YRI.sites.2010_03.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_YRI.sites.2010_03.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 24  2012 hg19_ljb_all.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_ALL.sites.2012_04.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_AMR.sites.2012_04.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_ASN.sites.2012_04.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_EUR.sites.2012_04.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_ALL.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_AMR.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_ASN.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_EUR.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_AFR.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_AFR.sites.2012_04.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jun 26  2012 hg19_esp6500_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jun 26  2012 hg19_esp6500_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Aug  5  2012 hg19_snp129.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Aug  5  2012 hg19_snp129.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    0 Aug 21  2012 hg18_ALL.sites.2012_04.txt.idx
--rw-r--r-- 1 mturchin20 mturchin20    0 Aug 21  2012 hg18_ALL.sites.2012_04.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 Sep 11  2013 hg18_example_db_generic.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 Sep 11  2013 hg18_cytoBand.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 Sep 11  2013 hg18_example_db_gff3.txt
--rw-r--r-- 1 mturchin20 mturchin20    0 Sep 11  2013 GRCh37_MT_ensGeneMrna.fa
--rw-r--r-- 1 mturchin20 mturchin20    0 Sep 11  2013 GRCh37_MT_ensGene.txt
-drwxr-xr-x 2 mturchin20 mturchin20 4096 Sep 11  2013 genometrax-sample-files-gff/
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_avsift.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_avsift.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_esp6500_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_esp6500_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_ljb_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_ljb_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_snp129.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_snp129.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 23  2014 hg19_ljb23_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 23  2014 hg19_ljb23_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 24  2014 hg19_refGeneMrna.fa
--rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 24  2014 hg19_refGene.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 24  2014 hg19_refLink.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 May 27  2014 hg18_ljb23_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 May 27  2014 hg18_ljb23_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Sep 25  2014 hg18_ljb26_all.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Sep 25  2014 hg18_ljb26_all.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Mar 22  2015 hg18_refLink.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Dec 11  2015 hg18_refGene.txt
--rw-rw-r-- 1 mturchin20 mturchin20    0 Dec 11  2015 hg18_refGeneMrna.fa
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jan 23 23:57 hg18_dbnsfp33a.txt.idx
--rw-rw-r-- 1 mturchin20 mturchin20    0 Jan 24 00:05 hg18_dbnsfp33a.txt.gz
--rw-rw-r-- 1 mturchin20 mturchin20    0 Feb  8 16:53 annovar_downdb.log
--rw-rw-r-- 1 mturchin20 mturchin20    0 Feb  9 16:10 hg18_genomicSuperDups.txt
-
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.vs2.txt | head -n 10
+A1BG    1       19      -       63549983        63556677        NM_130786
+A1BG-AS1        1       19      +       63555147        63558361        NR_015380
+A1CF    6       10      -       52229174        52315441        NM_138933,NM_001198818,NM_138932,NM_001198820,NM_001198819,NM_014576
+A2M     4       12      -       9111570 9160092 NM_000014,NM_001347423,NM_001347424,NM_001347425
+A2M-AS1 3       12      +       9109039 9111918 NR_026971,NR_137424,NR_137425
+A2ML1   2       12      +       8866334 8920644 NM_001282424,NM_144670
+A2MP1   1       12      -       9272395 9278070 NR_040112
+A3GALT2 1       1       -       33544953        33559286        NM_001080438
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | head -n 10
+chr19   63549983        63556677        A1BG;1;-;NM_130786
+chr19   63555147        63558361        A1BG-AS1;1;+;NR_015380
+chr10   52229174        52315441        A1CF;6;-;NM_138933,NM_001198818,NM_138932,NM_001198820,NM_001198819,NM_014576
+chr12   9111570 9160092 A2M;4;-;NM_000014,NM_001347423,NM_001347424,NM_001347425
+chr12   9109039 9111918 A2M-AS1;3;+;NR_026971,NR_137424,NR_137425
+chr12   8866334 8920644 A2ML1;2;+;NM_001282424,NM_144670
+chr12   9272395 9278070 A2MP1;1;-;NR_040112
+chr1    33544953        33559286        A3GALT2;1;-;NM_001080438
+chr22   41418064        41447251        A4GALT;2;-;NM_017436,NM_001318038
+chr3    139325249       139333919       A4GNT;1;-;NM_016161
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat | head -n 10
+11      18589560        18589560        T       C
+2       165221337       165221337       T       C
+19      19268718        19268718        T       C
+2       21078786        21078786        T       C
+10      64697616        64697616        A       T
+6       161009807       161009807       A       G
+12      110556807       110556807       A       G
+8       145115531       145115531       A       G
+11      125749162       125749162       A       G
+12      56078847        56078847        T       C
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.bed | head -n 10
+chr11   18589560        18589560
+chr2    165221337       165221337
+chr19   19268718        19268718
+chr2    21078786        21078786
+chr10   64697616        64697616
+chr6    161009807       161009807
+chr12   110556807       110556807
+chr8    145115531       145115531
+chr11   125749162       125749162
+chr12   56078847        56078847
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.bed | head -n 10
+chr11   18589560        18589560
+chr2    165221337       165221337
+chr19   19268718        19268718
+chr2    21078786        21078786
+chr10   64697616        64697616
+chr6    161009807       161009807
+chr12   110556807       110556807
+chr8    145115531       145115531
+chr11   125749162       125749162
+chr12   56078847        56078847
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bed | head -n 10
+chr11   18579560        18599560
+chr2    165211337       165231337
+chr19   19258718        19278718
+chr2    21068786        21088786
+chr10   64687616        64707616
+chr6    160999807       161019807
+chr12   110546807       110566807
+chr8    145105531       145125531
+chr11   125739162       125759162
+chr12   56068847        56088847
+[  mturchin20@bigmem01  ~/TempStuff]$/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -wb -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+***** ERROR: illegal character 't' found in integer conversion of string "txStart". Exiting...
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.bed | head -n 10
+chr11   18589560        18589560
+chr2    165221337       165221337
+chr19   19268718        19268718
+chr2    21078786        21078786
+chr10   64697616        64697616
+chr6    161009807       161009807
+chr12   110556807       110556807
+chr8    145115531       145115531
+chr11   125749162       125749162
+chr12   56078847        56078847
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | grep txStart
+chrom   txStart txEnd   name2;1;strand;name
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | head -n 10
+chr11   18589560        18589560        chr11   18584523        18612596        SPTY2D1;1;-;NM_194285
+chr19   19268718        19268718        chr19   19248321        19292321        SUGP1;1;-;NM_172231
+chr19   19268718        19268718        chr19   24395   114052897       FAM138D;4;-;NR_026823,NR_026823,NR_026823,NR_026823
+chr19   19268718        19268718        chr19   3693815 130464236       MIR1268A;3;+;NR_031672,NR_031672,NR_031672
+chr19   19268718        19268718        chr19   20143   100318322       MIR1302-10;4;+;NR_036267,NR_036267,NR_036267,NR_036267
+chr19   19268718        19268718        chr19   20143   100318322       MIR1302-11;4;+;NR_036268,NR_036268,NR_036268,NR_036268
+chr19   19268718        19268718        chr19   20143   100318322       MIR1302-2;4;+;NR_036051,NR_036051,NR_036051,NR_036051
+chr19   19268718        19268718        chr19   20143   100318322       MIR1302-9;4;+;NR_036266,NR_036266,NR_036266,NR_036266
+chr19   19268718        19268718        chr19   844483  182432325       RNU6-2;11;+;NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730
+chr2    21078786        21078786        chr2    21077805        21120450        APOB;1;-;NM_000384
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | awk '{ print $1 "_" $2 }' | sort | uniq -c | awk '{ print $1 }' | sort | uniq -c
+     39 1
+      1 19
+     18 2
+      2 3
+      1 4
+      3 5
+      5 6
+      7 7
+      7 8
+      4 9
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | awk '{ print $1 "_" $2 }' | sort | uniq -c | awk '{ if ($1 == 19) { print $0 } } '
+     19 chr19_53898229
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep 53898229 | head -n 10                                                        
+chr19   53898229        53898229        chr19   53891039        53901003        FUT2;2;+;NM_001097638,NM_000511
+chr19   53898229        53898229        chr19   53897518        53898917        LOC105447645;1;-;NR_131188
+chr19   53898229        53898229        chr19   53118847        55323591        SNAR-A10;10;-;NR_024229,NR_024229,NR_024229,NR_024229,NR_024229,NR_024229,NR_024229,NR_024229,NR_024229,NR_024229
+chr19   53898229        53898229        chr19   53118847        55323591        SNAR-A11;10;-;NR_024225,NR_024225,NR_024225,NR_024225,NR_024225,NR_024225,NR_024225,NR_024225,NR_024225,NR_024225
+chr19   53898229        53898229        chr19   53118847        55323591        SNAR-A14;10;-;NR_024242,NR_024242,NR_024242,NR_024242,NR_024242,NR_024242,NR_024242,NR_024242,NR_024242,NR_024242
+chr19   53898229        53898229        chr19   53118847        55323591        SNAR-A3;10;-;NR_024214,NR_024214,NR_024214,NR_024214,NR_024214,NR_024214,NR_024214,NR_024214,NR_024214,NR_024214
+chr19   53898229        53898229        chr19   53118847        55323591        SNAR-A4;10;-;NR_024215,NR_024215,NR_024215,NR_024215,NR_024215,NR_024215,NR_024215,NR_024215,NR_024215,NR_024215
+chr19   53898229        53898229        chr19   53118847        55323591        SNAR-A5;10;-;NR_024223,NR_024223,NR_024223,NR_024223,NR_024223,NR_024223,NR_024223,NR_024223,NR_024223,NR_024223
+chr19   53898229        53898229        chr19   53118847        55323591        SNAR-A6;10;-;NR_024227,NR_024227,NR_024227,NR_024227,NR_024227,NR_024227,NR_024227,NR_024227,NR_024227,NR_024227
+chr19   53898229        53898229        chr19   53118847        55323591        SNAR-A7;10;-;NR_024224,NR_024224,NR_024224,NR_024224,NR_024224,NR_024224,NR_024224,NR_024224,NR_024224,NR_024224
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | wc
+    290    2030   29340
+[  mturchin20@bigmem01  ~/TempStuff]$/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wb -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | wc
+    290    2030   29340
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt | wc
+    102     408    2662
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt | head -n 10
+chr11   18589560        18589560        1
+chr2    165221337       165221337       0
+chr19   19268718        19268718        8
+chr2    21078786        21078786        1
+chr10   64697616        64697616        2
+chr6    161009807       161009807       0
+chr12   110556807       110556807       5
+chr8    145115531       145115531       1
+chr11   125749162       125749162       2
+chr12   56078847        56078847        6
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt | awk '{ print $4 }' | sort | uniq -c
+     15 0
+     39 1
+      1 19
+     18 2
+      2 3
+      1 4
+      3 5
+      5 6
+      7 7
+      7 8
+      4 9
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | head -n 10
+chr11   18589560        SPTY2D1
+chr19   19268718        SUGP1;FAM138D;MIR1268A;MIR1302-10;MIR1302-11;MIR1302-2;MIR1302-9;RNU6-2
+chr2    21078786        APOB
+chr10   64697616        JMJD1C;MIR4454
+chr12   110556807       MIR1244-1;MIR1244-2;MIR1244-3;MIR1244-4;MIR548T
+chr8    145115531       PLEC
+chr11   125749162       ST3GAL4;MIR3654
+chr12   56078847        R3HDM2;CAND1;MIR1244-1;MIR1244-2;MIR1244-3;MIR1244-4
+chr16   30825988        MIR1972-1;MIR1972-2;MIR6859-1;MIR6859-2;MIR6859-3;MIR6859-4
+chr12   119901033       HNF1A;MIR1244-1;MIR1244-2;MIR1244-3;MIR1244-4;MIR548T
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | wc        
+     87     261    3838
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | awk '{ print $3 }' | sort | uniq -c
+     39 1
+      1 19
+     18 2
+      2 3
+      1 4
+      3 5
+      5 6
+      7 7
+      7 8
+      4 9
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt | awk '{ print $1 "_" $2 "\t" $0 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | awk '{ print $1 "_" $2 "\t" $0 }' | sort -k 1,1) | wc
+     87     783    7573
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt | awk '{ print $1 "_" $2 "\t" $0 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | awk '{ print $1 "_" $2 "\t" $0 }' | sort -k 1,1) | head -n 10
+chr10_113923876 chr10 113923876 113923876 2 chr10 113923876 2 GPAM;MIR4454
+chr10_64697616 chr10 64697616 64697616 2 chr10 64697616 2 JMJD1C;MIR4454
+chr10_94829632 chr10 94829632 94829632 1 chr10 94829632 1 MIR4454
+chr1_109619829 chr1 109619829 109619829 1 chr1 109619829 1 CELSR2
+chr11_10345358 chr11 10345358 10345358 1 chr11 10345358 1 CAND1.11
+chr11_116154127 chr11 116154127 116154127 2 chr11 116154127 2 ZPR1;MIR3654
+chr11_122027585 chr11 122027585 122027585 1 chr11 122027585 1 MIR3654
+chr11_125749162 chr11 125749162 125749162 2 chr11 125749162 2 ST3GAL4;MIR3654
+chr11_18589560 chr11 18589560 18589560 1 chr11 18589560 1 SPTY2D1
+chr11_46699823 chr11 46699823 46699823 1 chr11 46699823 1 F2
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt | awk '{ print $1 "_" $2 "\t" $0 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | awk '{ print $1 "_" $2 "\t" $0 }' | sort -k 1,1) | awk '{ if ($8 == $5) { print $0 } } ' | wc
+     87     783    7573
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | wc  
+     75     300    2428
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | wc
+    339    2373   33291
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | wc
+    193    1351   18368
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | wc
+   2067   14469  179371
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | wc
+   1795   12565  155323
+[  mturchin20@bigmem01  ~/TempStuff]$/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | head -n 20
+chr11   18579560        18599560        chr11   18577926        18588378        SPTY2D1-AS1;1;+;NR_038360
+chr11   18579560        18599560        chr11   18584523        18612596        SPTY2D1;1;-;NM_194285
+chr19   19258718        19278718        chr19   19248321        19292321        SUGP1;1;-;NM_172231
+chr19   19258718        19278718        chr19   24395   114052897       FAM138D;4;-;NR_026823,NR_026823,NR_026823,NR_026823
+chr19   19258718        19278718        chr19   3693815 130464236       MIR1268A;3;+;NR_031672,NR_031672,NR_031672
+chr19   19258718        19278718        chr19   20143   100318322       MIR1302-10;4;+;NR_036267,NR_036267,NR_036267,NR_036267
+chr19   19258718        19278718        chr19   20143   100318322       MIR1302-11;4;+;NR_036268,NR_036268,NR_036268,NR_036268
+chr19   19258718        19278718        chr19   20143   100318322       MIR1302-2;4;+;NR_036051,NR_036051,NR_036051,NR_036051
+chr19   19258718        19278718        chr19   20143   100318322       MIR1302-9;4;+;NR_036266,NR_036266,NR_036266,NR_036266
+chr19   19258718        19278718        chr19   844483  182432325       RNU6-2;11;+;NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730
+chr2    21068786        21088786        chr2    21077805        21120450        APOB;1;-;NM_000384
+chr10   64687616        64707616        chr10   64596986        64951841        JMJD1C;8;-;NM_001322258,NM_001282948,NM_032776,NM_001318154,NR_134512,NM_001322254,NM_001322252,NM_001318153
+chr10   64687616        64707616        chr10   6717037 227377171       MIR4454;8;+;NR_039659,NR_039659,NR_039659,NR_039659,NR_039659,NR_039659,NR_039659,NR_039659
+chr6    160999807       161019807       chr6    160872504       161007397       LPA;1;-;NM_005577
+chr12   110546807       110566807       chr12   110564332       110608183       BRAP;1;-;NM_006768
+chr12   110546807       110566807       chr12   9283332 232286349       MIR1244-1;4;+;NR_036052,NR_036052,NR_036052,NR_036052
+chr12   110546807       110566807       chr12   9283332 232286349       MIR1244-2;4;+;NR_036262,NR_036262,NR_036262,NR_036262
+chr12   110546807       110566807       chr12   9283332 232286349       MIR1244-3;4;+;NR_036263,NR_036263,NR_036263,NR_036263
+chr12   110546807       110566807       chr12   9283330 232286349       MIR1244-4;4;+;NR_128710,NR_128710,NR_128710,NR_128710
+chr12   110546807       110566807       chr12   83063265        147674860       MIR548T;2;-;NR_036093,NR_036093
+[  mturchin20@bigmem01  ~/TempStuff]$/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wb -a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | head -n 20
+chr11   18579560        18588378        chr11   18577926        18588378        SPTY2D1-AS1;1;+;NR_038360
+chr11   18584523        18599560        chr11   18584523        18612596        SPTY2D1;1;-;NM_194285
+chr19   19258718        19278718        chr19   19248321        19292321        SUGP1;1;-;NM_172231
+chr19   19258718        19278718        chr19   24395   114052897       FAM138D;4;-;NR_026823,NR_026823,NR_026823,NR_026823
+chr19   19258718        19278718        chr19   3693815 130464236       MIR1268A;3;+;NR_031672,NR_031672,NR_031672
+chr19   19258718        19278718        chr19   20143   100318322       MIR1302-10;4;+;NR_036267,NR_036267,NR_036267,NR_036267
+chr19   19258718        19278718        chr19   20143   100318322       MIR1302-11;4;+;NR_036268,NR_036268,NR_036268,NR_036268
+chr19   19258718        19278718        chr19   20143   100318322       MIR1302-2;4;+;NR_036051,NR_036051,NR_036051,NR_036051
+chr19   19258718        19278718        chr19   20143   100318322       MIR1302-9;4;+;NR_036266,NR_036266,NR_036266,NR_036266
+chr19   19258718        19278718        chr19   844483  182432325       RNU6-2;11;+;NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730
+chr2    21077805        21088786        chr2    21077805        21120450        APOB;1;-;NM_000384
+chr10   64687616        64707616        chr10   64596986        64951841        JMJD1C;8;-;NM_001322258,NM_001282948,NM_032776,NM_001318154,NR_134512,NM_001322254,NM_001322252,NM_001318153
+chr10   64687616        64707616        chr10   6717037 227377171       MIR4454;8;+;NR_039659,NR_039659,NR_039659,NR_039659,NR_039659,NR_039659,NR_039659,NR_039659
+chr6    160999807       161007397       chr6    160872504       161007397       LPA;1;-;NM_005577
+chr12   110564332       110566807       chr12   110564332       110608183       BRAP;1;-;NM_006768
+chr12   110546807       110566807       chr12   9283332 232286349       MIR1244-1;4;+;NR_036052,NR_036052,NR_036052,NR_036052
+chr12   110546807       110566807       chr12   9283332 232286349       MIR1244-2;4;+;NR_036262,NR_036262,NR_036262,NR_036262
+chr12   110546807       110566807       chr12   9283332 232286349       MIR1244-3;4;+;NR_036263,NR_036263,NR_036263,NR_036263
+chr12   110546807       110566807       chr12   9283330 232286349       MIR1244-4;4;+;NR_128710,NR_128710,NR_128710,NR_128710
+chr12   110546807       110566807       chr12   83063265        147674860       MIR548T;2;-;NR_036093,NR_036093
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | wc
+     93     372    4472
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | wc
+     88     352    2974
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | wc
+    101     404   17015
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | wc
+    101     404   14590
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | wc
+    134     134    1052
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | wc
+     99      99     719
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | wc
+    181     181    1394
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | wc
+    142     142    1030
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | wc
+   1780    1780   12790
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | wc
+   1626    1626   11507
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt | awk '{ print $4 }' | sort | uniq -c
+      8 0
+      5 1
+      5 2
+      1 8
+[  mturchin20@bigmem01  ~/TempStuff]$for i in `ls -lrt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1*bedIntersect.2017021* | awk '{ print $9 }'`; do echo $i; cat $i | wc; done
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+     23     161    2352
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt
+     19      76     485
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+     35     245    3461
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+    377    2639   31176
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+     11      44     364
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+     10      40     256
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+     18      72     555
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+     16      64     416
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+     18      72    3053
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+     18      72    2823
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+     21      21     164
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+     13      13      89
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+    369     369    2685
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+    344     344    2472
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+     33      33     241
+/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+     23      23     151
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt) | wc
+     11      11      98
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt)
+FAM138D
+MIR1268A
+MIR1302-10
+MIR1302-11
+MIR1302-2
+MIR1302-9
+MIR3654
+MIR4454
+MIR6730
+RNU6-2
+SRGAP2D
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt) | wc
+      3       3      23
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt)     
+FAM138D
+RNU6-2
+SRGAP2D
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | grep FAM138D
+chr19   19268718        3       SUGP1;FAM138D;RNU6-2
+chr19   59484573        2       FAM138D;RNU6-2
+chr19   50106291        2       FAM138D;RNU6-2
+chr19   50114786        2       FAM138D;RNU6-2
+chr19   53898229        14      FUT2;LOC105447645;SNAR-A10;SNAR-A11;SNAR-A14;SNAR-A3;SNAR-A4;SNAR-A5;SNAR-A6;SNAR-A7;SNAR-A8;SNAR-A9;FAM138D;RNU6-2
+chr19   11063306        3       LDLR;FAM138D;RNU6-2
+chr19   8339196 3       ANGPTL4;FAM138D;RNU6-2
+chr19   11208493        3       DOCK6;FAM138D;RNU6-2
+chr19   57011927        3       FPR3;FAM138D;RNU6-2
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt) | wc
+     11      11      98
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt) | wc
+      3       3      23
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt) | wc
+     11      11      98
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt) | wc
+      3       3      23
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | wc
+   1626    1626   11507
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | wc
+    344     344    2472
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | grep -E 'FAM138D|RNU6-2|SRGAP2D'
+chr19   24395   114052897       FAM138D;4;-;NR_026823,NR_026823,NR_026823,NR_026823
+chr19   844483  182432325       RNU6-2;11;+;NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730
+chr1    120808674       204647924       SRGAP2D;2;+;NR_120535,NR_120535
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+    241     241    1857
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Vs2.w_20161109_edits_dtlesssignif_file.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+    175     175    1306
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | awk '{ print $1 "_" $2 "\t" $7 "\t" $8}' | sort -k 1,1) | wc
+     87     348    5091
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | wc
+     87     348    4013
+[  mturchin20@bigmem01  ~/TempStuff]$join -v 2 <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | awk '{ print $1 "_" $2 "\t" $7 "\t" $8}' | sort -k 1,1) | head -n 10
+1_232925220 LOC101927787,LINC01132 dist=61927;dist=1192
+1_55277238 PCSK9 NA
+18_45414951 LIPG,ACAA2 dist=41675;dist=148921
+18_56000003 PMAIP1,MC4R dist=277485;dist=189541
+2_165221337 GRB14,COBLL1 dist=34731;dist=23604
+2_226808942 LOC646736,MIR5702 dist=55920;dist=422728
+6_139871359 LINC01625,LOC100132735 dist=33933;dist=262544
+6_161009807 LPA,PLG dist=2410;dist=33408
+6_16235386 DTNBP1,MYLIP dist=464118;dist=1910
+6_31373469 HLA-C,HLA-B dist=25577;dist=56159
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt | grep 55277238
+chr1    55277238        55277238        0
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | grep 55277238
+1       55277238        55277238        A       G       upstream        PCSK9   NA      NA      NA
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | awk '{ print $1 "_" $2 "\t" $7 "\t" $8}' | sort -k 1,1) | head -n 10
+10_113923876 GPAM;MIR4454 GPAM NA
+10_64697616 JMJD1C;MIR4454 JMJD1C NA
+10_94829632 MIR4454 CYP26A1,MYOF dist=2001;dist=226544
+1_109619829 CELSR2 CELSR2 NM_001408:c.*1635T>G
+11_10345358 CAND1.11 CAND1.11 NA
+11_116154127 ZPR1;MIR3654 ZPR1 NM_001317086:c.*724G>C,NM_003904:c.*724G>C
+11_122027585 MIR3654 MIR100HG,UBASH3B dist=448605;dist=4023
+11_125749162 ST3GAL4;MIR3654 ST3GAL4 NA
+11_18589560 SPTY2D1 SPTY2D1 NA
+11_46699823 F2 F2 NA
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | awk '{ print $1 "_" $2 "\t" $7 "\t" $8}' | sort -k 1,1) | grep -v dist | head -n 10
+10_113923876 GPAM;MIR4454 GPAM NA
+10_64697616 JMJD1C;MIR4454 JMJD1C NA
+1_109619829 CELSR2 CELSR2 NM_001408:c.*1635T>G
+11_10345358 CAND1.11 CAND1.11 NA
+11_116154127 ZPR1;MIR3654 ZPR1 NM_001317086:c.*724G>C,NM_003904:c.*724G>C
+11_125749162 ST3GAL4;MIR3654 ST3GAL4 NA
+11_18589560 SPTY2D1 SPTY2D1 NA
+11_46699823 F2 F2 NA
+11_61326406 FADS1 FADS1 NM_013402:c.*53A>G
+12_108484576 MMAB;MIR1244-1;MIR1244-2;MIR1244-3;MIR1244-4;MIR548T MMAB NA
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | awk '{ print $1 "_" $2 "\t" $7 "\t" $8}' | sort -k 1,1) | grep -v dist | perl -lane '$F[1] = ((split(/;/, $F[1]))[0]); print join("\t", @F);' | awk '{ if ($2 == $3) { print $0 } } ' | wc
+     63     252    1917
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | awk '{ print $1 "_" $2 "\t" $7 "\t" $8}' | sort -k 1,1) | grep -v dist | perl -lane '$F[1] = ((split(/;/, $F[1]))[0]); print join("\t", @F);' | awk '{ if ($2 != $3) { print $0 } } ' | wc
+      5      20     168
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | sed 's/chr//g' | awk '{ print $1 "_" $2 "\t" $4 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | awk '{ print $1 "_" $2 "\t" $7 "\t" $8}' | sort -k 1,1) | grep -v dist | perl -lane '$F[1] = ((split(/;/, $F[1]))[0]); print join("\t", @F);' | awk '{ if ($2 != $3) { print $0 } } '     
+12_123026120    ZNF664  ZNF664,ZNF664-FAM101A   NA
+12_123827546    MIR1244-1       SCARB1  NA
+19_50114786     FAM138D APOC1   NA
+5_156322875     LOC100132062    TIMD4   NA
+7_72620810      GTF2IP1 TBL2    NA
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/Analyses/GeneAnnotationOverlap/GlobalLipids2010.Table1.noNA.NArplcd.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | grep -E '123026120|123827546|50114786|156322875|72620810'
+chr7    72620810        8       GTF2IP1;GTF2IP4;LOC541473;PMS2P5;PMS2P7;SPDYE8P;STAG3L1;TRIM73
+chr19   50114786        7       FAM138D;MIR1268A;MIR1302-10;MIR1302-11;MIR1302-2;MIR1302-9;RNU6-2
+chr12   123026120       8       ZNF664;ZNF664-RFLNA;MIR1244-1;MIR1244-2;MIR1244-3;MIR1244-4;MIR548AQ;MIR548T
+chr5    156322875       9       LOC100132062;LOC100132287;LOC100133331;MIR548F3;OR4F16;OR4F29;OR4F3;SNORA105A;SNORA105B
+chr12   123827546       6       MIR1244-1;MIR1244-2;MIR1244-3;MIR1244-4;MIR548AQ;MIR548T
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | grep APOC1
+chr19   50109343        50114446        APOC1;3;+;NM_001645,NM_001321066,NM_001321065
+chr19   50121899        50126483        APOC1P1;3;+;NR_028413,NR_028412,NR_028414
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | grep TIMD4
+chr5    156278870       156322844       TIMD4;2;-;NM_138379,NM_001146726
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | grep TBL2
+chr5    56811599        56814393        ACTBL2;1;-;NM_001017992
+chr7    72621209        72630949        TBL2;1;-;NM_012453
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Analyses/Annovar_refSeq_UCSCs_Exploration/20130911_annnovar.hg18_refGene.Condensed.vs2.txt | grep TBL2
+ACTBL2  1       5       -       56811599        56814393        NM_001017992
+TBL2    1       7       -       72621209        72630949        NM_012453
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | grep TBL2
+7       72620810        72620810        T       C       downstream      TBL2    NA      NA      NA
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | grep TIMD4
+5       156322875       156322875       T       C       upstream        TIMD4   NA      NA      NA
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | grep APOC1
+19      50106291        50106291        T       C       intergenic      APOE,APOC1      dist=1799;dist=3470     NA      NA
+19      50114786        50114786        A       G       downstream      APOC1   NA      NA      NA
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | grep SCARB1
+12      123827546       123827546       T       C       downstream      SCARB1  NA      NA      NA
 ~~~
 
 
 #GlobalLipids2013
+#20170215
 
-/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt
-/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.txt
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap
 
-cp -p /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Software/annovar/20170123_ljbedits_summarize_annovar.pl
+#/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bed
+#/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 10000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bed
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 500000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bed
+#2Mb just as a positive control, not going to be normally interested in this range of output
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 2000000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -c -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 10000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bed
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 500000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bed
+#2Mb just as a positive control, not going to be normally interested in this range of output
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 2000000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -c -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.txt | awk '{ print $2 "\t" $3 "\t" $3 "\t" $5 "\t" $6 }' | grep -v Chr > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat
+
+perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg18 -out /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly -remove -protocol refGene -operation g -nastring NA 
+perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg18 -out /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly -remove -protocol refGene -operation g -nastring NA
 
 
- --outfile
 
-perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2010 --verdbsnp 129 --veresp 6500 --buildver hg18 --remove
---outfile
 
-cat 
+
+
+
+
+
+
+#cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | perl -lane 'if ($F[5] eq "intergenic") { my @genes1 = split(/,/, $F[6]); my @dists1 = split(/;/, $F[7]); if (((split(/=/, $dists1[0]))[1]) < 10000) { print $F[5], "\t", $genes1[0], "\t", $dists1[0]; } if (((split(/=/, $dists1[1]))[1]) < 10000) { print $F[5], "\t", $genes1[1], "\t", $dists1[1]; } } else { print $F[5], "\t", $F[6], "\t", $F[7]; } ' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt 
+#cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | perl -lane 'if ($F[5] eq "intergenic") { my @genes1 = split(/,/, $F[6]); my @dists1 = (((split(/=/, ((split(/;/, $F[7]))[0])))[1]), ((split(/=/, ((split(/;/, $F[7]))[1])))[1])); print join("\t", @dists1); }'
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | grep -v intergenic | awk '{ print $6 "\t" $7 "\t" $8 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt  
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt | awk '{ print $2 }' | perl -lane 'if ($F[0] =~ m/,/) { print $F[0]; print join("\n", split(/,/, $F[0])); } else { print join("\t", @F); }' | sort > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.txt | grep -v intergenic | awk '{ print $6 "\t" $7 "\t" $8 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt | awk '{ print $2 }' | perl -lane 'if ($F[0] =~ m/,/) { print $F[0]; print join("\n", split(/,/, $F[0])); } else { print join("\t", @F); }' | sort > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) | wc
+
+~~~
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+     48      48     445
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc   
+     25      25     222
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+     48      48     445
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+     25      25     222
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+    183     183    1387
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+    153     153    1108
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+   1963    1963   14260
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+   1816    1816   13026
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs
+1.Condensed.noMIR.uniq.GeneIDs.txt | wc
+    152     152    1070
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed
+_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.u
+niq.GeneIDs.txt | sort)
+CAND1
+FAM138D
+LOC100132062
+LOC100132287
+LOC100133331
+OR4F16
+OR4F29
+OR4F3
+PGM5P3-AS1
+RNU6-2
+SNAR-A10
+SNAR-A11
+SNAR-A14
+SNAR-A3
+SNAR-A4
+SNAR-A5
+SNAR-A6
+SNAR-A7
+SNAR-A8
+SNAR-A9
+SNORA105A
+SNORA105B
+SNORD141A
+SNORD141B
+SRGAP2D
+[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$for i in `join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort)`; do echo $i; cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | grep $i; done
+CAND1
+chr12   10286435   65994739   CAND1;5;+;NR_103765,NM_018448,NM_001329676,NM_001329675,NM_001329674
+chr11   10286435   10408796   CAND1.11;1;+;NR_103765
+chr20   34004952   34006695   SCAND1;2;-;NM_016558,NM_033630
+FAM138D
+chr19   24395   114052897  FAM138D;4;-;NR_026823,NR_026823,NR_026823,NR_026823
+LOC100132062
+chr5 313754 180687802   LOC100132062;2;+;NR_028325,NR_028325
+LOC100132287
+chr5 313754 180687802   LOC100132287;2;+;NR_028322,NR_028322
+LOC100133331
+chr5 313754 180687802   LOC100133331;3;+;NR_028327,NR_028327,NR_028327
+OR4F16
+chr5 357521 180727832   OR4F16;3;+;NM_001005277,NM_001005277,NM_001005277
+OR4F29
+chr5 357521 180727832   OR4F29;3;+;NM_001005221,NM_001005221,NM_001005221
+OR4F3
+chr5 357521 180727832   OR4F3;3;+;NM_001005224,NM_001005224,NM_001005224
+PGM5P3-AS1
+chr9 62689  114016720   PGM5P3-AS1;4;+;NR_121190,NR_121190,NR_121189,NR_121188
+RNU6-2
+chr19   844483  182432325  RNU6-2;11;+;NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730
+SNAR-A10
+chr19   53118847   55323591   SNAR-A10;10;-;NR_024229,NR_024229,NR_024229,NR_024229,NR_024229,NR_024229,NR_024229,NR_024229,NR_024229,NR_024229
+SNAR-A11
+chr19   53118847   55323591   SNAR-A11;10;-;NR_024225,NR_024225,NR_024225,NR_024225,NR_024225,NR_024225,NR_024225,NR_024225,NR_024225,NR_024225
+SNAR-A14
+chr19   53118847   55323591   SNAR-A14;10;-;NR_024242,NR_024242,NR_024242,NR_024242,NR_024242,NR_024242,NR_024242,NR_024242,NR_024242,NR_024242
+SNAR-A3
+chr19   53118847   55323591   SNAR-A3;10;-;NR_024214,NR_024214,NR_024214,NR_024214,NR_024214,NR_024214,NR_024214,NR_024214,NR_024214,NR_024214
+SNAR-A4
+chr19   53118847   55323591   SNAR-A4;10;-;NR_024215,NR_024215,NR_024215,NR_024215,NR_024215,NR_024215,NR_024215,NR_024215,NR_024215,NR_024215
+SNAR-A5
+chr19   53118847   55323591   SNAR-A5;10;-;NR_024223,NR_024223,NR_024223,NR_024223,NR_024223,NR_024223,NR_024223,NR_024223,NR_024223,NR_024223
+SNAR-A6
+chr19   53118847   55323591   SNAR-A6;10;-;NR_024227,NR_024227,NR_024227,NR_024227,NR_024227,NR_024227,NR_024227,NR_024227,NR_024227,NR_024227
+SNAR-A7
+chr19   53118847   55323591   SNAR-A7;10;-;NR_024224,NR_024224,NR_024224,NR_024224,NR_024224,NR_024224,NR_024224,NR_024224,NR_024224,NR_024224
+SNAR-A8
+chr19   53118847   55323591   SNAR-A8;10;-;NR_024228,NR_024228,NR_024228,NR_024228,NR_024228,NR_024228,NR_024228,NR_024228,NR_024228,NR_024228
+SNAR-A9
+chr19   53118847   55323591   SNAR-A9;10;-;NR_024226,NR_024226,NR_024226,NR_024226,NR_024226,NR_024226,NR_024226,NR_024226,NR_024226,NR_024226
+SNORA105A
+chr5 21920319   198059872  SNORA105A;2;+;NR_132787,NR_132787
+SNORA105B
+chr5 21920319   198059872  SNORA105B;2;+;NR_132788,NR_132788
+SNORD141A
+chr9 14705386   134885742  SNORD141A;3;+;NR_132980,NR_132980,NR_132980
+SNORD141B
+chr9 14705386   134885742  SNORD141B;3;+;NR_132981,NR_132981,NR_132981
+SRGAP2D
+chr1 120808674  204647924  SRGAP2D;2;+;NR_120535,NR_120535
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/Analyses/GeneAnnotationOverlap/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | head -n 10
+ABCB9
+ABCC10
+ACACB
+ACAD10
+ACOT11
+ADAM1A
+ALDH2
+ALKBH2
+ANAPC5
+ARFGAP2
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.txt | awk '{ print $2 "\t" $3 "\t" $3 "\t" $5 "\t" $6 }' | grep -v Chr | head -n 10
+10      101902054       101902054       C       T
+10      5839619 5839619 G       A
+11      109521729       109521729       T       G
+11      13313759        13313759        G       A
+11      45696596        45696596        T       C
+11      47251202        47251202        C       T
+11      47857845        47857845        T       C
+11      49295647        49295647        C       T
+11      50052671        50052671        T       G
+1       152511766       152511766       G       T
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | perl -lane 'if ($F[5] eq "intergenic") { my @genes1 = split(/,/, $F[6]); my @dists1 = split(/;/, $F[7]); if (((split(/=/, $dists1[0]))[1]) < 10000) { print $F[5], "\t", $genes1[0], "\t", $dists1[0]; } if (((split(/=/, $dists1[1]))[1]) < 10000) { print $F[5], "\t", $genes1[1], "\t", $dists1[1]; } } else { print $F[5], "\t", $F[6], "\t", $F[7]; } ' | head -n 10 
+Func.refGene    Gene.refGene    GeneDetail.refGene
+intronic        SPTY2D1 NA
+intronic        SUGP1   NA
+intronic        JMJD1C  NA
+intronic        ASAP3   NA
+ncRNA_intronic  VIM-AS1 NA
+intergenic      BRAP    dist=7526
+intronic        PLEC    NA
+intronic        FTO     NA
+intronic        ST3GAL4 NA
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt | awk '{ print $2 }' | sed 's/,/\n/g' | head -n 20
+Gene.refGene
+SPTY2D1
+SUGP1
+JMJD1C
+ASAP3
+VIM-AS1
+BRAP
+PLEC
+FTO
+ST3GAL4
+OR4C46
+UGT1A1
+UGT1A10
+UGT1A3
+UGT1A4
+UGT1A5
+UGT1A6
+UGT1A7
+UGT1A8
+UGT1A9
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) | wc
+      1       1      13
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) | head -n 10
+Gene.refGene
+~~~
+
 
 
 
 #GIANT2010
 
-/mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.txt
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap
+
+cat /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.AnnovarFormat | awk '{ print $1 "\t" $2-1 "\t" $3-1 "\t" $4 "\t" $5 }' > /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.AnnovarFormat
+cat /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.AnnovarFormat | awk '{ print "chr" $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 10000 > /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bed
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 500000 > /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bed
+#2Mb just as a positive control, not going to be normally interested in this range of output
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 2000000 > /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -wb -a /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -c -a /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+
+#cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat | awk '{ print "chr" $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 10000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bed
+#/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 500000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bed
+#2Mb just as a positive control, not going to be normally interested in this range of output
+#/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 2000000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -c -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.txt | awk '{ print $2 "\t" $3 "\t" $3 "\t" $5 "\t" $6 }' | grep -v Chr > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat
+
+perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg18 -out /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly -remove -protocol refGene -operation g -nastring NA 
+perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg18 -out /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly -remove -protocol refGene -operation g -nastring NA
 
 
 
-#GIANT2014_5
 
-/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.txt
-/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/.
+
+
+
+
+
+cat /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | grep -v intergenic | awk '{ print $6 "\t" $7 "\t" $8 }' > /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt  
+cat /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt | awk '{ print $2 }' | perl -lane 'if ($F[0] =~ m/,/) { print $F[0]; print join("\n", split(/,/, $F[0])); } else { print join("\t", @F); }' | sort > /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.txt | grep -v intergenic | awk '{ print $6 "\t" $7 "\t" $8 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt | awk '{ print $2 }' | perl -lane 'if ($F[0] =~ m/,/) { print $F[0]; print join("\n", split(/,/, $F[0])); } else { print join("\t", @F); }' | sort > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt
+
+join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) | wc
+
+~~~
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+     29      29     284
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+     11      11     110
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+     29      29     284
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+     11      11     110
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+     40      40     369
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+     20      20     179
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+    382     382    2913
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+    331     331    2475
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort)
+LOC100132062
+LOC100132287
+LOC100133331
+OR4F16
+OR4F29
+OR4F3
+PGM5P3-AS1
+SNORA105A
+SNORA105B
+SNORD141A
+SNORD141B
+[  mturchin20@bigmem01  ~/TempStuff]$for i in `join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort)`; do echo $i; cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | grep $i; done
+LOC100132062
+chr5    313754  180687802       LOC100132062;2;+;NR_028325,NR_028325
+LOC100132287
+chr5    313754  180687802       LOC100132287;2;+;NR_028322,NR_028322
+LOC100133331
+chr5    313754  180687802       LOC100133331;3;+;NR_028327,NR_028327,NR_028327
+OR4F16
+chr5    357521  180727832       OR4F16;3;+;NM_001005277,NM_001005277,NM_001005277
+OR4F29
+chr5    357521  180727832       OR4F29;3;+;NM_001005221,NM_001005221,NM_001005221
+OR4F3
+chr5    357521  180727832       OR4F3;3;+;NM_001005224,NM_001005224,NM_001005224
+PGM5P3-AS1
+chr9    62689   114016720       PGM5P3-AS1;4;+;NR_121190,NR_121190,NR_121189,NR_121188
+SNORA105A
+chr5    21920319        198059872       SNORA105A;2;+;NR_132787,NR_132787
+SNORA105B
+chr5    21920319        198059872       SNORA105B;2;+;NR_132788,NR_132788
+SNORD141A
+chr9    14705386        134885742       SNORD141A;3;+;NR_132980,NR_132980,NR_132980
+SNORD141B
+chr9    14705386        134885742       SNORD141B;3;+;NR_132981,NR_132981,NR_132981
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort)
+DNAH10
+ERCC6L2
+GRM4
+IP6K3
+LEMD2
+LINC01016
+LINC02120
+LOC100132062
+LOC100132287
+LOC100133331
+LOC101927668
+MLN
+OR4F16
+OR4F29
+OR4F3
+PGM5P3-AS1
+SNORA105A
+SNORA105B
+SNORD141A
+SNORD141B
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) | wc
+      1       1      13
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2010/Vs2/bmass.GIANT2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt)     
+Gene.refGene
+~~~
+
+
+
+
+#GIANT2014/5
+
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses
+mkdir /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap
+
+join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.txt | sort -k 1,1) <(zcat /mnt/gluster/data/external_public_supp/GIANT2014_5/GIANT_HEIGHT_Wood_et_al_2014_publicrelease_HapMapCeuFreq.wUCSCGenomeBrowser_dbSNP130.vs1.IncAllele.txt.gz | sort -k 1,1) | awk '{ print $2, "\t", $3, "\t", $3, "\t", $4, "\t", $5 }' > /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 10000 > /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bed
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 500000 > /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bed
+#2Mb just as a positive control, not going to be normally interested in this range of output
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 2000000 > /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -wb -a /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -c -a /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+
+#cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat | awk '{ print "chr" $1 "\t" $2 "\t" $3 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 10000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bed
+#/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 500000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bed
+#2Mb just as a positive control, not going to be normally interested in this range of output
+#/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/bedtools slop -i /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bed -g /mnt/lustre/home/mturchin20/Software/fetchChromSizes/hg18.chrom.sizes -b 2000000 > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bed
+
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -f 1 -c -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.Counts.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+/mnt/lustre/home/mturchin20/Software/bedtools2-2.25.0/bin/intersectBed -wa -wb -a /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bed -b /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt 
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.txt | grep -v MIR | perl -lane 'if ($. == 1) { $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } elsif (eof()) { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); print $F[0], "\t", $F[1], "\t", scalar(@genes), "\t", join(";", @genes); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); print $F[0], "\t", $F[1], "\t1\t", join("", ((split(/;/, $F[6]))[0])); } } else { if ($chrBP eq $F[0] . "_" . $F[1]) { push(@genes, ((split(/;/, $F[6]))[0])); } else { print join("", ((split(/_/, $chrBP))[0])), "\t", join("", ((split(/_/, $chrBP))[1])), "\t", scalar(@genes), "\t", join(";", @genes); $chrBP = $F[0] . "_" . $F[1]; @genes = ((split(/;/, $F[6]))[0]); } }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.txt | perl -lane 'print join("\n", split(/;/, $F[$#F]));' | sort | uniq > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt
+
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.txt | awk '{ print $2 "\t" $3 "\t" $3 "\t" $5 "\t" $6 }' | grep -v Chr > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat
+
+perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg18 -out /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly -remove -protocol refGene -operation g -nastring NA 
+perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg18 -out /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly -remove -protocol refGene -operation g -nastring NA
+
+
+
+
+
+
+
+
+
+cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.txt | grep -v intergenic | awk '{ print $6 "\t" $7 "\t" $8 }' > /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt  
+cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt | awk '{ print $2 }' | perl -lane 'if ($F[0] =~ m/,/) { print $F[0]; print join("\n", split(/,/, $F[0])); } else { print join("\t", @F); }' | sort > /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt
+
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.txt | grep -v intergenic | awk '{ print $6 "\t" $7 "\t" $8 }' > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt
+cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.txt | awk '{ print $2 }' | perl -lane 'if ($F[0] =~ m/,/) { print $F[0]; print join("\n", split(/,/, $F[0])); } else { print join("\t", @F); }' | sort > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt
+
+join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) | wc
+
+~~~
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.txt | wc
+    843    2529   18346
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat | wc
+    843    4215   27710
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat | awk '{ print $4 }' | sort | uniq -c
+    189 A
+    223 C
+    223 G
+    208 T
+[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat | awk '{ print $5 }' | sort | uniq -c
+    223 A
+    206 C
+    227 G
+    187 T
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+     54      54     519
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+     16      16     152
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+     54      54     519
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+     16      16     152
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+    343     343    2521
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+    292     292    2048
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.uniq.GeneIDs.txt | sort) | wc
+   5247    5247   38266
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.2MbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) | wc
+   4858    4858   35025
+[  mturchin20@bigmem01  ~/TempStuff]$for i in `join <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/Analyses/GeneAnnotationOverlap/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.10kbPadding.bedIntersect.20170214.UCSCTableBrowser_refSeq_hg18_DefaultOutput_Condensed_bed.vs1.Condensed.noMIR.uniq.GeneIDs.txt | sort)`; do echo $i; cat /mnt/lustre/home/mturchin20/Data/UCSC/20170214.UCSCTableBrowser_refSeq_hg18.DefaultOutput.Condensed.bed | grep $i; done
+CAND1
+chr12   10286435        65994739        CAND1;5;+;NR_103765,NM_018448,NM_001329676,NM_001329675,NM_001329674
+chr11   10286435        10408796        CAND1.11;1;+;NR_103765
+chr20   34004952        34006695        SCAND1;2;-;NM_016558,NM_033630
+FAM138D
+chr19   24395   114052897       FAM138D;4;-;NR_026823,NR_026823,NR_026823,NR_026823
+LOC100132062
+chr5    313754  180687802       LOC100132062;2;+;NR_028325,NR_028325
+LOC100132287
+chr5    313754  180687802       LOC100132287;2;+;NR_028322,NR_028322
+LOC100133331
+chr5    313754  180687802       LOC100133331;3;+;NR_028327,NR_028327,NR_028327
+LOC100288778
+chr15   4224    100334331       LOC100288778;2;+;NR_130745,NR_130745
+OR4F16
+chr5    357521  180727832       OR4F16;3;+;NM_001005277,NM_001005277,NM_001005277
+OR4F29
+chr5    357521  180727832       OR4F29;3;+;NM_001005221,NM_001005221,NM_001005221
+OR4F3
+chr5    357521  180727832       OR4F3;3;+;NM_001005224,NM_001005224,NM_001005224
+PGM5P3-AS1
+chr9    62689   114016720       PGM5P3-AS1;4;+;NR_121190,NR_121190,NR_121189,NR_121188
+RNU6-2
+chr19   844483  182432325       RNU6-2;11;+;NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730,NR_125730
+SNORA105A
+chr5    21920319        198059872       SNORA105A;2;+;NR_132787,NR_132787
+SNORA105B
+chr5    21920319        198059872       SNORA105B;2;+;NR_132788,NR_132788
+SNORD141A
+chr9    14705386        134885742       SNORD141A;3;+;NR_132980,NR_132980,NR_132980
+SNORD141B
+chr9    14705386        134885742       SNORD141B;3;+;NR_132981,NR_132981,NR_132981
+SRGAP2D
+chr1    120808674       204647924       SRGAP2D;2;+;NR_120535,NR_120535
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) | wc
+      1       1      13
+[  mturchin20@bigmem01  ~/TempStuff]$join <(cat /mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt) <(cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/bmass.GIANT2014_5.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat.TableAnnovar.refGeneOnly.hg18_multianno.RegGeneDist_lt10kb.GeneOnly.txt)     
+Gene.refGene
+
+~~~
+
+
+
+
+
+
 
 
 
@@ -19412,15 +20718,843 @@ cat
 
 
 
-##Looking up OMIM and individual loci results
-##20170125
 
 
 
 
 
+##20170218
+##little bit of multivariate modeling setup work
+
+#ModelPriorMatrix <- cbind(Models,ModelPriors)[order(ModelPriors, decreasing=TRUE),]
+#ModelPriorMatrix <- data.frame(cbind(ModelPriorMatrix, cumsum(ModelPriorMatrix[,5])))
+#colnames(ModelPriorMatrix) <- c(DataSources, "pValue", "Cumm_pValue")
+
+
+GetModelPriorMatrix(bmassOutput1$Models, bmassOutput1$ModelPriors, bmassOutput1$LogFile)$ModelPriorMatrix)
+
+GetTopModelsPerSNPViaPosteriors(DataSources, bmassOutput1$PreviousSNPs, GetModelPriorMatrix(bmassOutput1$Models, bmassOutput1$ModelPriors, bmassOutput1$LogFile)$ModelPriorMatrix, bmassOutput1$LogFile)
+GetTopModelsPerSNPViaPosteriors(DataSources, bmassOutput1$NewSNPs, GetModelPriorMatrix(bmassOutput1$Models, bmassOutput1$ModelPriors, bmassOutput1$LogFile)$ModelPriorMatrix, bmassOutput1$LogFile)
+
+#marginal.postprobs(bmassOutput1$NewSNPs$Posteriors[,5:ncol(bmassOutput1$NewSNPs$Posteriors)], bmassOutput1$Models, 1)
+
+nana2 <- GetMarginalPosteriors(DataSources, bmassOutput1$NewSNPs, bmassOutput1$Models, SigmaAlphas = c(0.005,0.0075,0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.15), bmassOutput1$LogFile)
+nana2$ListSNPs$Marginals$pU[,1:10]
+
+#Make 'Analysis folder for marginal stuff?'
+jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.MarginalHeatplots.DirectAssoc.vs1.jpg", width=4000, height=2000, res=300)
+#	NewSNPs.Marginals.DirectAssoc.Clustered <- PlotMarginalPosteriors(DataSources, nana2$ListSNPs, "D", Main="BlahBlah")
+	NewSNPs.Marginals.DirectAssoc.Clustered <- PlotMarginalPosteriors(DataSources, bmassOutput1$NewSNPs, "D", Main="BlahBlah")
+	#PlotMarginalPosteriors <- function (DataSources, ListSNPs, Marginal) {
+dev.off()
+
+jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.MarginalHeatplots.DirectAssoc.wDirection.vs1.jpg", width=4000, height=2000, res=300)
+	NewSNPs.Marginals.DirectAssoc.Clustered <- PlotMarginalPosteriors.withDirection(DataSources, bmassOutput1$NewSNPs, "D", Main="BlahBlah")
+dev.off()
+
+
+
+#ModelPriorMatrix.Paste <- apply(ModelPriorMatrix[,1:4], 1, function(x) paste(x, collapse="_")) 
+#PerSNPTopModels <- cbind(Models.Paste[apply(ListSNPs$Posteriors, 2, which.max)], apply(ListSNPs$Posteriors, 2, max))
+#SummaryOfTopModels <- c()
+#
+#for (i in unique(PerSNPTopModels[,1])) { 
+#	PerSNPTopModels.Subset <- matrix(PerSNPTopModels[PerSNPTopModels[,1]==i,], nrow=length(which(PerSNPTopModels[,1]==i)))
+#	SummaryOfTopModels <- rbind(SummaryOfTopModels, cbind(i, nrow(PerSNPTopModels.Subset), round(mean(as.numeric(PerSNPTopModels.Subset[,2])), digits=3), ModelPriorMatrix[ModelPriorMatrix.Paste == i, 5]))
+#}
+#
+#SummaryOfTopModels <- SummaryOfTopModels[order(as.numeric(SummaryOfTopModels[,2]), decreasing=TRUE),]
+#}  
+
+
+#From `/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GLC.MTedits.For2013.vs3.SignCrrct.vs1.ForCSHLPoster.R` 
+~~~
+library(ggplot2)
+library(reshape2)
+set.seed(100)
+.
+.
+.
+sub.pp <- posteriorprob(lbf.bigmat[,l==1],ebprior.glhits)
+sub.pp.marginals <- marginal.postprobs(sub.pp, lbf$gamma, length(sigmaa))
+#sub.pp.marginals.DirAssoc <- sub.pp.marginals[[2]]
+sub.pp.marginals.DirAssoc <- t(sub.pp.marginals[[2]])
+#colnames(sub.pp.marginals.DirAssoc) <- sub$snp
+#sub.pp.marginals.DirAssoc <- rbind(as.character(sub$snp), sub.pp.marginals.DirAssoc)
+sub.pp.marginals.DirAssoc <- data.frame(cbind(as.character(sub$snp), sub.pp.marginals.DirAssoc))
+sub.pp.marginals.DirAssoc[,2] <- as.numeric(as.character(sub.pp.marginals.DirAssoc[,2]))
+sub.pp.marginals.DirAssoc[,3] <- as.numeric(as.character(sub.pp.marginals.DirAssoc[,3]))
+sub.pp.marginals.DirAssoc[,4] <- as.numeric(as.character(sub.pp.marginals.DirAssoc[,4]))
+sub.pp.marginals.DirAssoc[,5] <- as.numeric(as.character(sub.pp.marginals.DirAssoc[,5]))
+#rownames(sub.pp.marginals.DirAssoc) <- c("TC", "TG", "HDL", "LDL")
+#rownames(sub.pp.marginals.DirAssoc) <- c("LDL", "HDL", "TC", "TG")
+#rownames(sub.pp.marginals.DirAssoc) <- c("snp", "LDL", "HDL", "TC", "TG")
+colnames(sub.pp.marginals.DirAssoc) <- c("snp", "LDL", "HDL", "TC", "TG")
+sub.pp.marginals.DirAssoc <- sub.pp.marginals.DirAssoc[order(sub$lbfav, decreasing=TRUE),]
+sub.pp.marginals.DirAssoc$snp <- factor(sub.pp.marginals.DirAssoc$snp, levels=sub[order(sub$lbfav),][,4])
+
+#newhits$snp <- factor(newhits$snp, levels=newhits[order(newhits$lbfav),][,1])
+
+sub.pp.marginals.DirAssoc.newhits <- sub.pp.marginals.DirAssoc[sub[order(sub$lbfav, decreasing=TRUE),]$annot==0 & sub[order(sub$lbfav, decreasing=TRUE),]$lbfav>3.989499 & sub[order(sub$lbfav, decreasing=TRUE),]$nmin>50000,]
+sub.pp.marginals.DirAssoc.newhits$snp <- factor(sub.pp.marginals.DirAssoc.newhits$snp, levels=sub[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,][order(sub[sub$annot==0 & sub$lbfav>3.989499 & sub$nmin>50000,]$lbfav),][,4])
+
+.
+.
+.
+
+#melt(t(sub.pp.marginals.DirAssoc[1:4,1:5]))
+#ggplot(t(sub.pp.marginals.DirAssoc[1:4,1:5]))
+#ggplot(melt(prevhits2[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+
+
+##jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.vs1.jpg", width=2000, height=4000, res=300)
+#jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.MarginalHeatplots.NewHits.vs1.jpg", width=2000, height=4000, res=300)
+jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.MarginalHeatplots.NewHits.vs1.jpg", width=4000, height=2000, res=300)
+
+##ggplot(melt(sub.pp.marginals.DirAssoc), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+##ggplot(melt(newhits[,c(1,5:8)]), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#ggplot(melt(sub.pp.marginals.DirAssoc.newhits), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+#ggPlotData_newhits <- melt(sub.pp.marginals.DirAssoc.newhits)
+#ggPlotData_newhits$snp <- factor(ggPlotData_newhits$snp, levels=sub.pp.marginals.DirAssoc.newhits[,1][hclust(dist(sub.pp.marginals.DirAssoc.newhits[,2:5]))$order])
+ggPlotData_newhits <- melt(sub.pp.marginals.DirAssoc.newhits[hclust(dist(sub.pp.marginals.DirAssoc.newhits[,2:5]))$order,][c(1:20,60:92),])
+ggPlotData_newhits$snp <- factor(ggPlotData_newhits$snp, levels=sub.pp.marginals.DirAssoc.newhits[,1][hclust(dist(sub.pp.marginals.DirAssoc.newhits[,2:5]))$order][c(1:20,60:92)])
+
+#ggplot(melt(sub.pp.marginals.DirAssoc.newhits), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue") + coord_flip()
+ggplot(ggPlotData_newhits, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue") + coord_flip() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+dev.off()
+
+jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.MarginalHeatplots.PrevHits.vs1.jpg", width=2000, height=4000, res=300)
+
+ggplot(melt(prevhits.pp.marginals.DirAssoc), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+
+dev.off()
+
+jpeg("GlobalLipids2013.vs3.ForCSHLPoster.20160830PreProbGenom.MarginalHeatplots.MargSNPs.vs1.jpg", width=2000, height=4000, res=300)
+
+ggplot(melt(sub.pp.marginals.DirAssoc), aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "white", high="steelblue")
+
+dev.off()
+.
+.
+.
+~~~
+
+
+
+#From `/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs1/GLC.MTedits.For2013.vs3.ForCSHLPoster.R`
+~~~
+.
+.
+.
+lbf=compute.allBFs.fromZscores(Z,VYY,gl$nmin,gl$maf,sigmaa)
+lbf.bigmat=do.call(rbind,lbf$lbf) #lbf$lbf is a list of matrices, with one element (a matrix) for each sigma; this stacks these matrices together into a big matrix with nsnp columns, and nsigma*nmodels rows
+
+#collapse takes a vector that is nsigmmaa stacked m-vectors, and adds them together to produce a single m vector (averages over values of sigmaa)
+collapse = function(x,nsigmaa){return(apply(matrix(x,ncol=nsigmaa),1,sum))}
+
+#compute empirical bayes priors from global lipids hit SNPs
+gl.glhits = gl[gl$annot==1,] # subset of SNPs reported in Teslovich 2010 paper
+lbf.glhits = lbf.bigmat[,gl$annot==1]
+ebprior.glhits = em.priorprobs(lbf.glhits,lbf$prior,100)
+ebprior.glhits2 = em.priorprobs(lbf.glhits,lbf$prior*runif(length(lbf$prior)),100)
+ebprior.glhits3 = em.priorprobs(lbf.glhits,lbf$prior*runif(length(lbf$prior)),100)
+ebprior.glhits4 = em.priorprobs(lbf.glhits,lbf$prior*runif(length(lbf$prior)),100)
+
+ebprior.glhits.collapse =collapse(ebprior.glhits,length(sigmaa))
+ebprior.glhits.collapse2 =collapse(ebprior.glhits2,length(sigmaa))
+ebprior.glhits.collapse3 =collapse(ebprior.glhits3,length(sigmaa))
+ebprior.glhits.collapse4 =collapse(ebprior.glhits4,length(sigmaa))
+
+pp.glhits = posteriorprob(lbf.glhits,ebprior.glhits) #posterior prob on models for gl hits
+pp.glhits.collapse =  apply(pp.glhits,2,collapse, nsigmaa=length(sigmaa))
+
+# this returns a list with elements  pU pD and pI
+marginal.glhits = marginal.postprobs(pp.glhits, lbf$gamma,length(sigmaa))
+
+#looking at which models are favored by the prior
+cumsum(sort(ebprior.glhits.collapse,decreasing=TRUE))
+lbf$gamma[order(ebprior.glhits.collapse,decreasing=TRUE),]
+modelmatrix = cbind(lbf$gamma,ebprior.glhits.collapse)[order(ebprior.glhits.collapse,decreasing=TRUE),]
+modelmatrix = data.frame(cbind(modelmatrix,cumsum(modelmatrix[,5])))
+colnames(modelmatrix)= c("TC","TG","HDL","LDL","p","cump")
+.
+.
+.
+#compute for each SNP which class it is most likely assigned to
+#(all assoc, or notLDL, or notHDL or notTG)
+ppmatrix = cbind(pp.glhits.collapse)[order(ebprior.glhits.collapse,decreasing=TRUE),]
+pp.classmatrix = rbind(colSums(ppmatrix[allassoc,]),colSums(ppmatrix[allbut1assoc & modelmatrix[,4]==0,]),colSums(ppmatrix[allbut1assoc & modelmatrix[,3]==0,]),colSums(ppmatrix[allbut1assoc & modelmatrix[,2]==0,]),colSums(ppmatrix[allbut1assoc & modelmatrix[,1]==0,]))
+bestclass= apply(pp.classmatrix, 2,which.max)
+.
+.
+.
+#compute for each SNP which class it is most likely assigned to
+#(all assoc, or notLDL, or notHDL or notTG)
+ppmatrix.newhits = cbind(pp.newhits.collapse)[order(ebprior.glhits.collapse,decreasing=TRUE),]
+pp.newhits.classmatrix = rbind(colSums(ppmatrix.newhits[allassoc,]),colSums(ppmatrix.newhits[allbut1assoc & modelmatrix[,4]==0,]),colSums(ppmatrix.newhits[allbut1assoc & modelmatrix[,3]==0,]),colSums(ppmatrix.newhits[allbut1assoc & modelmatrix[,2]==0,]),colSums(ppmatrix.newhits[allbut1assoc & modelmatrix[,1]==0,]))
+bestclass= apply(pp.newhits.classmatrix, 2,which.max)
+cbind(as.character(newhits$snp),bestclass,apply(pp.newhits.classmatrix,2,max))
+.
+.
+.
+head(modelmatrix)
+modelmatrix.paste <- apply(modelmatrix[,1:4], 1, function(x) paste(x, collapse="_"))
+table(modelmatrix.paste[apply(ppmatrix.newhits, 2, which.max)])
+modelmatrix[apply(as.matrix(names(table(modelmatrix.paste[apply(ppmatrix.newhits, 2, which.max)]))), 1, function(x) which(modelmatrix.paste == x)),5]
+
+snpmodels <- cbind(modelmatrix.paste[apply(ppmatrix.newhits, 2, which.max)], apply(ppmatrix.newhits, 2, max))
+topmodels <- c()
+
+for (i in unique(snpmodels[,1])) {
+        snpmodels.subset <- matrix(snpmodels[snpmodels[,1]==i,], nrow=length(which(snpmodels[,1]==i)))
+        topmodels <- rbind(topmodels, cbind(i, nrow(snpmodels.subset), mean(as.numeric(snpmodels.subset[,2])), sd(as.numeric(snpmodels.subset[,2])), modelmatrix[modelmatrix.paste == i,5]))
+}
+
+topmodels <- topmodels[order(as.numeric(topmodels[,2]), decreasing=TRUE),]
+ 
+#topmodels <- cbind(names(table(modelmatrix.paste[apply(ppmatrix.newhits, 2, which.max)])), table(modelmatrix.paste[apply(ppmatrix.newhits, 2, which.max)]), modelmatrix[apply(as.matrix(names(table(modelmatrix.paste[apply(ppmatrix.newhits, 2, which.max)]))), 1, function(x) which(modelmatrix.paste == x)),5])
+#topmodels <- topmodels[order(as.numeric(topmodels[,2]), decreasing=FALSE),]
+
+
+oldsnpmodels <- cbind(modelmatrix.paste[apply(ppmatrix, 2, which.max)], apply(ppmatrix, 2, max))
+oldtopmodels <- c() 
+
+for (i in unique(oldsnpmodels[,1])) {
+        oldsnpmodels.subset <- matrix(oldsnpmodels[oldsnpmodels[,1]==i,], nrow=length(which(oldsnpmodels[,1]==i)))
+        oldtopmodels <- rbind(oldtopmodels, cbind(i, nrow(oldsnpmodels.subset), mean(as.numeric(oldsnpmodels.subset[,2])), sd(as.numeric(oldsnpmodels.subset[,2])), modelmatrix[modelmatrix.paste == i,5]))
+}  
+
+oldtopmodels <- oldtopmodels[order(as.numeric(oldtopmodels[,2]), decreasing=TRUE),]
+.
+.
+.
+#~~~
+#> head(modelmatrix)
+#  TC TG HDL LDL         p      cump
+#1  1  1   1   1 0.2384938 0.2384938
+#2  1  2   1   1 0.1538137 0.3923075
+#3  2  1   1   2 0.1359187 0.5282262
+#4  1  1   2   1 0.1169160 0.6451422
+#5  2  1   1   1 0.1061912 0.7513333
+#6  1  2   1   2 0.0662903 0.8176236
+#> modelmatrix.paste <- apply(modelmatrix[,1:4], 1, function(x) paste(x, collapse="_"))
+#> table(modelmatrix.paste[apply(ppmatrix.newhits, 2, which.max)])
+#
+# 1_1_1_1 1_1_1_2 1_1_2_1 1_2_1_0 1_2_1_1 1_2_1_2 2_1_1_1 2_1_1_2
+#       6       4      11       2       8      10      10      23
+#>
+#> oldtopmodels
+#i
+#[1,] "2_1_1_2" "27" "0.649805935158347" "0.126514408595193"
+#[2,] "1_1_2_1" "25" "0.560267755605778" "0.144186211707476"
+#[3,] "1_1_1_1" "23" "0.695426592023571" "0.245764342956809"
+#[4,] "1_2_1_1" "18" "0.542869375102103" "0.170171215709513"
+#[5,] "2_1_1_1" "16" "0.538959150076247" "0.114011285745139"
+#[6,] "1_2_1_2" "14" "0.426076489932265" "0.13374214470218"
+#[7,] "1_2_2_1" "10" "0.455935405804636" "0.142378648270453"
+#[8,] "1_2_1_0" "9"  "0.546339652410049" "0.180107361222572"
+#[9,] "1_1_1_2" "2"  "0.420209033811409" "0.0364324249667825"
+#[10,] "0_1_1_0" "1"  "0.976129541178598" NA
+#[11,] "1_1_2_2" "1"  "0.551973978945456" NA
+#[12,] "1_0_1_2" "1"  "0.867490268910215" NA
+#[13,] "1_1_1_0" "1"  "0.540316620623034" NA
+#
+#[1,] "0.135918699667997"
+#[2,] "0.116915972449258"
+#[3,] "0.238493786373925"
+#[4,] "0.153813713870225"
+#[5,] "0.106191169098223"
+#[6,] "0.0662903020181461"
+#[7,] "0.054043193014096"
+#[8,] "0.04360787170365"
+#[9,] "0.0526273773446415"
+.
+.
+.
+~~~
+
+
+
+#From /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/GLC.MTedits.ForChoongwon2016.RanHalfFlip.4Phenos_1.vs3.SignCrrct.vs1.R
+~~~
+.
+.
+.
+Z = cbind(gl$Z.Sat,gl$Z.Hb,gl$Z.Pulse,gl$Z.LvBrth)
+.
+.
+.
+Z.Directions <- apply(Z, c(1,2), function(x) { y <- 0; if (x > 0) { y <- 1; } else if (x < 0) { y <- -1; } else if (x == 0) { y <- 0; } else { y <- NA; }; return(y);})
+
+#Z.Directions.sub.lbfavunif <- Z.Directions[l.lbfavunif==1,]
+Z.Directions.sub.lbfavunif <- Z.Directions[l.lbfavunif==1,][order(sub.lbfavunif$lbfavunif, decreasing=TRUE),]
+.
+.
+.
+posterior.sub.NoSum.marginals.DirAssoc.wDir <- posterior.sub.NoSum.marginals.DirAssoc
+posterior.sub.NoSum.marginals.DirAssoc.wDir[,2:5] <- posterior.sub.NoSum.marginals.DirAssoc[,2:5] * Z.Directions.sub.lbfavunif
+
+jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.PhenoGroup1.DirAssocMarginalPosteriors.HeatPlot.wDir.hclust.vs1.jpeg", width=6000, height=2000, res=300)
+#jpeg("/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/Choongwon2016/Vs3/Choongwon2016.RanHalfFlip.PhenoGroup1.DirAssocMarginalPosteriors.HeatPlot.wDir.hclust_onDirVals.vs1.jpeg", width=6000, height=2000, res=300)
+
+ggPlotData <- melt(posterior.sub.NoSum.marginals.DirAssoc.wDir[hclust(dist(posterior.sub.NoSum.marginals.DirAssoc.wDir[,2:5]))$order,])
+ggPlotData$snp <- factor(ggPlotData$snp, levels=posterior.sub.NoSum.marginals.DirAssoc[,1][hclust(dist(posterior.sub.NoSum.marginals.DirAssoc[,2:5]))$order])
+#ggPlotData$snp <- factor(ggPlotData$snp, levels=posterior.sub.NoSum.marginals.DirAssoc.wDir[,1][hclust(dist(posterior.sub.NoSum.marginals.DirAssoc.wDir[,2:5]))$order])
+
+#ggplot(ggPlotData, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradient(low = "darkred", high="steelblue") + coord_flip() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(ggPlotData, aes(variable, snp, value)) + geom_tile(aes(fill=value), colour="white") + scale_fill_gradientn(colours=c("darkred", "white", "steelblue")) + coord_flip() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+#scale_fill_gradientn(colours=c("red","white","green"),
+
+dev.off()
+.
+.
+.
+~~~
+
+
+
+
+
+
+
+
+
+
+
+
+##20170218
+##2nd level/stage annotation work -- first looking at expanded annovar results, then omim, then DisGeNET
+
+mkdir /mnt/gluster/home/mturchin20/Data/OMIM
+mkdir /mnt/gluster/home/mturchin20/Data/DisGeNET
+mkdir OMIM list from GIANT?
+mkdir GIANT 2017 dataset paper?
+
+cd /mnt/gluster/home/mturchin20/Data/OMIM
+
+#20170218 NOTE -- the below URLs were retreived by registering with OMIM and receiving an email with the links. Access via these links should be available until Feb 2018 apparently. Also including a small bit from the email.
+~~~
+.
+.
+.
+You can view a list of all the data you have access with the following URL:
+
+
+https://omim.org/downloads/qaHhLEotTnSo0n7tMSTP6Q
+.
+.
+.
+~~~
+
+wget https://omim.org/static/omim/data/mim2gene.txt  
+wget --no-check-certificate https://data.omim.org/downloads/qaHhLEotTnSo0n7tMSTP6Q/mimTitles.txt
+wget --no-check-certificate https://data.omim.org/downloads/qaHhLEotTnSo0n7tMSTP6Q/genemap.txt
+wget --no-check-certificate https://data.omim.org/downloads/qaHhLEotTnSo0n7tMSTP6Q/morbidmap.txt
+wget --no-check-certificate https://data.omim.org/downloads/qaHhLEotTnSo0n7tMSTP6Q/genemap2.txt
+
+
+cd /mnt/gluster/home/mturchin20/Data/DisGeNET
+
+#20170218 NOTE -- below URLs were retreived from http://www.disgenet.org/web/DisGeNET/menu/downloads. Additionally, the below information is from the webpage
+~~~
+.
+.
+.
+Important notice
+The DisGeNET database is made available under the Open Database License. For more information, see the Legal Notices page.
+
+DATA in tab separated files
+1. Curated gene-disease associations
+The file contains gene-disease associations from UNIPROT, CTD (human subset), ClinVar, Orphanet, and the GWAS Catalog.
+
+2. BeFree gene-disease associations
+The file contains gene-disease associations obtained by text mining MEDLINE abstracts using the BeFree system.
+
+3. ALL gene-disease associations
+The file contains all gene-disease associations in DisGeNET.
+
+4. BeFree SNP-gene-disease associations
+The file contains SNP-gene-disease associations obtained by text mining MEDLINE abstracts using the BeFree system.
+
+5. All SNP-gene-disease associations
+The file contains All SNP-gene-disease associations in DisGeNET.
+
+6.Publications with gene-disease associations from BeFree System
+The file contains the publications supporting the gene-disease associations obtained by text mining MEDLINE abstracts (2015-2016) using the BeFree system.
+
+7. README file
+.
+.
+.
+~~~
+
+wget http://www.disgenet.org/ds/DisGeNET/results/curated_gene_disease_associations.tsv.gz  
+wget http://www.disgenet.org/ds/DisGeNET/results/befree_gene_disease_associations.tsv.gz
+wget http://www.disgenet.org/ds/DisGeNET/results/all_gene_disease_associations.tsv.gz
+wget http://www.disgenet.org/ds/DisGeNET/results/befree_snps_sentences_pubmeds.tsv.gz
+wget http://www.disgenet.org/ds/DisGeNET/results/all_snps_sentences_pubmeds.tsv.gz
+wget http://www.disgenet.org/ds/DisGeNET/results/befree_results_only_version_4.0.tar.gz
+wget http://www.disgenet.org/ds/DisGeNET/results/readme.txt
+
+
+
+
+#GlobalLipids2010
+
+
+
+
+
+
+
+#GlobalLipids2013
+
+
+#GIANT2010
+
+
+#GIANT2014_%
+
+
+#HaemgenRBC2012
+
+
+#HaemgenRBC2016
+
+
+
+
+
+
+
+
+
+
+##2017
+##Specific GIANT annotation stuff? eg OMIM list from Wood et al. 2014 and that other paper?
+
+#Marouli et al. 2017 "Rare and low-frequency coding variants alter human adult height" http://www.nature.com/nature/journal/v542/n7640/full/nature21039.html
+
+
+
+
+
+##2017
 ##PathwayWork
-##20170125
+
+
+
+
+
+
+
+
+
+#####Looking up OMIM and individual loci results
+#####20170125
+#
+#
+##20170216 NOTE -- thinking the below section is somewhat getting divided as being part of the 'annovar loci prev/new comparisons part' and then also later simulations/enrichment part...nore sure yet, but kind of freezing this section right here
+##20170218 NOTE -- Furthermore, thinking I'll have 3 kind of 'annotation' sections -- the first with mostly just the geneIDs for the 'checking prev/new loci lists against one another for overlap' thing, another set for a deeper dive into the gene list/variant qualities in order to start investigating possible biological stories via OMIM, DisGeNET, etc, then last after this section with a full-on annovar setup in expectation for the simulation/enrichment things?
+#####Annotating prev and new hits to find loci, dbl checking loci in new hits don't overlap with prev hit loci (and/or also checking how close/far away they are/may be)
+#####(also going to check out varying expanding windows to see if/what get other loci too doing this)
+#####(also checking if any loci that are not picked up from earlier dataset still are not picked up by 'prev' of new data)
+#####20170123
+#
+#
+##GlobalLipids2010
+#
+#Previous, New
+#
+##Getting NA SNP rs9411489 info from https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=635634 as before
+#join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | sort) | perl -lane 'print $F[11], "\t", $F[12], "\t", $F[12], "\t", uc($F[1]), "\t", uc($F[2]);' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.AnnovarFormat
+#cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.AnnovarFormat | grep -v NA | cat - <(echo "9	133279427	133279427	G	A") > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat
+#ln -s /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits
+#
+#cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.txt | awk '{ print $2 "\t" $3 "\t" $3 "\t" $5 "\t" $6 }' | grep -v Chr > /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.AnnovarFormat
+#
+#mv /mnt/gluster/home/mturchin20/Lab_Stuff /mnt/gluster/home/mturchin20/LabMisc
+#mkdir /mnt/gluster/home/mturchin20/Software
+#mv /mnt/lustre/home/mturchin20/Software/annovar /mnt/gluster/home/mturchin20/Software/20130911_annovar
+##Downloaded 'latest' annovar via a link provided in an e-mail (request page -- http://www.openbioinformatics.org/annovar/annovar_download_form.php)
+#scp -p mturchin20@wolfy.uchicago.edu:/Users/mturchin20/LabMisc/Software/20170208DL_annovar.latest.tar.gz /mnt/gluster/home/mturchin20/Software
+#tar -xvzf /mnt/gluster/home/mturchin20/Software/20170208DL_annovar.latest.tar.gz
+#mv /mnt/gluster/home/mturchin20/Software/annovar /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar
+#
+##Did the below with instructions from http://stackoverflow.com/questions/2920301/clear-a-file-without-changing-its-timestamp
+#cd /mnt/lustre/home/mturchin20/Software/annovar/humandb/
+#for i in `ls -lrt | grep -v ^d | awk '{ print $9 }'`; do TMPFILE=`mktemp`; touch -r /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i $TMPFILE; cat /dev/null > /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i; touch -r $TMPFILE /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i; rm $TMPFILE; done
+##for i in `ls -lrt /mnt/lustre/home/mturchin20/Software/annovar/humandb/. | grep -v ^d | awk '{ print $9 }'`; do TMPFILE=`mktemp`; touch -r $i $TMPFILE; cat /dev/null > $i; touch -r $TMPFILE $i; rm $TMPFILE; done
+#
+##~perl /mnt/lustre/home/mturchin20/Software/annovar/20170123_ljbedits_summarize_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2010 --verdbsnp 129 --veresp 6500 --buildver hg18 --outfile /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits --remove 
+##~rm /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits*dropped /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits*hg18_phastConsElements44way /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits*genomicSuperDups
+##~perl /mnt/lustre/home/mturchin20/Software/annovar/20170123_ljbedits_summarize_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2010 --verdbsnp 129 --veresp 6500 --buildver hg18 --remove
+##perl /mnt/lustre/home/mturchin20/Software/annovar/20170123_ljbedits_summarize_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2010 --verdbsnp 129 --veresp 6500 --buildver hg18 --outfile /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170123_ljbedits --remove
+##~perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl -filter -dbtype dbnsfp33a -buildver hg18 -out /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.dbsfp33a /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb -otherinfo
+#
+##20170209
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar refGene /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb genomicSuperDups /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb phastConsElements44way /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb tfbsConsSites /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18  
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb cytoBand /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb wgRna /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb targetScanS /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb gwasCatalog /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar snp129 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar snp138 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar avsift /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb23_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb26_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar dbnsfp33a /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+##perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar esp6500_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar esp6500siv2_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar exac03 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+##perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2012apr /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+##perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2010 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2014oct /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg18
+#
+##hg19 only
+##clinvar_20161128
+#
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar refGene /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb genomicSuperDups /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb phastConsElements46way /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb tfbsConsSites /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19  
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb cytoBand /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb wgRna /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb targetScanS /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb gwasCatalog /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar snp129 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar snp138 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar avsift /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+##~perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+##~perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb23_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar ljb26_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar dbnsfp33a /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+##perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar esp6500_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar esp6500siv2_all /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar exac03 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+##perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2012apr /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+##perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2010 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar 1000g2014oct /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar clinvar_20161128 /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/annotate_variation.pl --downdb -webfrom annovar cadd /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -build hg19
+#cadd
+#
+#
+#
+#
+#
+#
+##annotate_variation.pl -filter -dbtype 1000g2012apr_eur -buildver hg19 -out ex1 example/ex1.avinput humandb/
+##table_annovar.pl example/ex1.avinput humandb/ -buildver hg19 -out myanno -remove -protocol refGene,cytoBand,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp138,ljb23_all -operation g,r,r,f,f,f,f -nastring 
+##-csvout
+#
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg18 -out /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar -remove -protocol refGene,genomicSuperDups,phastConsElements44way,cytoBand,tfbsConsSites,wgRna,targetScanS,gwasCatalog,snp129,snp138,1000g2014oct_all,esp6500siv2_all,exac03,dbnsfp33a -operation g,r,r,r,r,r,r,r,f,f,f,f,f,f -nastring NA
+#
+##/mnt/lustre/home/mturchin20/Software/liftOver/hg18ToHg19.over.chain.gz
+##
+##usage:
+##   liftOver oldFile map.chain newFile unMapped
+#
+#
+#
+#
+#
+#
+#
+#cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat | awk '{ print "chr"$1"\t"$2"\t"$3+1"\t"$1"_"$2}' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed
+#
+#/mnt/lustre/home/mturchin20/Software/liftOver/liftOver /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed /mnt/lustre/home/mturchin20/Software/liftOver/hg18ToHg19.over.chain.gz /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.bed /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.bed.dropped
+#
+#join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.bed | sed 's/chr//g' | awk '{ print $4 "\t" $1 "\t" $2 "\t" $2 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat | awk '{ print $1 "_" $2 "\t" $4 "\t" $5 }' | sort -k 1,1) | perl -lane 'push(@F, $F[0]); splice (@F,0,1); print join("\t", @F);' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.AnnovarFormat
+#
+#perl /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/table_annovar.pl /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.AnnovarFormat /mnt/gluster/home/mturchin20/Software/20170208DL_20160204Vs_annovar/humandb/ -buildver hg19 -out /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.hg19.AnnovarFormat.20170208DL_20160204Vs_annovar.TableAnnovar -remove -protocol cadd -operation f -nastring NA -otherinfo
+#
+#
+#want to know if expand new SNPs 1Mb, 2Mb out, what additional loci do they overlap -- do loci that are now showing up already exist among the previous snps? 
+#
+#
+#/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.500kbPadding.bed
+#
+#
+#
+##refGene
+##
+##Conserved genomic elements annotation
+##Transcription factor binding site
+##Identify cytogenetic band
+##disrupting microRNAs and snoRNAs
+##disrupting predicted microRNA binding sites
+##Identify variants located in segmental duplications
+##Identify variants reported in previously published GWAS
+##
+##esp
+##1000g
+##snp138/9/whatev
+##ljbsomething
+#
+#
+#
+#
+#
+#/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/.
+#bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.txt
+#bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.txt.gz
+#
+#
+#look at 5kb, 10kb, 20kb border windows for calling something related to a locus? or just be conservative?...probably see how different the results are
+#bedtools intersect thing....slop too....
+#take list from prev and doublecheck it's different from new results, and not even (hopefully?) nearby new results or vice-versa
+#
+#~~~
+#[  mturchin20@bigmem03  /mnt/gluster/data/external_private_supp/HaemgenRBC2016]$join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | sort) | perl -lane 'print $F[11], "\t", $F[12], "\t", $F[12], "\t", uc($F[1]), "\t", uc($F[2]);' | wc
+#    102     510    2546
+#[  mturchin20@bigmem03  /mnt/gluster/data/external_private_supp/HaemgenRBC2016]$join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | sort) <(zcat /data/external_public/GlobalLipids2010/HDL_with_Effect.wHapMap23.expanded.tbl.gz | sort) | perl -lane 'print $F[11], "\t", $F[12], "\t", $F[12], "\t", uc($F[1]), "\t", uc($F[2]);' | grep -v NA | wc
+#    101     505    2533
+#[  mturchin20@bigmem03  /mnt/gluster/data/external_private_supp/HaemgenRBC2016]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.Marker.txt | wc
+#    102     102    1024
+#[  mturchin20@bigmem01  ~/TempStuff]$cat /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.NewSNPs.SNPs.vs1.txt | awk '{ print $2 "\t" $3 "\t" $3 "\t" $5 "\t" $6 }' | grep -v Chr | head -n 10
+#10      101902184       101902184       C       T
+#10      17300296        17300296        G       A
+#10      45333283        45333283        C       A
+#10      5236085 5236085 A       G
+#11      47215429        47215429        T       C
+#1       149225460       149225460       G       A
+#11      51368666        51368666        C       T
+#11      54886216        54886216        T       C
+#11      55776161        55776161        T       A
+#11      75132669        75132669        A       C
+#[  mturchin20@spudhead  ~/Software/annovar/humandb]$ls -lrt
+#total 64954160
+#-rw-rw-r-- 1 mturchin20 mturchin20    10626173 Aug  3  2006 hg18_genomicSuperDups.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20   193606817 Feb  2  2009 hg18_phastConsElements44way.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20   205139082 Dec  6  2009 hg19_phastConsElements46way.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20  2609192331 Sep 12  2011 hg19_avsift.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    10570294 Oct 25  2011 hg19_genomicSuperDups.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20     6317127 Feb 22  2012 hg19_avsift.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20     5233500 Feb 22  2012 hg19_ljb_all.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    73382469 Feb 23  2012 hg18_CEU.sites.2010_03.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20   196121521 Feb 23  2012 hg18_CEU.sites.2010_03.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    68307610 Feb 23  2012 hg18_JPTCHB.sites.2010_03.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20   158204020 Feb 23  2012 hg18_JPTCHB.sites.2010_03.txt
+#-rw-r--r-- 1 mturchin20 mturchin20   263387600 Feb 23  2012 hg18_YRI.sites.2010_03.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    77895206 Feb 23  2012 hg18_YRI.sites.2010_03.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20  5795736715 Feb 24  2012 hg19_ljb_all.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    89456008 May 25  2012 hg19_ALL.sites.2012_04.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    87006131 May 25  2012 hg19_AMR.sites.2012_04.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    85553308 May 25  2012 hg19_ASN.sites.2012_04.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    86463107 May 25  2012 hg19_EUR.sites.2012_04.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20  1372992404 May 25  2012 hg19_ALL.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20   691158224 May 25  2012 hg19_AMR.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20   502418754 May 25  2012 hg19_ASN.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20   598097961 May 25  2012 hg19_EUR.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20   894204297 May 25  2012 hg19_AFR.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    87520670 May 25  2012 hg19_AFR.sites.2012_04.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    63392958 Jun 26  2012 hg19_esp6500_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20     5558185 Jun 26  2012 hg19_esp6500_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20  1513192372 Aug  5  2012 hg19_snp129.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    94950668 Aug  5  2012 hg19_snp129.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    89345455 Aug 21  2012 hg18_ALL.sites.2012_04.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20  1370830422 Aug 21  2012 hg18_ALL.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20        5965 Sep 11  2013 hg18_example_db_generic.txt
+#-rw-r--r-- 1 mturchin20 mturchin20       30748 Sep 11  2013 hg18_cytoBand.txt
+#-rw-r--r-- 1 mturchin20 mturchin20     2076545 Sep 11  2013 hg18_example_db_gff3.txt
+#-rw-r--r-- 1 mturchin20 mturchin20       17094 Sep 11  2013 GRCh37_MT_ensGeneMrna.fa
+#-rw-r--r-- 1 mturchin20 mturchin20        3131 Sep 11  2013 GRCh37_MT_ensGene.txt
+#drwxr-xr-x 2 mturchin20 mturchin20        4096 Sep 11  2013 genometrax-sample-files-gff/
+#-rw-rw-r-- 1 mturchin20 mturchin20     5924981 Jan  7  2014 hg18_avsift.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20  2286099588 Jan  7  2014 hg18_avsift.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20     6139175 Jan  7  2014 hg18_esp6500_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    68983971 Jan  7  2014 hg18_esp6500_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20     5243750 Jan  7  2014 hg18_ljb_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20  5795099570 Jan  7  2014 hg18_ljb_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20  1685177611 Jan  7  2014 hg18_snp129.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    96928355 Jan  7  2014 hg18_snp129.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20     6611074 Feb 23  2014 hg19_ljb23_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20 12073254842 Feb 23  2014 hg19_ljb23_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20   151652203 Feb 24  2014 hg19_refGeneMrna.fa
+#-rw-rw-r-- 1 mturchin20 mturchin20    13817961 Feb 24  2014 hg19_refGene.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    31869378 Feb 24  2014 hg19_refLink.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20 12066978717 May 27  2014 hg18_ljb23_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20     6615864 May 27  2014 hg18_ljb23_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20 11045700932 Sep 25  2014 hg18_ljb26_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    18738649 Sep 25  2014 hg18_ljb26_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    32674836 Mar 22  2015 hg18_refLink.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    14642615 Dec 11  2015 hg18_refGene.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20   165910269 Dec 11  2015 hg18_refGeneMrna.fa
+#-rw-rw-r-- 1 mturchin20 mturchin20    18955411 Jan 23 23:57 hg18_dbnsfp33a.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20  3607350277 Jan 24 00:05 hg18_dbnsfp33a.txt.gz
+#-rw-rw-r-- 1 mturchin20 mturchin20        5601 Feb  8 16:53 annovar_downdb.log
+#[  mturchin20@spudhead  ~/Software/annovar/humandb]$for i in `ls -lrt | grep -v ^d | awk '{ print $9 }'`; do TMPFILE=`mktemp`; touch -r /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i $TMPFILE; cat /dev/null > /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i; touch -r $TMPFILE /mnt/lustre/home/mturchin20/Software/annovar/humandb/$i; rm $TMPFILE; done
+#[  mturchin20@spudhead  ~/Software/annovar/humandb]$ls -lrt                                                                                                                                                                                                                                                                total 4
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Feb  2  2009 hg18_phastConsElements44way.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Dec  6  2009 hg19_phastConsElements46way.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Sep 12  2011 hg19_avsift.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Oct 25  2011 hg19_genomicSuperDups.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 22  2012 hg19_avsift.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 22  2012 hg19_ljb_all.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_CEU.sites.2010_03.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_CEU.sites.2010_03.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_JPTCHB.sites.2010_03.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_JPTCHB.sites.2010_03.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_YRI.sites.2010_03.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Feb 23  2012 hg18_YRI.sites.2010_03.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 24  2012 hg19_ljb_all.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_ALL.sites.2012_04.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_AMR.sites.2012_04.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_ASN.sites.2012_04.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_EUR.sites.2012_04.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_ALL.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_AMR.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_ASN.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_EUR.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_AFR.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 May 25  2012 hg19_AFR.sites.2012_04.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jun 26  2012 hg19_esp6500_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jun 26  2012 hg19_esp6500_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Aug  5  2012 hg19_snp129.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Aug  5  2012 hg19_snp129.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Aug 21  2012 hg18_ALL.sites.2012_04.txt.idx
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Aug 21  2012 hg18_ALL.sites.2012_04.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Sep 11  2013 hg18_example_db_generic.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Sep 11  2013 hg18_cytoBand.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Sep 11  2013 hg18_example_db_gff3.txt
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Sep 11  2013 GRCh37_MT_ensGeneMrna.fa
+#-rw-r--r-- 1 mturchin20 mturchin20    0 Sep 11  2013 GRCh37_MT_ensGene.txt
+#drwxr-xr-x 2 mturchin20 mturchin20 4096 Sep 11  2013 genometrax-sample-files-gff/
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_avsift.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_avsift.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_esp6500_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_esp6500_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_ljb_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_ljb_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_snp129.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jan  7  2014 hg18_snp129.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 23  2014 hg19_ljb23_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 23  2014 hg19_ljb23_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 24  2014 hg19_refGeneMrna.fa
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 24  2014 hg19_refGene.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Feb 24  2014 hg19_refLink.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 May 27  2014 hg18_ljb23_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 May 27  2014 hg18_ljb23_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Sep 25  2014 hg18_ljb26_all.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Sep 25  2014 hg18_ljb26_all.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Mar 22  2015 hg18_refLink.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Dec 11  2015 hg18_refGene.txt
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Dec 11  2015 hg18_refGeneMrna.fa
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jan 23 23:57 hg18_dbnsfp33a.txt.idx
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Jan 24 00:05 hg18_dbnsfp33a.txt.gz
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Feb  8 16:53 annovar_downdb.log
+#-rw-rw-r-- 1 mturchin20 mturchin20    0 Feb  9 16:10 hg18_genomicSuperDups.txt
+#[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.bed | head -n 10
+#chr11   18632984   18632985   11_18589560
+#chr2 165513091  165513092  2_165221337
+#chr19   19407718   19407719   19_19268718
+#chr2 21225281   21225282   2_21078786
+#chr10   65027610   65027611   10_64697616
+#chr6 161089817  161089818  6_161009807
+#chr12   112072424  112072425  12_110556807
+#chr8 145043543  145043544  8_145115531
+#chr11   126243952  126243953  11_125749162
+#chr12   57792580   57792581   12_56078847
+#[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.bed | sed 's/chr//g' | awk '{ print $4 "\t" $1 "\t" $2 "\t" $2 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat | awk '{ print $1 "_" $2 "\t" $4 "\t" $5 }' | sort -k 1,1) | head -n 10
+#10_113923876 10 113933886 113933886 A G
+#10_64697616 10 65027610 65027610 A T
+#10_94829632 10 94839642 94839642 A G
+#11_10345358 11 10388782 10388782 A G
+#11_116154127 11 116648917 116648917 C G
+#11_122027585 11 122522375 122522375 T C
+#11_125749162 11 126243952 126243952 A G
+#11_18589560 11 18632984 18632984 T C
+#11_46699823 11 46743247 46743247 T C
+#11_61326406 11 61569830 61569830 T C
+#[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$join <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.bed | sed 's/chr//g' | awk '{ print $4 "\t" $1 "\t" $2 "\t" $2 }' | sort -k 1,1) <(cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.AnnovarFormat | awk '{ print $1 "_" $2 "\t" $4 "\t" $5 }' | sort -k 1,1) | perl -lane 'push(@F, $F[0]); splice (@F,0,1); print join("\t", @F);' > /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.AnnovarFormat 
+#[  mturchin20@bigmem03  /mnt/gluster/home/mturchin20/Software]$cat /mnt/lustre/home/mturchin20/Data/GlobalLipids2010/GlobalLipids2010.Table1.noNA.NArplcd.liftoverBed.hg19.AnnovarFormat | head -n 10
+#10 113933886    113933886  A  G 10_113923876
+#10 65027610 65027610    A  T  10_64697616
+#10 94839642 94839642    A  G  10_94829632
+#11 10388782 10388782    A  G  11_10345358
+#11 116648917    116648917  C  G 11_116154127
+#11 122522375    122522375  T  C 11_122027585
+#11 126243952    126243952  A  G 11_125749162
+#11 18632984 18632984    T  C  11_18589560
+#11 46743247 46743247    T  C  11_46699823
+#11 61569830 61569830    T  C  11_61326406
+#
+#~~~
+#
+#
+##GlobalLipids2013
+#
+#/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/ng.2797-S1.edited.vs2.carriageRemoved.rsIDs.HapMart.ChrBP.txt
+#/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2013/Vs2/bmass.GlobalLipids2013.Vs2.NewSNPs.SNPs.vs1.txt
+#
+#cp -p /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Software/annovar/20170123_ljbedits_summarize_annovar.pl
+#
+#
+# --outfile
+#
+#perl /mnt/lustre/home/mturchin20/Software/annovar/summarize_annovar.pl /mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GlobalLipids2010/Vs2/bmass.GlobalLipids2010.Vs2.MergedDataSources.vs1.AnnovarFormat /mnt/lustre/home/mturchin20/Software/annovar/humandb/ --ver1000g 1000g2010 --verdbsnp 129 --veresp 6500 --buildver hg18 --remove
+#--outfile
+#
+#cat 
+#
+#
+#
+##GIANT2010
+#
+#/mnt/lustre/home/mturchin20/Data/GIANT/2010/GIANT2010.AllGWASHits.HeightBMIWHRadjBMI.MarkerChrBP.BPMinus1.txt
+#
+#
+##GIANT2014_5
+#
+#/mnt/lustre/home/mturchin20/Data/GIANT/2014_5/GIANT2014_5.AllGWASHits.HeightBMIWHRadjBMI.WHRadjBMI_no2nds.MarkerChrBP.BPMinus1.txt
+#/mnt/lustre/home/mturchin20/Lab_Stuff/StephensLab/Multivariate/GIANT2014_5/Vs2/.
+#
+#
+##HaemgenRBC2012
+#
+#
+##HaemgenRBC2016
+#
+#
+#~~~
+#
+#~~~
+
+
+
+##
+##
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
