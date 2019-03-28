@@ -1,0 +1,30 @@
+- you had figure 4 as landscape, but that is completely unnecessary
+  i've made it smaller so it fits in portrait
+  however, now the text is too small.
+  can you replot the figure so that it looks right in this size?
+  you should be able to use height and width in the pdf() command i think?
+  - also x and y axis labels should be simplified
+    i think y axis can just be "number of SNPs"
+    x axis can be "number of phenotypes"
+    then titles can be "Distribution, across SNPs, of number of confidently associated phenotypes" (edited)
+    and "Distribution, across SNPs, of number of confidently unassociated phenotypes"
+    You don't need to repeat the titles (or axis labels) in every panel... (edited)
+
+- i think the dahl and finucane refs are missing? (edited) 
+
+- table 1: the phenotypes "Accumbens, Amygdala..." those are parts of the brain, not phenotypes... can you say what the phenotypes are?
+
+- Figure 1, with hindsight the split axes don't really do the job well i think. Let's split this into two figure panels (a and b), one with the 3 large studies and the other with the other 7 studies
+  then we won't need the split axis. we just put the y axis on different scales for each panel.
+
+- Table 2, "previous Uni" and "new multi" still abbreviated
+
+- Figure 4: label the panels a and b. make the text axis labels so that they can be read.
+
+- p13 "Consortium (2013)" i think this ref should give the consortium name?
+
+- i think the 1Mb window terminology is ambiguous. Can you make sure we use the "distance away" terminology throughout. So if you mean "within 500kb of the SNP" you say that rather than 
+  "within a 1Mb window around the SNP" which is ambiguous.
+  - mturchin20   [14 days ago]
+    will do
+
