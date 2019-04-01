@@ -1,3 +1,8 @@
+Matthew Comments:
+Overleaf Edits
+DONE - Accept edits
+
+First Set
 - you had figure 4 as landscape, but that is completely unnecessary
   i've made it smaller so it fits in portrait
   however, now the text is too small.
@@ -12,6 +17,7 @@
 
 - i think the dahl and finucane refs are missing? (edited) 
 
+Second set
 - table 1: the phenotypes "Accumbens, Amygdala..." those are parts of the brain, not phenotypes... can you say what the phenotypes are?
 
 - Figure 1, with hindsight the split axes don't really do the job well i think. Let's split this into two figure panels (a and b), one with the 3 large studies and the other with the other 7 studies
@@ -27,4 +33,100 @@
   "within a 1Mb window around the SNP" which is ambiguous.
   - mturchin20   [14 days ago]
     will do
+
+
+Overleaf Main Comments:
+DONE - (Personal) Go through Matthew's edits
+
+- (Personal) Do a go/read-through of everything once done
+
+- (line 264) In both cases results are LD-pruned to avoid counting associations of SNPs in strong LD; see Online Methods for details.
+
+- (line 70) double-check all uses of \textsuperscript & \textsubscript
+
+- (line 156) TODO: Check \cite vs \citep here
+
+- (line 202) TODO: Double check/go over all the movements of scale=.4 to scale=.3?
+
+- (line 249) TODO: Double-check recent revisions still look/work good
+
+- (Personal) check 'new' vs. 'novel' for everything else in manuscript (main & supplemental)
+
+- (Personal) Double check there is no '2014_5' or '2010_1' (pretty sure this was done already by me....just double-double check, same with new vs. novel?)
+
+- (Personal) Mention this comment to Matthew?: "MT: do we need to explicitly state this here? Want to somehow note that this may not match the number of 'published SNPs' from these publications"
+
+Overleaf Supplementary Comments:
+- (Personal) Communicate to Matthew he should take a look at the comment in Supplementary if/when possible
+
+- (Personal) Do extra supplementary excel sheet table needed
+
+
+NG Analysis Misc:
+- Check specifications
+    - From NG -- "An Analysis is a new analysis of existing data (typically large genomic, transcriptomic or proteomic data sets from arrays or other high-throughput platforms) or new data obtained in a comparative analysis of technologie
+      s that lead to novel and arresting conclusions of importance to a broad audience. The main text (excluding abstract, Methods, references and figure legends) is approximately 3,000 words. The abstract is typically 100-150 words, unre
+      ferenced. Analyses have no more than 6 display items (figures and/or tables). An introduction (without heading) is followed by sections headed Results, Discussion and online Methods. The Results and online Methods should be divided 
+      by topical subheadings; the Discussion does not contain subheadings. As a guideline, Analysis allow up to 50 references.
+      Analyses include received/accepted dates. They may be accompanied by supplementary information. Analyses are peer reviewed."
+DONE - Check word count
+DONE - Check references (currently: 39; guidelines: ~50)
+- Check format
+- Check submission setup/format (?)
+
+
+bmass Package Updates:
+ - Please write package names, software names and API names in single 
+   quotes (e.g. 'bmass') in your Description.
+
+>    models given the phenotypes and datasets provided.
+>    Multivariate models are determined by assigning each
+>    phenotype to being either Unassociated (U), Directly
+>    associated (D) or Indirectly associated (I) with the SNP of
+
+ - Please explain all acronyms (e.g. SNP) in your Description text to avoid 
+   misunderstandings.
+
+
+>    interest. Test results for each model are presented in the
+>    form of Bayes factors, thereby allowing direct comparison
+>    between models.
+
+ - If there are references, please add these in the Description field of 
+   your DESCRIPTION file in the form
+   authors (year) <doi:...>
+   authors (year) <arXiv:...>
+   authors (year, ISBN:...)
+   with no space after 'doi:', 'arXiv:' and angle brackets for auto-linking.
+
+ - Please provide small executable examples in all of your Rd-files (except 
+   the data documentations) if possible.
+
+   They examples are wrapped in \dontrun{}, hence nothing gets tested. 
+   Please unwrap the examples if that is feasible and if they can be 
+   executed in < 5 sec for each Rd file or create additionally small toy 
+   examples. Something like
+   \examples{
+       examples for users and checks:
+       executable in < 5 sec
+       \dontshow{
+           examples for checks:
+           executable in < 5 sec together with the examples above
+           not shown to users
+       }
+       donttest{
+           further examples for users (not used for checks)
+       }
+   }
+   would be desirable.
+
+ - Please ensure that your functions do not write by default or in your 
+   examples/vignettes/tests in the user's home filespace. That is not allow 
+   by CRAN policies. Please only write/save files if the user has specified 
+   a directory. In your examples/vignettes/tests you can write to 
+   tempdir(). E.g.
+
+
+
+
 
