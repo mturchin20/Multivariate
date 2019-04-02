@@ -1,7 +1,4 @@
 Matthew Comments:
-Overleaf Edits
-DONE - Accept edits
-
 First Set
 - you had figure 4 as landscape, but that is completely unnecessary
   i've made it smaller so it fits in portrait
@@ -13,17 +10,18 @@ First Set
     x axis can be "number of phenotypes"
     then titles can be "Distribution, across SNPs, of number of confidently associated phenotypes" (edited)
     and "Distribution, across SNPs, of number of confidently unassociated phenotypes"
-    You don't need to repeat the titles (or axis labels) in every panel... (edited)
+  - You don't need to repeat the titles (or axis labels) in every panel... (edited)
 
-- i think the dahl and finucane refs are missing? (edited) 
+DONE - i think the dahl and finucane refs are missing? (edited) 
 
 Second set
-- table 1: the phenotypes "Accumbens, Amygdala..." those are parts of the brain, not phenotypes... can you say what the phenotypes are?
+- DONE table 1: the phenotypes "Accumbens, Amygdala..." those are parts of the brain, not phenotypes... can you say what the phenotypes are?
+  - Mention this to Matthew
 
 - Figure 1, with hindsight the split axes don't really do the job well i think. Let's split this into two figure panels (a and b), one with the 3 large studies and the other with the other 7 studies
   then we won't need the split axis. we just put the y axis on different scales for each panel.
 
-- Table 2, "previous Uni" and "new multi" still abbreviated
+- DONE Table 2, "previous Uni" and "new multi" still abbreviated
 
 - Figure 4: label the panels a and b. make the text axis labels so that they can be read.
 
@@ -34,6 +32,11 @@ Second set
   - mturchin20   [14 days ago]
     will do
 
+Third set
+- I don't understand what you are saying...
+  anyway, i've edited the text in that section. can you check it is correct.
+  note that "within 1Mb of A" means the same as "within a 2Mb window centered on A".
+  so  is "within 1Mb of a previously reported univariate association" correct?
 
 Overleaf Main Comments:
 DONE - (Personal) Go through Matthew's edits
@@ -56,23 +59,38 @@ DONE - (Personal) Go through Matthew's edits
 
 - (Personal) Mention this comment to Matthew?: "MT: do we need to explicitly state this here? Want to somehow note that this may not match the number of 'published SNPs' from these publications"
 
+- (Personal) Change/check 'EMERGE2' to 'ENIGMA2' everwhere possible
+    - DONE Main
+    - DONE Supplementary
+    - Figures: Update Figure 1 
+    - DONE Tables
+    - DONE Excel Sheets
+    - Mention this to Matthew
+
 Overleaf Supplementary Comments:
 - (Personal) Communicate to Matthew he should take a look at the comment in Supplementary if/when possible
+
+- (Personal) Redo Supplementary Figure 1 DAG (larger and better resolution; or at least not just copy/pasted from the 2013 PLoS ONE paper as is currently the case)
 
 - (Personal) Do extra supplementary excel sheet table needed
 
 
 NG Analysis Misc:
-- Check specifications
+DONE - Check specifications
     - From NG -- "An Analysis is a new analysis of existing data (typically large genomic, transcriptomic or proteomic data sets from arrays or other high-throughput platforms) or new data obtained in a comparative analysis of technologie
       s that lead to novel and arresting conclusions of importance to a broad audience. The main text (excluding abstract, Methods, references and figure legends) is approximately 3,000 words. The abstract is typically 100-150 words, unre
       ferenced. Analyses have no more than 6 display items (figures and/or tables). An introduction (without heading) is followed by sections headed Results, Discussion and online Methods. The Results and online Methods should be divided 
       by topical subheadings; the Discussion does not contain subheadings. As a guideline, Analysis allow up to 50 references.
       Analyses include received/accepted dates. They may be accompanied by supplementary information. Analyses are peer reviewed."
+      (https://www.nature.com/ng/about/content)
 DONE - Check word count
 DONE - Check references (currently: 39; guidelines: ~50)
-- Check format
-- Check submission setup/format (?)
+DONE - Check format
+    - From NG -- "We do not request manuscripts to be formatted in Nature Genetics’s style for initial submissions, as long as the study is described in a fashion that is suitable for editorial assessment and peer review.
+      You can submit either a single PDF file that includes the manuscript text and any display items, or separate files for text, figures and tables. Besides the manuscript files, you should also provide a cover letter addressed to the e
+      ditors and any supplementary information."
+      (https://www.nature.com/ng/for-authors/preparing-your-submission)
+DONE - Check submission setup/format
 
 
 bmass Package Updates:
