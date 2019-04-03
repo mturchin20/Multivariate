@@ -25,12 +25,7 @@ DONE - Table 2, "previous Uni" and "new multi" still abbreviated
 
 DONE - Figure 4: label the panels a and b. make the text axis labels so that they can be read.
 
-- p13 "Consortium (2013)" i think this ref should give the consortium name?
-
-- i think the 1Mb window terminology is ambiguous. Can you make sure we use the "distance away" terminology throughout. So if you mean "within 500kb of the SNP" you say that rather than 
-  "within a 1Mb window around the SNP" which is ambiguous.
-  - mturchin20   [14 days ago]
-    will do
+DONE - p13 "Consortium (2013)" i think this ref should give the consortium name?
 
 Third set
 - I don't understand what you are saying...
@@ -38,12 +33,17 @@ Third set
   note that "within 1Mb of A" means the same as "within a 2Mb window centered on A".
   so  is "within 1Mb of a previously reported univariate association" correct?
 
+- i think the 1Mb window terminology is ambiguous. Can you make sure we use the "distance away" terminology throughout. So if you mean "within 500kb of the SNP" you say that rather than 
+  "within a 1Mb window around the SNP" which is ambiguous.
+  - mturchin20   [14 days ago]
+    will do
+
 Overleaf Main Comments:
 DONE - (Personal) Go through Matthew's edits
 
 - (Personal) Do a go/read-through of everything once done
 
-- (line 264) In both cases results are LD-pruned to avoid counting associations of SNPs in strong LD; see Online Methods for details.
+DONE - (line 264) In both cases results are LD-pruned to avoid counting associations of SNPs in strong LD; see Online Methods for details.
 
 DONE - (line 70) double-check all uses of \textsuperscript & \textsubscript
 
@@ -51,21 +51,21 @@ DONE - (line 156) TODO: Check \cite vs \citep here
 
 DONE - (line 202) TODO: Double check/go over all the movements of scale=.4 to scale=.3?
 
-- (line 249) TODO: Double-check recent revisions still look/work good
+DONE - (line 249) TODO: Double-check recent revisions still look/work good
 
 DONE - (Personal) check 'new' vs. 'novel' for everything else in manuscript (main & supplemental)
 
 DONE - (Personal) Double check there is no '2014_5' or '2010_1' (pretty sure this was done already by me....just double-double check, same with new vs. novel?)
 
-- (Personal) Mention this comment to Matthew?: "MT: do we need to explicitly state this here? Want to somehow note that this may not match the number of 'published SNPs' from these publications"
+DONE - (Personal) Mention this comment to Matthew?: "MT: do we need to explicitly state this here? Want to somehow note that this may not match the number of 'published SNPs' from these publications"
 
-- (Personal) Change/check 'EMERGE2' to 'ENIGMA2' everwhere possible
-    - DONE Main
-    - DONE Supplementary
-    - DONE Figures: Update Figure 1 
-    - DONE Tables
-    - DONE Excel Sheets
-    - Mention this to Matthew?
+DONE - (Personal) Change/check 'EMERGE2' to 'ENIGMA2' everwhere possible
+    DONE - Main
+    DONE - Supplementary
+    DONE - Figures: Update Figure 1 
+    DONE - Tables
+    DONE - Excel Sheets
+    DONE - Mention this to Matthew?
 
 DONE - (Peronal) Mention addition to acknowledgement to Matthew
 
