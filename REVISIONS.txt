@@ -28,14 +28,14 @@ DONE - Figure 4: label the panels a and b. make the text axis labels so that the
 DONE - p13 "Consortium (2013)" i think this ref should give the consortium name?
 
 Third set
-- I don't understand what you are saying...
+DONE - I don't understand what you are saying...
   anyway, i've edited the text in that section. can you check it is correct.
   note that "within 1Mb of A" means the same as "within a 2Mb window centered on A".
   so  is "within 1Mb of a previously reported univariate association" correct?
 
-- i think the 1Mb window terminology is ambiguous. Can you make sure we use the "distance away" terminology throughout. So if you mean "within 500kb of the SNP" you say that rather than 
+DONE - i think the 1Mb window terminology is ambiguous. Can you make sure we use the "distance away" terminology throughout. So if you mean "within 500kb of the SNP" you say that rather than 
   "within a 1Mb window around the SNP" which is ambiguous.
-  - mturchin20   [14 days ago]
+  DONE - mturchin20   [14 days ago]
     will do
 
 Overleaf Main Comments:
@@ -72,9 +72,9 @@ DONE - (Peronal) Mention addition to acknowledgement to Matthew
 Overleaf Supplementary Comments:
 - (Personal) Communicate to Matthew he should take a look at the comment in Supplementary if/when possible
 
-- (Personal) Redo Supplementary Figure 1 DAG (larger and better resolution; or at least not just copy/pasted from the 2013 PLoS ONE paper as is currently the case)
+DONE - (Personal) Redo Supplementary Figure 1 DAG (larger and better resolution; or at least not just copy/pasted from the 2013 PLoS ONE paper as is currently the case)
 
-- (Personal) Do extra supplementary excel sheet table needed
+DONE - (Personal) Do extra supplementary excel sheet table needed
 
 
 NG Analysis Misc:
