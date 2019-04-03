@@ -1,29 +1,29 @@
 Matthew Comments:
 First Set
-- you had figure 4 as landscape, but that is completely unnecessary
+DONE - you had figure 4 as landscape, but that is completely unnecessary
   i've made it smaller so it fits in portrait
   however, now the text is too small.
   can you replot the figure so that it looks right in this size?
   you should be able to use height and width in the pdf() command i think?
-  - also x and y axis labels should be simplified
+  DONE - also x and y axis labels should be simplified
     i think y axis can just be "number of SNPs"
     x axis can be "number of phenotypes"
     then titles can be "Distribution, across SNPs, of number of confidently associated phenotypes" (edited)
     and "Distribution, across SNPs, of number of confidently unassociated phenotypes"
-  - You don't need to repeat the titles (or axis labels) in every panel... (edited)
+  DONE - You don't need to repeat the titles (or axis labels) in every panel... (edited)
 
 DONE - i think the dahl and finucane refs are missing? (edited) 
 
 Second set
-- DONE table 1: the phenotypes "Accumbens, Amygdala..." those are parts of the brain, not phenotypes... can you say what the phenotypes are?
+DONE - table 1: the phenotypes "Accumbens, Amygdala..." those are parts of the brain, not phenotypes... can you say what the phenotypes are?
   - Mention this to Matthew
 
-- Figure 1, with hindsight the split axes don't really do the job well i think. Let's split this into two figure panels (a and b), one with the 3 large studies and the other with the other 7 studies
+DONE - Figure 1, with hindsight the split axes don't really do the job well i think. Let's split this into two figure panels (a and b), one with the 3 large studies and the other with the other 7 studies
   then we won't need the split axis. we just put the y axis on different scales for each panel.
 
-- DONE Table 2, "previous Uni" and "new multi" still abbreviated
+DONE - Table 2, "previous Uni" and "new multi" still abbreviated
 
-- Figure 4: label the panels a and b. make the text axis labels so that they can be read.
+DONE - Figure 4: label the panels a and b. make the text axis labels so that they can be read.
 
 - p13 "Consortium (2013)" i think this ref should give the consortium name?
 
@@ -45,27 +45,29 @@ DONE - (Personal) Go through Matthew's edits
 
 - (line 264) In both cases results are LD-pruned to avoid counting associations of SNPs in strong LD; see Online Methods for details.
 
-- (line 70) double-check all uses of \textsuperscript & \textsubscript
+DONE - (line 70) double-check all uses of \textsuperscript & \textsubscript
 
-- (line 156) TODO: Check \cite vs \citep here
+DONE - (line 156) TODO: Check \cite vs \citep here
 
-- (line 202) TODO: Double check/go over all the movements of scale=.4 to scale=.3?
+DONE - (line 202) TODO: Double check/go over all the movements of scale=.4 to scale=.3?
 
 - (line 249) TODO: Double-check recent revisions still look/work good
 
-- (Personal) check 'new' vs. 'novel' for everything else in manuscript (main & supplemental)
+DONE - (Personal) check 'new' vs. 'novel' for everything else in manuscript (main & supplemental)
 
-- (Personal) Double check there is no '2014_5' or '2010_1' (pretty sure this was done already by me....just double-double check, same with new vs. novel?)
+DONE - (Personal) Double check there is no '2014_5' or '2010_1' (pretty sure this was done already by me....just double-double check, same with new vs. novel?)
 
 - (Personal) Mention this comment to Matthew?: "MT: do we need to explicitly state this here? Want to somehow note that this may not match the number of 'published SNPs' from these publications"
 
 - (Personal) Change/check 'EMERGE2' to 'ENIGMA2' everwhere possible
     - DONE Main
     - DONE Supplementary
-    - Figures: Update Figure 1 
+    - DONE Figures: Update Figure 1 
     - DONE Tables
     - DONE Excel Sheets
-    - Mention this to Matthew
+    - Mention this to Matthew?
+
+DONE - (Peronal) Mention addition to acknowledgement to Matthew
 
 Overleaf Supplementary Comments:
 - (Personal) Communicate to Matthew he should take a look at the comment in Supplementary if/when possible
