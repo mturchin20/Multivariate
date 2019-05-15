@@ -96,7 +96,7 @@ DONE - Check submission setup/format
 
 
 bmass Package Updates:
- - Please write package names, software names and API names in single 
+DONE - Please write package names, software names and API names in single 
    quotes (e.g. 'bmass') in your Description.
 
 >    models given the phenotypes and datasets provided.
@@ -104,7 +104,7 @@ bmass Package Updates:
 >    phenotype to being either Unassociated (U), Directly
 >    associated (D) or Indirectly associated (I) with the SNP of
 
- - Please explain all acronyms (e.g. SNP) in your Description text to avoid 
+DONE  - Please explain all acronyms (e.g. SNP) in your Description text to avoid 
    misunderstandings.
 
 
@@ -112,14 +112,14 @@ bmass Package Updates:
 >    form of Bayes factors, thereby allowing direct comparison
 >    between models.
 
- - If there are references, please add these in the Description field of 
+DONE - If there are references, please add these in the Description field of 
    your DESCRIPTION file in the form
    authors (year) <doi:...>
    authors (year) <arXiv:...>
    authors (year, ISBN:...)
    with no space after 'doi:', 'arXiv:' and angle brackets for auto-linking.
 
- - Please provide small executable examples in all of your Rd-files (except 
+DONE - Please provide small executable examples in all of your Rd-files (except 
    the data documentations) if possible.
 
    They examples are wrapped in \dontrun{}, hence nothing gets tested. 
@@ -140,7 +140,7 @@ bmass Package Updates:
    }
    would be desirable.
 
- - Please ensure that your functions do not write by default or in your 
+DONE - Please ensure that your functions do not write by default or in your 
    examples/vignettes/tests in the user's home filespace. That is not allow 
    by CRAN policies. Please only write/save files if the user has specified 
    a directory. In your examples/vignettes/tests you can write to 
