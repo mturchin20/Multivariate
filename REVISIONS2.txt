@@ -2,15 +2,39 @@ Dear Dr Turchin,
 
 Thank you for submitting your Research Article entitled 'Bayesian multivariate reanalysis of large genetic studies identifies many new associations' to PLOS Genetics! We have checked your files, and would ask that you address the following points before we pass your submission forward for the editors' evaluation:
 
- ? Please remove the funding information from your Acknowledgments and instead ensure that this information has been entered correctly into the Financial Disclosure section of the online submission form.
+ DONE Please remove the funding information from your Acknowledgments and instead ensure that this information has been entered correctly into the Financial Disclosure section of the online submission form.
 
- ? Please remove the Author Contributions from your manuscript and instead ensure that this information has been entered correctly into the Author Contributions section of the online submission form.
+ DONE Please remove the Author Contributions from your manuscript and instead ensure that this information has been entered correctly into the Author Contributions section of the online submission form.
 
- ? Please re-arrange your manuscript so that your Acknowledgments section appears immediately before your References section. Please see our guidelines for more details: http://journals.plos.org/plosgenetics/s/file?id=TslZ/PLOSGenetics_formatting_sample_main_body.pdf
+ DONE Please re-arrange your manuscript so that your Acknowledgments section appears immediately before your References section. Please see our guidelines for more details: http://journals.plos.org/plosgenetics/s/file?id=TslZ/PLOSGenetics_formatting_sample_main_body.pdf
 
  ? Please upload your figures as separate files. If you also choose to embed figures in the manuscript, ensure that the embedded figures match the figure files uploaded separately to the submission system. At this time, we can only accept figures under 15MB each in .TIF (preferred) and .EPS format. For additional details, please see our figure guidelines: http://journals.plos.org/plosgenetics/s/figures. Additionally, please ensure that all figure titles and descriptions are included in the manuscript file.
 
  ? Each supporting information file needs to be uploaded into the system separately. Please upload each supplementary figure and supplementary table as an individual file, which is less than 15MB in size. Please enter the supporting information legends (for S1-S3 Figures and S1-S7 Tables) at the end of the manuscript file, after the References.
 
- ? We notice that you used “data not shown” 1 time in the manuscript, on page 27. PLOS Genetics recently updated its data access policy and now requires that all data be either published with the manuscript or made available in a publically accessible database. We ask that you either amend the supplementary material to include the referenced data or remove as many of the references as possible. Please include an explanation of how you have met this request (i.e. whether you have simply removed the instances because they are not integral to the manuscript, or whether you have provided further supporting information files) at the end of your response to reviewers. Please note that we will not be able to pass your manuscript through our technical checks unless this is accompanied by this explanation.
+ SemiDONE We notice that you used “data not shown” 1 time in the manuscript, on page 27. PLOS Genetics recently updated its data access policy and now requires that all data be either published with the manuscript or made available in a publically accessible database. We ask that you either amend the supplementary material to include the referenced data or remove as many of the references as possible. Please include an explanation of how you have met this request (i.e. whether you have simply removed the instances because they are not integral to the manuscript, or whether you have provided further supporting information files) at the end of your response to reviewers. Please note that we will not be able to pass your manuscript through our technical checks unless this is accompanied by this explanation.
 
+Michael:
+Conceptualization	
+Data curation	
+Formal analysis	
+Funding acquisition	
+Investigation	
+Resources	
+Software	
+Validation	
+Visualization	
+Writing – original draft	
+Writing – review & editing
+
+Matthew:
+Conceptualization	
+Funding acquisition	
+Investigation	
+Methodology	
+Project administration	
+Resources	
+Software	
+Validation	
+Supervision	
+Writing – review & editing
