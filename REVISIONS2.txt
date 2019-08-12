@@ -16,7 +16,8 @@ Thank you for submitting your Research Article entitled 'Bayesian multivariate r
 
  SemiDONE Doublecheck all captions
 
- - Figure List (make into .tiff and check filesize < 15Mb):
+(find locations for all four images with 'REVISIONS2' keyword tag)
+ - Figure List (make into .tiff and check filesize < 15Mb, change names to 'Fig1.tif', 'Fig2.tif', etcetc...):
    - \makebox[\textwidth][c]{\includegraphics[scale=.35]{Images/bmass_Manuscript_Figure1_Panela_WIP_vs3.png}} 
    - \makebox[\textwidth][c]{\includegraphics[scale=.35]{Images/bmass_Manuscript_Figure1_Panelc_WIP_vs4_midLim.png}} 
    - \makebox[\textwidth][c]{\includegraphics[scale=.35]{Images/bmass_Manuscript_Figure1_Panelb_WIP_vs4_vs2.png}} 
